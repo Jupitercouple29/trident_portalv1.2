@@ -1,0 +1,10 @@
+/config
+/public
+/node_modules
+/coverage
+bundle.js
+npm-debug.log
+.DS_Store
+# IntelliJ
+*.iml
+/.idea

@@ -1,0 +1,16 @@
+{
+  "name": "trident_api",
+  "version": "1.2.0",
+  "description": "Trident Portal API",
+  "main": "index.js",
+  "repository": "https://github.com/mjohnson-phx/trident_portalv1.2.git",
+  "author": "Willie Smith <wsmith@phalanxsecure.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "bcryptjs": "^2.4.3",
+    "elasticsearch": "^14.0.0",
+    "firebase": "^4.8.0",
+    "jsonwebtoken": "^8.1.0"
+  }
+}
