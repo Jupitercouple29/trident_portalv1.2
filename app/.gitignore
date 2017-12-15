@@ -4,7 +4,7 @@
 /coverage
 bundle.js
 npm-debug.log
-.DS_Store
+.DS_Storecp cp 
 # IntelliJ
 *.iml
 /.idea
