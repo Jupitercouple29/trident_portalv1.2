@@ -7,6 +7,7 @@
 	width: 100%;
 	min-width: 320px;
 	padding: 0 32px 0 40px;
+	top: 0;
 }
 
 .nav-bar {
@@ -66,6 +67,20 @@ p.hidden {
 	display: none;
 }
 
+.side-panel-item-expanded.show {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.side-panel-item-expanded.hidden {
+	display: none;
+}
+
+.side-panel-item-expanded p {
+	margin: 5px 0;
+}
+
 .hamburger-container {
 	margin-left: 30px;
 	padding-bottom: 5px;
@@ -77,4 +92,12 @@ i.fa-sign-out {
 
 i.fa-user-circle {
 	padding: 0 10px;
+}
+
+.portal-display {
+	position: relative;
+	top: 67px;
+	left: 50px;
+	width: calc(100% - 125px);
+	padding: 8px 32px 8px 40px;
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import { Map, TileLayer } from 'react-leaflet'
@@ -6,6 +7,7 @@ import { Map, TileLayer } from 'react-leaflet'
 // import TridentMap from './trident-map'
 import NavBar from '../../components/nav-bar'
 import SidePanel from '../../components/side-panel'
+import Dashboard from '../../containers/dashboard/dashboard'
 // import PortalBody from './portal-body'
 // import TridentBody from './trident-body'
 // import AdminBody from './admin-body'
@@ -25,17 +27,18 @@ export class Portal extends Component {
   constructor(props){
     super(props)
     this.state = {
-      // page:<PortalBody />,
+      page:<Dashboard />,
       isLoading: true,
       loadingMessage: <div>Gathering your information...</div>,
       displaySidePanel: false
     }
 
     this.handleSidePanelClick = this.handleSidePanelClick.bind(this)
+    this.sidePanelResize = this.sidePanelResize.bind(this)
   }
 
   componentWillMount(){
-    // this.props.pageLocation(<PortalBody />)
+    this.props.pageLocation(<Dashboard />)
     // let validUser = this.props.validUser
     // let tridents = this.props.user.tridents
     // getInfo.getTridentAlerts(tridents)
@@ -58,29 +61,45 @@ export class Portal extends Component {
     // })
   }
   
+  componentDidMount(){
+    let sidePanel = document.getElementsByClassName('side-panel-container')[0]
+    // console.log(ReactDOM.findDOMNode(sidePanel))
+    ReactDOM.findDOMNode(sidePanel).addEventListener('resize', this.timer)
+  }
+  
+  sidePanelResize(){
+     console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
+    // console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
+  }
+  
+  componentWillUnmount(){
+    let sidePanel = document.getElementsByClassName('side-panel-container')[0]
+    ReactDOM.findDOMNode(sidePanel).removeEventListener('resize', this.side)
+  }
+
   componentWillReceiveProps(nextProps){
-    // if(nextProps.location.pathname != this.state.page){
-    //   let pageLocation = ''
-    //   let page = this.props.history.location.pathname;
-    //   switch(page){
-    //     case '/portal':
-    //       pageLocation = <PortalBody />
-    //       break
-    //     case '/trident':
-    //       pageLocation = <TridentBody />
-    //       break
-    //     case '/admin':
-    //       pageLocation = <AdminBody />
-    //       break
-    //     case '/alerts':
-    //       pageLocation = <AlertBody />
-    //       break
-    //     default:
-    //       pageLocation = <PortalBody />
-    //   }
-    //   this.setState({page})
-    //   this.props.pageLocation(pageLocation)
-    // }
+    if(nextProps.location.pathname != this.state.page){
+      let pageLocation = ''
+      let page = this.props.history.location.pathname;
+      switch(page){
+        case '/dashboard':
+          pageLocation = <Dashboard />
+          break
+        // case '/trident':
+        //   pageLocation = <TridentBody />
+        //   break
+        // case '/admin':
+        //   pageLocation = <AdminBody />
+        //   break
+        // case '/alerts':
+        //   pageLocation = <AlertBody />
+        //   break
+        default:
+          pageLocation = <Dashboard />
+      }
+      this.setState({page})
+      this.props.pageLocation(pageLocation)
+    }
   }
 
   handleSidePanelClick(click){
@@ -88,13 +107,17 @@ export class Portal extends Component {
   }
   render(){
     let displaySidePanel = this.state.displaySidePanel
-    // const { user, page } = this.props
+    let { user, page } = this.props
     // const { isLoading, loadingMessage } = this.state
     // const display = user && !isLoading ? page : <LoadingPage message={loadingMessage}/>
+    // let display = page 
     return(
       <section className="portal">
        <NavBar sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel}/>
        <SidePanel sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} />
+       <div className="portal-display">
+          {page}
+       </div>
       </section>
     )
   }
