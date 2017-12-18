@@ -1,0 +1,68 @@
+.login-container {
+	display: flex;
+	-webkit-box-align: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+}
+
+.login-body {
+	width: 540px;
+    margin: 0 auto;
+    border-radius: 5px;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    padding: 32px;
+}
+
+.email-container, .pswd-container {
+	display: flex;
+	flex-direction: column;
+	margin-top: 20px;
+}
+
+input#email, input#pswd {
+	background-color: rgba(0,0,0,.4);
+    border-radius: 5px;
+    color: #fff;
+    height: 30px;
+    border: none;
+    padding-left: 10px;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #fff;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #fff;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #fff;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: #fff;
+}
+
+h2.login-title {
+	display: flex;
+	justify-content: center;
+	font-family: inherit;
+	font-weight: 300;
+	font-size: 30px;
+}
+
+label.login-label {
+	margin-bottom: 15px;
+}
+
+button.login-submit {
+	margin-top: 20px;
+    border-color: #fff;
+    background: 0;
+    color: #fff;
+    padding: 6px 12px;
+    touch-action: manipulation;
+    cursor: pointer;
+    border-radius: 5px;
+}

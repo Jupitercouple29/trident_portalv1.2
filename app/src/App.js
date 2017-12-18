@@ -31,7 +31,7 @@ import { connect } from 'react-redux';
 
 import Login from './containers/login/login';
 import Portal from './containers/portal/portal';
-import AuthRoute from './components/authRoute';
+import AuthRoute from './functions/authRoute';
 
 export class App extends Component {
   render(){

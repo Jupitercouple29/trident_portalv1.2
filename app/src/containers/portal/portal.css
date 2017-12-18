@@ -1,0 +1,80 @@
+.nav-bar-container{
+	background-color: rgba(0,0,0,.5);
+	position: fixed;
+	z-index: 904;
+	box-shadow: 2px 0 3px rgba(0,0,0,.5);
+	height: 66px;
+	width: 100%;
+	min-width: 320px;
+	padding: 0 32px 0 40px;
+}
+
+.nav-bar {
+	display: flex;
+	align-items: center;
+	/* flex-flow: row; */
+	height: 100%;
+	width: calc(100% - 40px);
+}
+
+.nav-bar-left {
+	flex: 1;
+	display: flex;
+}
+
+.nav-bar-middle {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+}
+
+.nav-bar-right {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.gbms-tech-logo {
+	height: 30px;
+	width: 150px;
+}
+
+.side-panel-container {
+	top: 66px;
+	left: 0;
+	z-index: 904;
+	display: block;
+	min-height: 100%;
+	background-color: rgba(0,0,0,.5);
+	height: 100%;
+	position: fixed;
+}
+
+.side-panel-item {
+	display: flex;
+	align-items: center;
+	padding: 0 15px;
+	height: 40px;
+}
+
+.side-panel-item p {
+	padding-left: 10px;
+}
+
+p.hidden {
+	display: none;
+}
+
+.hamburger-container {
+	margin-left: 30px;
+	padding-bottom: 5px;
+}
+
+i.fa-sign-out {
+	padding: 0 20px;
+}
+
+i.fa-user-circle {
+	padding: 0 10px;
+}

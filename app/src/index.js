@@ -7,6 +7,7 @@ import registerServiceWorker from './registerServiceWorker';
 import App from './App';
 import reducers from './reducers';
 import './index.css';
+import 'font-awesome/css/font-awesome.min.css'
 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
 
@@ -18,5 +19,4 @@ ReactDOM.render(
   </AppContainer>
   , document.getElementById('root'));
 
-// ReactDOM.render(<App />, document.getElementById('root'));
 registerServiceWorker();

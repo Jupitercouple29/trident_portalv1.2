@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import { auth } from '../components/auth';
 // import { getTridents } from '../components/getInfo'
-
+import './login.css';
 /**
  * Login Component that handles the login page and all of its actions.
  * Props are passed to it using Redux.
@@ -56,57 +56,45 @@ export default class Login extends Component {
   }
 
   render(){
-    const backgroundStyle = {
-      backgroundImage:"url(img/world_satellites.jpg)",
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "100% 100%",
-      height: "100%",
-      width: "100%"
-    }
     const { _error, isLoading } = this.state
     return(
-      <section className="login-container" style={backgroundStyle}>
-        <section className="login-body">
-          <img
-            className="login-trident-logo"
-            src="./img/trident_logo.png"
-            height="400px"
-            width="300px"
-          />
-          <section className="login-form-container">
+      <div className="login-container">
+        <div className="login-body">
+        <h2 className="login-title">Login to Trident Portal</h2>
+          <div className="login-form-container">
             <form onSubmit={this.onFormSubmit}>
-              <section className="email-container">
+              <div className="email-container">
                 <label className="login-label" htmlFor="email">Email</label>
                 <input
-                  placeholder="email"
+                  placeholder="Email"
                   type="email"
                   className="input-email"
                   id="email"
                   value={this.state.email}
                   onChange={this.onInputChange.bind(this,'email')}
                 />
-              </section>
-              <section className="pswd-container">
+              </div>
+              <div className="pswd-container">
                 <label className="login-label" htmlFor="pswd">Password</label>
                 <input
-                  placeholder="password"
+                  placeholder="Password"
                   type="password"
                   className="input-pswd"
                   id="pswd"
                   value={this.state.pass}
                   onChange={this.onInputChange.bind(this,'pswd')}
                 />
-              </section>
+              </div>
               <button className="login-submit" type="submit" disabled={isLoading}>
                 Login
               </button>
-              <section className="login-error-container">
+              <div className="login-error-container">
                 <p className="login-error">{_error != '' ? _error : ''}</p>
-              </section>
+              </div>
             </form>
-          </section>
-        </section>
-      </section>
+          </div>
+        </div>
+      </div>
     );
   }
 }

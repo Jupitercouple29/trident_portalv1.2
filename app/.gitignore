@@ -1,8 +1,6 @@
-/config
-/public
 /node_modules
 /coverage
-bundle.js
+/build
 npm-debug.log
 .DS_Storecp cp 
 # IntelliJ

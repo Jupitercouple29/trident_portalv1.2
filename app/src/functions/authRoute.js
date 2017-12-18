@@ -3,18 +3,14 @@ import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
 import * as actionCreators from '../actions'
 import { connect } from 'react-redux'
-import jwt from 'jsonwebtoken'
-
-// if(process.env.NODE_ENV === 'test'){
-//   var config = require('../../config')
-// }else {
-//   var config = require('config')
-// }
+// import config from 'config'
+// import jwt from 'jsonwebtoken'
 
 const PRIVATE_ROOT = '/portal'
 const PUBLIC_ROOT = '/login'
 
 export const AuthRoute = ({component, ...props}) => {
+  const { isPrivate } = component;
   let isAuthenticated = true;
   // let token = localStorage.getItem('jwt')
   // if(token){
@@ -26,7 +22,7 @@ export const AuthRoute = ({component, ...props}) => {
   //       let diff = Math.abs(new Date() - new Date(decoded.date))
   //       // 14 hours = 50400000 ms
   //       if(diff < 50400000 ){
-  //         if(props.validUser === null){
+  //         if(props.validUser == null){
   //           props.login(decoded.user)
   //         }
   //         isAuthenticated = true
