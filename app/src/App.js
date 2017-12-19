@@ -27,6 +27,8 @@ export class App extends Component {
               <Route path="/login" component={Login}/>
               <AuthRoute path="/dashboard" component={Portal}/>
               <AuthRoute path="/trident" component={Portal}/>
+              <AuthRoute path="/support" component={Portal}/>
+              <AuthRoute path="/profile" component={Portal}/>
               <AuthRoute path="/charts" component={Portal}/>
               <AuthRoute path="/alerts" component={Portal}/>
             </Switch>

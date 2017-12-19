@@ -7,7 +7,12 @@ import { Map, TileLayer } from 'react-leaflet'
 // import TridentMap from './trident-map'
 import NavBar from '../../components/nav-bar'
 import SidePanel from '../../components/side-panel'
-import Dashboard from '../../containers/dashboard/dashboard'
+import Dashboard from '../dashboard/dashboard'
+import TridentPage from '../trident/trident-page'
+import SupportPage from '../support/support-page'
+import ProfilePage from '../profile/profile-page'
+import AlertsPage from '../alerts/alerts-page'
+import ChartsPage from '../charts/charts-page'
 // import PortalBody from './portal-body'
 // import TridentBody from './trident-body'
 // import AdminBody from './admin-body'
@@ -85,15 +90,21 @@ export class Portal extends Component {
         case '/dashboard':
           pageLocation = <Dashboard />
           break
-        // case '/trident':
-        //   pageLocation = <TridentBody />
-        //   break
-        // case '/admin':
-        //   pageLocation = <AdminBody />
-        //   break
-        // case '/alerts':
-        //   pageLocation = <AlertBody />
-        //   break
+        case '/trident':
+          pageLocation = <TridentPage />
+          break
+        case '/support':
+          pageLocation = <SupportPage />
+          break
+        case '/profile':
+          pageLocation = <ProfilePage />
+          break
+        case '/alerts':
+          pageLocation = <AlertsPage />
+          break
+        case '/charts':
+          pageLocation = <ChartsPage />
+          break
         default:
           pageLocation = <Dashboard />
       }
