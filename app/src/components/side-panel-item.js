@@ -49,7 +49,7 @@ export class SidePanelItem extends Component {
 			<div className="side-panel-item-container">
 				<div className="side-panel-item" onClick={this.handleItemClick.bind(this,title)}>
 					<i className={icon}></i>
-					<p className={display}>{title}{showChevron}</p>
+					<p className={`side-panel-item-title ${display}`}>{title}{showChevron}</p>
 				</div>
 				<div className={`side-panel-item-expanded ${showItems}`}>
 					{displayItems}

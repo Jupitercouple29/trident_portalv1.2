@@ -1,41 +1,56 @@
 #!/usr/bin/env node
 
+
 require('dotenv').config();
 
 /**
- * Module dependencies.
- */
+* Module dependencies
+**/
+var app = require('../index');
+var debug = require('debug')('express-app:server');
+var http = require('http');
+var winston = require('winston');
 
-var app = require('../index.js'),
-    debug = require('debug')('react:server'),
-    https = require('https'),
-    fs = require('fs');
-// const config = require('../config');
+
+/**
+ * Transports (Logging)
+ */
+var transports = [
+	new winston.transports.Console({
+		level: 'info',
+		timestamp: function() {
+			return new Date().toString();
+		},
+		json: true,
+	})
+];
+
+/**
+ * Logging
+ */
+global.log = new winston.Logger({
+	transports: transports,
+});
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || 8443);
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
-var sslOptions = {
-  key:fs.readFileSync('config/cert/pvt.crt'),
-  cert:fs.readFileSync('config/cert/cert.crt'),
-  ca:fs.readFileSync('config/cert/ca.crt')
-}
 
-var server = https.createServer(sslOptions,app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
 server.listen(port, function(){
-  console.log("Express server listening on port " + port);
+	console.log('listening on port ' + port)
 });
 server.on('error', onError);
 server.on('listening', onListening);

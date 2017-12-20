@@ -63,7 +63,7 @@
 	padding-left: 10px;
 }
 
-p.hidden {
+.hidden {
 	display: none;
 }
 
@@ -84,6 +84,10 @@ p.hidden {
 .hamburger-container {
 	margin-left: 30px;
 	padding-bottom: 5px;
+}
+
+i.fa-chevron-up, i.fa-chevron-down { 
+	padding-left: 	10px;
 }
 
 i.fa-sign-out {
