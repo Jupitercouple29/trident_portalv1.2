@@ -8,9 +8,9 @@
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production pm2 start ./bin/www",
-    "windows:start":"pm2 start ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "start": "NODE_ENV=production pm2 start ./bin/api",
+    "windows:start":"pm2 start ./bin/api",
+    "dev": "nodemon ./bin/api"
   },
   "dependencies": {
     "axios": "^0.17.1",
