@@ -37,7 +37,7 @@ export default class TridentPanel extends Component {
 				<div className="trident-panel medium">
 					<div className="trident-panel-alerts-container">
 						<div className="trident-panel-alerts-headers">
-							<h3 className="trident-panel-header medium">Current Alerts</h3>
+							<h3 className="trident-panel-header medium">Current Events</h3>
 							<h3 className="trident-panel-header small">Total</h3>
 						</div>
 						<div className="trident-panel-alerts">

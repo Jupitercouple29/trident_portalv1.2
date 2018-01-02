@@ -78,7 +78,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "prod": "node scripts/build.js && npm run serve",
-    "serve": "node ./bin/www"
+    "serve": "pm2 start ./bin/www"
   },
   "jest": {
     "collectCoverageFrom": [

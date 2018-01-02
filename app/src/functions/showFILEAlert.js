@@ -21,8 +21,9 @@ export const showFILEAlert = (data) => {
                           <Rows titles={["Hostname","Protocol","Method"]} info={[hostname,protocol,method]}/>
                           <Rows titles={["Status","Content","Size"]} info={[status,content,size]}/>
                           <Rows titles={["State","Type","Magic"]} info={[state,type,magic]}/>
-                          <Rows titles={["Filename","URL","MD5"]} info={[filename,url,md5]}/>
-                          <Rows titles={["Agent","Refer"]} info={[agent,refer]}/>
+                          <Rows titles={["Filename","MD5","Refer"]} info={[filename,md5,refer]}/>
+                          <Rows titles={["Agent"]} info={[agent]}/>
+                          <Rows titles={["URL"]} info={[url]}/>
                         </div>
     return displayEventType                  
 }

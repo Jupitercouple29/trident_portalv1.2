@@ -22,19 +22,6 @@ export class Dashboard extends Component {
 	}
 	componentWillMount(){
 		let tridents = this.props.tridents
-		// getTridents(tridents)
-		// .then(result=>{
-		// 	// console.log(result)
-		// 	this.props.dashboardInfo(result)
-		// 	this.setState({isLoading:false})
-		// })
-		// .catch((err)=>{
-  //     this.setState({loadingMessage:
-  //       <h1 className="loading-error">There has been a connection error.<br/><br/>
-  //        Please try back again .
-  //       </h1>
-  //     })
-  //   })
 		getNumOfAlerts(tridents)
 		.then(result => {
 			this.setState({numAlerts:result})
@@ -46,8 +33,6 @@ export class Dashboard extends Component {
 		let eventsLastHour = this.props.dashboard.alertsLastHour ? this.props.dashboard.alertsLastHour.toLocaleString() : 0
 		let lastEventTime = this.props.dashboard.lastEventTime ? formatDate(this.props.dashboard.lastEventTime) : formatDate(new Date())
 		let numTridents = this.props.tridents.length ? this.props.tridents.length : 0
-		// if(this.state.isLoading) return <LoadingPage message={this.state.loadingMessage}/>
-		// else{
 		return (
 			<div className="dashboard-container">
 				<div className="dashboard-header">
@@ -71,7 +56,7 @@ export class Dashboard extends Component {
 				</div>
 				<div className="dashboard-panel-container">
 					<div className="dashboard-panel">
-					 <AlertPanel alerts={this.props.dashboard.alerts} title={"Current Alerts"} />
+					 <AlertPanel alerts={this.props.dashboard.alerts} title={"Current Events"} />
 					</div>
 				</div>
 			</div>

@@ -37,12 +37,12 @@ export class TridentPage extends Component {
 				</div>	
 				<PortalMap trident={trident}/>
 				<TridentPanel sourceIPs={sourceIPs} destIPs={destIPs} alerts={alerts} />
-				<AlertType alertFunc={getAlerts} trident={[trident]} type={"dns"} title={"DNS Alerts"}/>
-				<AlertType alertFunc={getAlerts} trident={[trident]} type={"http"} title={"HTTP Alerts"}/>
-				<AlertType alertFunc={getAlerts} trident={[trident]} type={"tls"} title={"TLS Alerts"}/>
-				<AlertType alertFunc={getAlerts} trident={[trident]} type={"alert"} title={"Signature Alerts"}/>
-				<AlertType alertFunc={getAlerts} trident={[trident]} type={"fileinfo"} title={"File Alerts"}/>
-				<AlertType alertFunc={getAlerts} trident={[trident]} type={"ssh"} title={"SSH Alerts"}/>
+				<AlertType alertFunc={getAlerts} trident={[trident]} type={"dns"} title={"DNS Events"}/>
+				<AlertType alertFunc={getAlerts} trident={[trident]} type={"http"} title={"HTTP Events"}/>
+				<AlertType alertFunc={getAlerts} trident={[trident]} type={"tls"} title={"TLS Events"}/>
+				<AlertType alertFunc={getAlerts} trident={[trident]} type={"alert"} title={"Signature Events"}/>
+				<AlertType alertFunc={getAlerts} trident={[trident]} type={"fileinfo"} title={"File Events"}/>
+				<AlertType alertFunc={getAlerts} trident={[trident]} type={"ssh"} title={"SSH Events"}/>
 			</div>
 		)
 	}

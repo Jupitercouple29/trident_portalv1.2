@@ -46,6 +46,7 @@
   animation: roll 3s infinite;
   transform: rotate(30deg);
   margin: 0 auto;
+  padding-top: 60px;
 }
 
 @-webkit-keyframes roll {

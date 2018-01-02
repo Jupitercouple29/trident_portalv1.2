@@ -76,32 +76,58 @@ router.post('/update', function(req, res, next){
   let name = req.body.name ? req.body.name : null
   let email = req.body.email ? req.body.email : null
   let pswd = req.body.pswd ? req.body.pswd : null
-  bcrypt.genSalt(10, function(err, salt){
-    if(err) log.error(req, 'Invalid in bcrypt.genSalt')
-    bcrypt.hash(pswd, salt, function(err, hash){
-      if(err) log.error(req, 'Invalid in bcrypt.hash')
-      let rootRef = firebase.database().ref('users');
+  let tridents = req.body.tridents 
+  if(name && email && tridents){
+     let rootRef = firebase.database().ref('users');
       rootRef.orderByChild('email').equalTo(email).once('value')
       .then(snap =>{
         if(snap.val()){
           let userKey = Object.keys(snap.val())
-          let result = snap.val()[userKey[0]]
-          name = result.name
           let userRef = rootRef.child(userKey[0])
-          userRef.update({password:hash})
-          requestLog(req, 'Password has been updated for ' + name)
+          userRef.update({
+            name:name,
+            email:email,
+            tridents:tridents
+          })
+          requestLog(req, 'Account has been updated for ' + name)
           res.status(201).send(name + ' has been updated successfully')
         }else {
           requestLog(req, 'Invalid email')
-          res.status(401).send('Unable to update user at ' + email)
+          res.status(401).send('Invalid email. Unable to update users at ' + email)
         }
       })
       .catch(err => {
         requestLog(req, 'Firebase error')
-        res.status(401).send('Unable to update user at ' + email)
+        res.status(401).send('Firebase error. Unable to update user at ' + email)
+      })
+  }else{
+    bcrypt.genSalt(10, function(err, salt){
+      if(err) log.error(req, 'Invalid in bcrypt.genSalt')
+      bcrypt.hash(pswd, salt, function(err, hash){
+        if(err) log.error(req, 'Invalid in bcrypt.hash')
+        let rootRef = firebase.database().ref('users');
+        rootRef.orderByChild('email').equalTo(email).once('value')
+        .then(snap =>{
+          if(snap.val()){
+            let userKey = Object.keys(snap.val())
+            let result = snap.val()[userKey[0]]
+            name = result.name
+            let userRef = rootRef.child(userKey[0])
+            userRef.update({password:hash})
+            requestLog(req, 'Password has been updated for ' + name)
+            res.status(201).send(name + ' has been updated successfully')
+          }else {
+            requestLog(req, 'Invalid email')
+            res.status(401).send('Unable to update user at ' + email)
+          }
+        })
+        .catch(err => {
+          requestLog(req, 'Firebase error')
+          res.status(401).send('Unable to update user at ' + email)
+        })
       })
     })
-  })
+  }
 })
 
 router.post('/new_user', function(req, res, next){
@@ -109,6 +135,7 @@ router.post('/new_user', function(req, res, next){
   let email = req.body.email
   let creds = req.body.creds
   let pswd = req.body.pswd
+  let company = req.body.company
   // tridents have to be in a key value pair. The key should be the company name 
   // attached to the trident and the value should be an array of tridents. 
   // ex.  tridents = {
@@ -131,6 +158,7 @@ router.post('/new_user', function(req, res, next){
         email:email,
         creds:creds,
         password:hash,
+        company:company,
         tridents: tridents
       })
       .then(snap =>{

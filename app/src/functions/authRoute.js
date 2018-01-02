@@ -22,6 +22,7 @@ export const AuthRoute = ({component, ...props}) => {
           if(props.validUser == null){
             let keys = decoded.user.tridents
             let tridents = []
+            console.log(keys)
             Object.keys(keys).map((key) => {
               decoded.user.tridents[key].map(trident => {
                 tridents.push(trident)
