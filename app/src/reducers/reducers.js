@@ -11,7 +11,7 @@ export const validUser = (state = null, action) =>{
   }
 }
 
-export const alerts = (state = null, action) => {
+export const alerts = (state = [] , action) => {
   switch(action.type){
     case actions.TRIDENT_ALERTS:
       return action.alerts
@@ -47,9 +47,9 @@ export const page = (state = null, action) =>{
   }
 }
 
-export const info = (state = null, action) => {
+export const tridentArray = (state = null, action) => {
   switch(action.type){
-    case actions.TRIDENT_INFO:
+    case actions.TRIDENT_ARRAY:
       return action.tridents
     default:
       return state
@@ -74,9 +74,9 @@ export const currentAlerts = (state = [], action) => {
   }
 }
 
-export const allAlerts = (state = [], action) => {
+export const dashboardProps = (state = [], action) => {
   switch(action.type){
-    case actions.ALL_ALERTS:
+    case actions.DASHBOARD_INFO:
       return action.all
     default:
       return state

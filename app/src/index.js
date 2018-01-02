@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { AppContainer } from 'react-hot-loader';
-import registerServiceWorker from './registerServiceWorker';
+// import registearServiceWorker from './registerServiceWorker';
 import App from './App';
 import reducers from './reducers';
 import './index.css';
@@ -19,4 +19,4 @@ ReactDOM.render(
   </AppContainer>
   , document.getElementById('root'));
 
-registerServiceWorker();
+// registerServiceWorker();

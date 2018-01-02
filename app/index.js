@@ -7,9 +7,7 @@ var express      = require('express'),
     logger       = require('morgan'),
     cookieParser = require('cookie-parser'),
     bodyParser   = require('body-parser'),
-    routes       = require('./routes/index');
-
-var app = express();
+    app          = express();
 // app.use(favicon(path.join(__dirname, 'public','phalanx_favicon.ico')));
 
 /**
@@ -26,7 +24,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'build')));
 
-app.use('/', routes);
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

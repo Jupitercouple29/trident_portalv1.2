@@ -1,3 +1,37 @@
 .trident-page-container {
-	color: blue;
+	display: flex;
+	flex-direction: column;
 }
+
+.trident-panel-container {
+	display: flex;
+}
+
+.trident-panel {
+	margin-right: 15px;
+	min-width: 	270px;
+}
+
+.trident-panel-alerts-container {
+	/*display: flex;*/
+}
+.trident-panel-alerts-headers {
+	display: flex;
+}
+
+ .trident-panel-alerts {
+ 	display: flex;
+ 	flex-direction: column;
+ }
+
+.trident-panel-alert {
+	display: flex;
+}
+
+ /*.trident-panel-alert-name {
+ 	flex: 2;
+ }
+
+ .trident-panel-alert-total {
+ 	flex: 1;
+ }*/

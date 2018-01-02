@@ -10,8 +10,10 @@ export default class Columns extends Component {
 	render(){
 		let title = this.props.title
 		let info = this.renderInfo(this.props.info)
+		let size = this.props.size || "small"
+		let name = this.props.name || ""
 		return(
-			<div className="dashboard-alert-panel-column">
+			<div className={`dashboard-panel-column ${name} ${size}`}>
 				<h3>{title}</h3>
 				{info}
 			</div>

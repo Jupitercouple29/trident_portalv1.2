@@ -1,16 +1,18 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var winston = require('winston');
-var helmet = require('helmet');
-var compression = require('compression');
-var validator = require('express-validator');
-var jwt = require('express-jwt');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var express = require('express'),
+    path = require('path'),
+    logger = require('morgan'),
+    winston = require('winston'),
+    helmet = require('helmet'),
+    compression = require('compression'),
+    validator = require('express-validator'),
+    jwt = require('express-jwt'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    cors = require('cors');
 
 var users = require('./routes/users');
 var trident = require('./routes/trident')
+var map = require('./routes/map')
 
 var app = express();
 
@@ -18,11 +20,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());
+app.use(cors());
 app.use(helmet());
 app.use(validator());
 
 app.use('/users', users);
 app.use('/trident', trident);
+app.use('/map', map);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

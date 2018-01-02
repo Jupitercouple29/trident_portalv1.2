@@ -1,14 +1,11 @@
-import React, { Component } from 'react';
 import axios from 'axios';
-import config from 'config';
-import jwt from 'jsonwebtoken'
 
 export const getMapAlert = (info) => {
   let lat = info.lat
   let long = info.long
   let trident = info.trident
   let token = localStorage.getItem('jwt')
-  return axios.get(config.api.URL + '/tridents/mapAlerts/alert', {
+  return axios.get(process.env.REACT_APP_API_URL + '/map/alerts/alert', {
     headers: {
       Authorization: `Bearer ${token}`,
     },

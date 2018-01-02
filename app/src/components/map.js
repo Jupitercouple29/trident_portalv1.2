@@ -1,8 +1,107 @@
 import React, { Component } from 'react'
-import { Map, TileLayer, Circle, Marker, Tooltip } from 'react-leaflet'
+import { Map, TileLayer, Circle, Tooltip } from 'react-leaflet'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import * as actionCreaters from '../actions'
+import { getMapCoords } from '../functions/getMapCoords'
+import { getMapAlert } from '../functions/getMapAlert'
 
-export default class PortalMap extends Component {
+export class PortalMap extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      coords:[],
+      circleRadius:70000
+    }
+    this.showMapAlerts = this.showMapAlerts.bind(this)
+    this.handleAlertClick = this.handleAlertClick.bind(this)
+    this.handleZoom = this.handleZoom.bind(this)
+  }
+
+  componentWillMount(){
+    if(this.props.history.location.pathname === '/trident' && this.props.trident){
+
+      getMapCoords([this.props.trident])
+      .then(res => {
+        // console.log(res)
+        this.setState({coords: res})
+      })
+    }else if(this.props.tridents){
+      getMapCoords(this.props.tridents)
+      .then(res => {
+        // console.log(res)
+        this.setState({coords: res})
+      })
+    }
+  }
+
+  componentDidMount(){
+    // let leafletMap = this.leafletMap.leafletElement
+    // let tileLayer = this.tileLayer
+    // leafletMap.on('mouseover', () => {
+      // <Marker position={[39.109818, -76.840439]} />
+    // })
+  }
+
+  handleAlertClick(lat,long){
+    let info = {}
+    info.lat = lat
+    info.long = long
+    info.trident = this.props.tridents
+    getMapAlert(info)
+    .then((res)=>{
+      console.log(res)
+      this.props.mapAlerts(res)
+      // this.props.history.push('/alerts')
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  }
+
+  showMapAlerts(){
+    let key = 0
+    let that = this
+    let { circleRadius } = this.state 
+    // console.log(circleRadius)
+    let Circles = this.state.coords.map(c => {
+      let lat = c[0]
+      let long = c[1]
+      let count = c[2]
+      let color = "#F64F34"
+      if(count > 1000){
+        color = "red"
+      }
+      return <Circle
+                key={key++}
+                ref={lat + long}
+                center={[lat, long]}
+                radius={circleRadius}
+                color={color}
+                onClick={that.handleAlertClick.bind(that,lat,long)}>
+                <Tooltip>
+                  <div className="map-tooltip-container">
+                    <div className="map-tooltip-coords">
+                       Lat: {lat} , Lon: {long}
+                    </div>
+                    <div className="map-tooltip-count">
+                      count: {count}
+                    </div>
+                  </div>
+                </Tooltip>
+              </Circle>
+      })
+    return Circles
+  }
+
+  handleZoom(e){
+    let circleRadius = 200000/e.target._zoom
+    if(e.target._zoom >= 6) circleRadius = 100000/Math.pow((e.target._zoom - 2),2)
+    this.setState({circleRadius})
+  }
+
 	render(){
+    let mapAlerts = this.showMapAlerts()
 		return(
 			<section className="portal-map-container">
         <section className="portal-map" id="mapid" ref="map">
@@ -18,9 +117,16 @@ export default class PortalMap extends Component {
               id={'mapbox.streets'}
               accessToken={process.env.REACT_APP_MAPBOX_TOKEN}
             />
+            {mapAlerts}
           </Map>
         </section>
       </section>
 		)
 	}
 }
+
+const mapStateToProps = (state) => ({
+  tridents: state.tridentArray
+})
+
+export default withRouter(connect(mapStateToProps, actionCreaters)(PortalMap))

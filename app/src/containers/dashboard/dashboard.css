@@ -14,16 +14,59 @@
 
 .dashboard-panel-container {
 	display: flex;
+	flex-wrap: wrap;
+}
+
+.dashboard-panel-container.left, .dashboard-panel-container.right {
+	flex:1;
+	min-width: 680px;
 }
 
 .dashboard-panel {
 	flex: 1;
-	padding: 0 15px;
 	box-sizing: border-box;
 }
 
+.loading-page-message, .loading-page-error {
+	display: flex;
+	justify-content: center;
+}
+
+.loading-page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.loading-page-img {
+  -webkit-animation: roll 3s infinite; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: roll 3s infinite; /* Firefox < 16 */
+  -ms-animation: roll 3s infinite; /* Internet Explorer */
+  -o-animation: roll 3s infinite; /* Opera < 12.1 */
+  animation: roll 3s infinite;
+  transform: rotate(30deg);
+  margin: 0 auto;
+}
+
+@-webkit-keyframes roll {
+  0% { transform: rotate(0);}
+  100% { transform: rotate(360deg); }
+}
+@-o-keyframes roll {
+  0% { transform: rotate(0);}
+  100% { transform: rotate(360deg); }
+}
+@-moz-keyframes roll {
+  0% { transform: rotate(0);}
+  100% { transform: rotate(360deg); }
+}
+@keyframes roll {
+  0% { transform: rotate(0);}
+  100% { transform: rotate(360deg); }
+}
 .info-panel {
 	display: flex;
+	margin-right: 15px;
 	align-items: center;
 	justify-content: center;
 	height: 115px;
@@ -31,8 +74,22 @@
 	border-radius: 5px;
 	margin-bottom: 25px;
 	min-width: 275px;
+	-webkit-animation-name: zoomIn; /* Safari 4.0 - 8.0 */
+	-webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
+	animation-duration: 0.5s;
+	animation-name: zoomIn;
+	animation-fill-mode: both;
 }
 
+@keyframes zoomIn {
+	0% { 
+		opacity: 0;
+		transform: scale3d(.3,.3,.3);
+	 }
+	50% {
+		opacity: 1;
+	}
+}
 .info-panel i {
 	padding: 20px 0 10px 10px;
 }
@@ -57,9 +114,8 @@
 .portal-map-container {
   background: grey;
   height: 400px;
-  width: calc(100% - 40px);
+  width: calc(100% - 15px);
   min-width: calc(100% - 30px);
-  margin-left: 15px;
 }
 
 .portal-map {
@@ -70,6 +126,11 @@
   height: 400px;
   width: 100%;
   border-radius: 5px;
+  -webkit-animation-name: zoomIn; /* Safari 4.0 - 8.0 */
+	-webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
+	animation-duration: 0.5s;
+	animation-name: zoomIn;
+	animation-fill-mode: both;
 }
 
 .trident-panel {
@@ -80,29 +141,112 @@
 	background: rgba(0,0,0,.3);
 	height: 200px;
 	border-radius: 5px;
+	-webkit-animation-name: zoomIn; /* Safari 4.0 - 8.0 */
+	-webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
+	animation-duration: 0.5s;
+	animation-name: zoomIn;
+	animation-fill-mode: both;
 }
 
-.dashboard-alert-panel-column {
+.dashboard-panel-column.small {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: flex-start;
 }
 
-.dashboard-alert-panel-column p {
+.dashboard-panel-column.medium {
+	flex: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.dashboard-panel-column.large {
+	flex: 3;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.dashboard-panel-column p {
 	margin: 5px;
 }
 
-.dashboard-alert-panel-column h3 {
+.dashboard-panel-column h3 {
 	text-decoration: underline;
 }
 
-.alert-panel {
+.dashboard-panel-row {
 	display: flex;
-	overflow-x: overlay;
 	padding: 0 15px;
-	margin: 20px 0px;
+}
+
+.dashboard-panel-row-item {
+	flex: 1;
+	padding-right: 15px;
+}
+
+.alert-panel-item-container:hover {
+	background: rgba(3,218,237,.1);
+}
+
+.alert-panel-expanded-item-container {
+	background: rgba(3,218,237,.1);
+}
+
+.alert-panel {
+	margin: 20px 15px 10px 0px;
 	background: rgba(0,0,0,.3);
-	height: 400px;
+	height: 405px;
 	border-radius: 5px;
+	-webkit-animation-name: zoomIn; /* Safari 4.0 - 8.0 */
+	-webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
+	animation-duration: 0.5s;
+	animation-name: zoomIn;
+	animation-fill-mode: both;
+}
+
+.alert-panel-header {
+	padding: 5px 15px 0 15px;
+}
+.alert-panel-label-container,.alert-panel-item-container {
+	display: flex;
+	
+	padding: 0 15px;
+	border-bottom: 1px solid;
+}
+
+.alert-panel-link {
+	display: flex;
+	width: 100%;
+	height: 30px;
+	align-items: center;
+	
+}
+
+.alert-panel-label {
+	flex: 1;
+	font-weight: bolder;
+	font-size: 16px;
+} 
+
+.alert-panel-item {
+	flex: 1;
+}
+
+.alert-panel-alerts-container{
+	overflow-x: overlay;
+	height: calc(100% - 70px);
+}
+
+.leaflet-tooltip {
+  border: 1px solid rgb(105, 103, 103);
+}
+.alert-tooltip-coords {
+  font-size: 1em;
+}
+
+.alert-tooltip-count {
+  font-size: 1em;
 }

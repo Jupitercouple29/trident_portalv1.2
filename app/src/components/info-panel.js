@@ -7,7 +7,7 @@ export default class InfoPanel extends Component {
 		let results = this.props.results
 		return(
 			<div className="dashboard-panel">
-				<div className="info-panel">
+				<div className="info-panel zoomIn">
 					<i className={icon}></i>
 					<div className="info-panel-content">
 						<p className="info-panel-title">{title}</p>

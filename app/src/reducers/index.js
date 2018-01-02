@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { validUser,
          page,
-         info,
+         tridentArray,
          selectedTrident,
          alerts,
          sourceIPs,
@@ -12,18 +12,18 @@ import { validUser,
          httpAlerts,
          tlsAlerts,
          locationAlerts,
-         allAlerts } from './reducers';
+         dashboardProps } from './reducers';
 
 const rootReducer = combineReducers({
   validUser,
   page,
-  info,
+  tridentArray,
   selectedTrident,
   alerts,
   sourceIPs,
   destIPs,
   currentAlerts,
-  allAlerts,
+  dashboardProps,
   httpAlerts,
   dnsAlerts,
   tlsAlerts,

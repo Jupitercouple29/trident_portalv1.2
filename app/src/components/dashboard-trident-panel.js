@@ -2,37 +2,30 @@ import React, { Component } from 'react'
 import Columns from './dashboard-columns'
 
 export default class TridentPanel extends Component {
-	// renderTridents(tridents){
-	// 	let component = this.props.tridents.map((trident)=>{
-	// 		return <p>{trident}</p>
-	// 	})
-	// 	return component
-	// }
-	// renderAlerts(alerts){
-	// 	let component = this.props.alerts.map((alert)=>{
-	// 		return <p>{alert}</p>
-	// 	})
-	// 	return component
-	// }
+	
 	render(){
-		// let tridents = this.renderTridents(this.props.tridents)
-		// let alerts = this.renderAlerts(this.props.alerts)
+		let tridentArray = []
+		let alertsArray = []
+		let keys = this.props.tridents
+		let alertKeys = Object.keys(this.props.alerts)
+		Object.keys(keys).map((key) => {
+      this.props.tridents[key].map((trident) => {
+        tridentArray.push(key + " " + trident)
+        alertKeys.map((alert,i) => {
+        	if(alert == trident){
+						alertsArray.push(this.props.alerts[alert].toLocaleString())
+        	}
+        })
+      })
+    })
+    // console.log(tridentArray)
 		return(
 			<div className="dashboard-panel">
-				<div className="trident-panel">
-					<Columns title={"Tridents"} info={["Trident 2411", "Trident 2422","Trident 2422","Trident 2422","Trident 2422","Trident 2422","Trident 2422","Trident 2422","Trident 2422","Trident 2422","Trident 2422","Trident 2422"]}/>
-					<Columns title={"Alerts"} info={["2,444", "444","444","444","444","444","444","444","444","444","444","444"]}/>
+				<div className="trident-panel zoomIn">
+					<Columns title={"Tridents"} info={tridentArray}/>
+					<Columns title={"Alerts"} info={alertsArray}/>
 				</div>
 			</div>
 		)
 	}
 }
-
-// <div className="dashboard-alert-panel-column">
-// 						<h3>Tridents</h3>
-// 						{tridents}
-// 					</div>
-// 					<div className="dashboard-alert-panel-column">
-// 						<h3>Alerts</h3>
-// 						{alerts}
-// 					</div>

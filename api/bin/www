@@ -9,7 +9,10 @@ require('dotenv').config();
 var app = require('../index'),
     debug = require('debug')('express-app:server'),
     https = require('https'),
+    http = require('http'),
     fs = require('fs'),
+    es = require('elasticsearch'),
+    logger = require('../lib/log/bunyun'),
     winston = require('winston');
     // config = require('../config');
 
@@ -33,6 +36,13 @@ global.log = new winston.Logger({
   transports: transports,
 });
 
+
+global.client = new es.Client({
+  host: process.env.ELASTIC_URL,
+  // httpAuth: 'elastic:changeme',
+  log: logger,
+  requestTimeout: '60000'
+})
 /**
  * Get port from environment and store in Express.
  */

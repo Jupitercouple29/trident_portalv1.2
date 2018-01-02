@@ -14,7 +14,7 @@ import AuthRoute from './functions/authRoute';
 export class App extends Component {
   render(){
     return(
-        <Router >
+        <Router>
           <div className="router-div">
             <Switch>
               <Route exact path="/" render={() => (

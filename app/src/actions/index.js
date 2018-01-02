@@ -1,11 +1,11 @@
-export const TRIDENT_INFO = 'TRIDENT_INFO'
+export const TRIDENT_ARRAY = 'TRIDENT_INFO'
 export const PAGE_LOCATION = 'PAGE_LOCATION'
 export const VALID_USER = 'VALID_USER'
 export const SELECTED_TRIDENT = 'SELECTED_TRIDENT'
 export const TRIDENT_ALERTS = 'TRIDENT_ALERTS'
 export const SOURCE_IPS = 'SOURCE_IPS'
 export const DEST_IPS = 'DEST_IPS'
-export const ALL_ALERTS = 'ALL_ALERTS'
+export const DASHBOARD_INFO = 'DASHBOARD_INFO'
 export const CURRENT_ALERTS = 'CURRENT_ALERTS'
 export const DNS_ALERTS = 'DNS_ALERTS'
 export const HTTP_ALERTS = 'HTTP_ALERTS'
@@ -13,8 +13,8 @@ export const SIGNATURE_ALERTS = 'SIGNATURE_ALERTS'
 export const TLS_ALERTS = "TLS_ALERTS"
 export const MAP_ALERTS = "MAP_ALERTS"
 
-export const tridentInfo = (tridents) => ({
-  type: TRIDENT_INFO,
+export const tridentArray = (tridents) => ({
+  type: TRIDENT_ARRAY,
   tridents
 })
 
@@ -53,8 +53,8 @@ export const tridentCurrentAlerts = (all) => ({
   all
 })
 
-export const tridentAllAlerts = (all) => ({
-  type: ALL_ALERTS,
+export const dashboardInfo = (all) => ({
+  type: DASHBOARD_INFO,
   all
 })
 

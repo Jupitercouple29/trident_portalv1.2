@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
 import axios from 'axios';
-import config from 'config';
 import jwt from 'jsonwebtoken'
 
 export const getMapCoords = (info) => {
   let token = localStorage.getItem('jwt')
-  let decoded = jwt.verify(token, config.jwt.secret)
+  let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
   let tridents = info || decoded.user.tridents
-  return axios.get(config.api.URL + '/tridents/mapAlerts',{
+  return axios.get(process.env.REACT_APP_API_URL + '/map/alerts',{
     headers: {
 			Authorization: `Bearer ${token}`,
 		},
@@ -16,9 +14,11 @@ export const getMapCoords = (info) => {
     }
   })
   .then((response) => {
+
     return response.data
   })
   .catch((error)=>{
+    console.log('there has been an error in getMapCoords')
     return error.response
   })
 }

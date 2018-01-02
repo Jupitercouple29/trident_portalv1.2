@@ -2,6 +2,7 @@ var jwt = require('jsonwebtoken');
 var firebase = require('firebase');
 var bcrypt = require('bcryptjs');
 var requestLog = require('../lib/common').requestLog
+var validateEmail = require('../lib/common').validateEmail
 var express = require('express');
 var router = express.Router();
 
@@ -34,6 +35,8 @@ router.post('/', function(req, res, next){
         {company:result.company},
         {creds:result.creds}
       )
+      console.log(pswd)
+      console.log(result.password)
       bcrypt.compare(pswd, result.password, function(err, response){
         if(err){
           let _error = 'Login failed: Email/Password is incorrect';
@@ -42,7 +45,7 @@ router.post('/', function(req, res, next){
         } else if(response){
           var jwtToken = jwt.sign(
             {user:validUser, date:new Date()},
-            config.jwt.secret
+            process.env.JWT_SECRET
           );
           var user = Object.assign(
             {},
@@ -106,9 +109,18 @@ router.post('/new_user', function(req, res, next){
   let email = req.body.email
   let creds = req.body.creds
   let pswd = req.body.pswd
-  // tridents have to be in a value key pair. The key should be the company name 
-  // attached to the trident and the value should be an array of tridents.
+  // tridents have to be in a key value pair. The key should be the company name 
+  // attached to the trident and the value should be an array of tridents. 
+  // ex.  tridents = {
+  //         "Perc": [ "Trident2411", "Trident2412"]
+  //      }
   let tridents = req.body.tridents
+  if(!name) res.status(401).send('Please enter your name')
+  if(!pswd) res.status(401).send('Please enter a password')
+  if(!validateEmail(email)) res.status(401).send('Please enter a valid email')
+  Object.keys(tridents).map(key => { 
+    if(!Array.isArray(tridents[key])) res.status(401).send('Please enter an valid tridents')
+  })
   bcrypt.genSalt(10, function(err, salt){
     if(err) log.error(req, 'Invalid in bcrypt.genSalt')
     bcrypt.hash(pswd, salt, function(err, hash){

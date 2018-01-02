@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
-
-import { Map, TileLayer } from 'react-leaflet'
-// import Header from './header'
-// import TridentMap from './trident-map'
 import NavBar from '../../components/nav-bar'
 import SidePanel from '../../components/side-panel'
 import Dashboard from '../dashboard/dashboard'
@@ -13,14 +9,10 @@ import SupportPage from '../support/support-page'
 import ProfilePage from '../profile/profile-page'
 import AlertsPage from '../alerts/alerts-page'
 import ChartsPage from '../charts/charts-page'
-// import PortalBody from './portal-body'
-// import TridentBody from './trident-body'
-// import AdminBody from './admin-body'
-// import AlertBody from './alert-body'
-// import Footer from '../components/footer'
-// import LoadingPage from '../components/loadingPage'
+import LoadingPage from '../../components/loading-page'
+import { getTridentAlerts } from '../../functions/getTridentAlerts'
+import { getTridents } from '../../functions/getTridents'
 import * as actionCreators from '../../actions'
-// import * as getInfo from '../components/getInfo'
 
 import './portal.css'
 /**
@@ -43,37 +35,45 @@ export class Portal extends Component {
   }
 
   componentWillMount(){
-    this.props.pageLocation(<Dashboard />)
-    // let validUser = this.props.validUser
-    // let tridents = this.props.user.tridents
-    // getInfo.getTridentAlerts(tridents)
-    // .then((res)=>{
-    //   this.props.tridentAlerts(res.alerts)
-    //   this.props.tridentSourceIPs(res.ips)
-    //   this.props.tridentCurrentAlerts(res.currentAlerts)
-    //   this.props.tridentDestIPs(res.dest_ips)
-    //   this.setState({isLoading:false})
-    // })
-    // .catch((err)=>{
-    //   console.log('there has been an error')
-    //   console.log(err)
-    //   this.setState({loadingMessage:
-    //     <div>There has been a connection error.
-    //       <br/>
-    //       Please try back again .
-    //     </div>
-    //   })
-    // })
+    // this.props.pageLocation(<Dashboard />)
+    let tridents = this.props.tridents
+    getTridentAlerts(tridents)
+    .then((res)=>{
+      this.props.tridentAlerts(res.alerts)
+      this.props.tridentSourceIPs(res.ips)
+      this.props.tridentSignatureAlerts(res.signatureAlerts)
+      this.props.tridentDestIPs(res.dest_ips)
+      this.setState({isLoading:false})
+    })
+    .catch((err)=>{
+      this.setState({loadingMessage:
+        <h1 className="loading-error">There has been a connection error.<br/><br/>
+         Please try back again .
+        </h1>
+      })
+    })
+    getTridents(tridents)
+    .then(result=>{
+      this.props.dashboardInfo(result)
+      this.setState({isLoading:false})
+    })
+    .catch((err)=>{
+      this.setState({loadingMessage:
+        <h1 className="loading-error">There has been a connection error.<br/><br/>
+         Please try back again .
+        </h1>
+      })
+    })
   }
   
   componentDidMount(){
-    let sidePanel = document.getElementsByClassName('side-panel-container')[0]
-    // console.log(ReactDOM.findDOMNode(sidePanel))
-    ReactDOM.findDOMNode(sidePanel).addEventListener('resize', this.timer)
+    // let sidePanel = document.getElementsByClassName('side-panel-container')[0]
+    // // console.log(ReactDOM.findDOMNode(sidePanel))
+    // ReactDOM.findDOMNode(sidePanel).addEventListener('resize', this.timer)
   }
   
   sidePanelResize(){
-     console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
+     // console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
     // console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
   }
   
@@ -83,7 +83,7 @@ export class Portal extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if(nextProps.location.pathname != this.state.page){
+    if(nextProps.location.pathname !== this.state.page){
       let pageLocation = ''
       let page = this.props.history.location.pathname;
       switch(page){
@@ -119,15 +119,14 @@ export class Portal extends Component {
   render(){
     let displaySidePanel = this.state.displaySidePanel
     let { user, page } = this.props
-    // const { isLoading, loadingMessage } = this.state
-    // const display = user && !isLoading ? page : <LoadingPage message={loadingMessage}/>
-    // let display = page 
+    const { isLoading, loadingMessage } = this.state
+    const display = user && !isLoading ? page : <LoadingPage message={loadingMessage}/>
     return(
       <section className="portal">
-       <NavBar sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel}/>
+       <NavBar sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} user={user}/>
        <SidePanel sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} />
        <div className="portal-display">
-          {page}
+          {display}
        </div>
       </section>
     )
@@ -136,9 +135,8 @@ export class Portal extends Component {
 
 const mapStateToProps = (state) => ({
   page: state.page,
-  info: state.info,
   user: state.validUser,
-  ips: state.sourceIPs
+  tridents: state.tridentArray
 })
 
 export default connect(mapStateToProps, actionCreators)(Portal)

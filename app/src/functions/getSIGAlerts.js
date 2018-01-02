@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
 import axios from 'axios';
-import config from 'config';
 import jwt from 'jsonwebtoken'
 
-export const getSignatureAlerts = (info) => {
+export const getSIGAlerts = (info) => {
   let token = localStorage.getItem('jwt')
-  let decoded = jwt.verify(token, config.jwt.secret)
+  let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
   let tridents = info || decoded.user.tridents
-  return axios.get(config.api.URL + '/trident/alerts/signatures',{
+  return axios.get(process.env.REACT_APP_API_URL + '/trident/alerts/signatures',{
     headers: {
 			Authorization: `Bearer ${token}`,
 		},

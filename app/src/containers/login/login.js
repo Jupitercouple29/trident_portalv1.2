@@ -1,17 +1,15 @@
-import React, { Component } from 'react';
-// import { auth } from '../components/auth';
-// import { getTridents } from '../components/getInfo'
+import React, { Component } from 'react'
+import { auth } from '../../functions/auth'
 import './login.css';
+
 /**
  * Login Component that handles the login page and all of its actions.
  * Props are passed to it using Redux.
  * @type {Object}
  */
-
 export default class Login extends Component {
   constructor(props){
     super(props)
-
     this.state = {
       email: '',
       pswd: '',
@@ -21,40 +19,32 @@ export default class Login extends Component {
   }
   
   componentWillMount(){
-    // if(localStorage.getItem('loggedOut')){
-    //   console.log(window.location)
-    //   localStorage.removeItem('loggedOut')
-    //   window.location.reload()
-    // }
+    if(localStorage.getItem('loggedOut')){
+      console.log(window.location)
+      localStorage.removeItem('loggedOut')
+      window.location.reload()
+    }
   }
-
   onInputChange(type, event){
     let stateVal = { }
     stateVal[type] = event.target.value
     this.setState(stateVal)
   }
-
   onFormSubmit(event){
     event.preventDefault()
     let email = this.state.email.toLowerCase()
     let pswd = this.state.pswd
     let login = this
-    // auth(email, pswd).then((res)=>{
-    //   let _error = res.data
-    //   if(res.isValid){
-    //     let tridents = res.data.tridents
-    //     getTridents(tridents)
-    //     .then(result=>{
-    //       login.props.tridentAllAlerts(result.responses)
-    //     })
-    //     login.setState({_error: ''})
-    //     login.props.history.push('/portal')
-    //   }else{
-    //     login.setState({_error})
-    //   }
-    // });
+    auth(email, pswd).then((res)=>{
+      let _error = res.data
+      if(res.isValid){
+        login.setState({_error: ''})
+        login.props.history.push('/dashboard')
+      }else{
+        login.setState({_error})
+      }
+    });
   }
-
   render(){
     const { _error, isLoading } = this.state
     return(
@@ -89,7 +79,7 @@ export default class Login extends Component {
                 Login
               </button>
               <div className="login-error-container">
-                <p className="login-error">{_error != '' ? _error : ''}</p>
+                <p className="login-error">{_error !== '' ? _error : ''}</p>
               </div>
             </form>
           </div>
@@ -98,4 +88,3 @@ export default class Login extends Component {
     );
   }
 }
-

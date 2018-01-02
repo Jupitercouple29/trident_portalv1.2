@@ -2,19 +2,52 @@ import React, { Component } from 'react'
 import TridentPanel from '../../components/dashboard-trident-panel'
 import InfoPanel from '../../components/info-panel'
 import PortalMap from '../../components/map'
-import AlertPanel from '../../components/dashboard-alert-panel'
+import AlertPanel from '../../components/alert-panel'
+import LoadingPage from '../../components/loading-page'
+import { getTridents } from '../../functions/getTridents'
+import { getNumOfAlerts } from '../../functions/getNumOfAlerts'
+import { formatDate } from '../../functions/formatDate'
+import * as actionCreators from '../../actions'
+import { connect } from 'react-redux'
 import './dashboard.css'
 
-export default class Dashboard extends Component {
+export class Dashboard extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
-
+			numAlerts: {},
+			isLoading: true,
+      loadingMessage: <h1 className="loading-message">Gathering your information...</h1>,
 		}
+	}
+	componentWillMount(){
+		let tridents = this.props.tridents
+		// getTridents(tridents)
+		// .then(result=>{
+		// 	// console.log(result)
+		// 	this.props.dashboardInfo(result)
+		// 	this.setState({isLoading:false})
+		// })
+		// .catch((err)=>{
+  //     this.setState({loadingMessage:
+  //       <h1 className="loading-error">There has been a connection error.<br/><br/>
+  //        Please try back again .
+  //       </h1>
+  //     })
+  //   })
+		getNumOfAlerts(tridents)
+		.then(result => {
+			this.setState({numAlerts:result})
+		})
 	}
 
 	render(){
-
+		// console.log(this.props.dashboardInfo)
+		let eventsLastHour = this.props.dashboard.alertsLastHour ? this.props.dashboard.alertsLastHour.toLocaleString() : 0
+		let lastEventTime = this.props.dashboard.lastEventTime ? formatDate(this.props.dashboard.lastEventTime) : formatDate(new Date())
+		let numTridents = this.props.tridents.length ? this.props.tridents.length : 0
+		// if(this.state.isLoading) return <LoadingPage message={this.state.loadingMessage}/>
+		// else{
 		return (
 			<div className="dashboard-container">
 				<div className="dashboard-header">
@@ -22,24 +55,34 @@ export default class Dashboard extends Component {
 					<h3 className="dashboard-path">Home / Dashboard</h3>
 				</div>
 				<div className="dashboard-panel-container">
-					<InfoPanel icon={"fa fa-clock-o fa-4x"} title={"Events Last Hour"} results={"57,830"} />
-					<InfoPanel icon={"fa fa-calendar fa-4x"} title={"Last Event Time"} results={"December 18, 2017"} />
-					<InfoPanel icon={"fa fa-heartbeat fa-4x"} title={"# of Ips Monitored"} results={"55"} />
-					<InfoPanel icon={"fa fa-rss fa-4x"} title={"# of Tridents Online"} results={"5"} />
+					<div className="dashboard-panel-container left">
+						<InfoPanel icon={"fa fa-clock-o fa-4x"} title={"Events Last Hour"} results={eventsLastHour} />
+						<InfoPanel icon={"fa fa-calendar fa-4x"} title={"Last Event Time"} results={lastEventTime} />
+					</div>
+					<div className="dashboard-panel-container right">
+						<InfoPanel icon={"fa fa-heartbeat fa-4x"} title={"# of Ips Monitored"} results={"55"} />
+						<InfoPanel icon={"fa fa-rss fa-4x"} title={"# of Tridents Online"} results={numTridents} />
+					</div>
 				</div>	
 				<PortalMap />
 				<div className="dashboard-panel-container">
-					<TridentPanel/>
-					<TridentPanel/>
+					<TridentPanel alerts={this.state.numAlerts} tridents={this.props.user.tridents}/>
+					<TridentPanel alerts={this.state.numAlerts} tridents={this.props.user.tridents}/>
 				</div>
 				<div className="dashboard-panel-container">
 					<div className="dashboard-panel">
-						<div className="alert-panel">
-							
-						</div>
+					 <AlertPanel alerts={this.props.dashboard.alerts} title={"Current Alerts"} />
 					</div>
 				</div>
 			</div>
 		)
 	}
 }
+
+const mapStateToProps = (state) => ({
+	dashboard: state.dashboardProps,
+	user: state.validUser,
+	tridents: state.tridentArray
+})
+
+export default connect(mapStateToProps, actionCreators)(Dashboard)
