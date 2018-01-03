@@ -17,8 +17,8 @@ const yyyy = today.getFullYear() + '.'
 const index = "logstash-" + yyyy + mm + dd
 
 router.get('/alerts',
-// validateMiddleware,
-// jwtRest({secret: process.env.JWT_SECRET}),
+validateMiddleware,
+jwtRest({secret: process.env.JWT_SECRET}),
 function(req, res, next) {
   let queryArray = []
   if (req.query.trident && Array.isArray(req.query.trident)) {
@@ -51,8 +51,8 @@ function(req, res, next) {
 })
 
 router.get('/alerts/alert',
-  // validateMiddleware,
-  // jwtRest({secret: process.env.JWT_SECRET}),
+  validateMiddleware,
+  jwtRest({secret: process.env.JWT_SECRET}),
   function(req, res, next) {
     let lat = req.query.lat
     let long = req.query.long

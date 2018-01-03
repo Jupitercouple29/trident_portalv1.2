@@ -211,11 +211,17 @@
 .alert-panel-header {
 	padding: 5px 15px 0 15px;
 }
-.alert-panel-label-container,.alert-panel-item-container {
+.alert-panel-label-container{
 	display: flex;
-	
+	padding: 0 35px 0 15px;
+	border-bottom: 1px solid;
+}
+
+.alert-panel-item-container {
+	display: flex;
 	padding: 0 15px;
 	border-bottom: 1px solid;
+	cursor: pointer;
 }
 
 .alert-panel-link {

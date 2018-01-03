@@ -142,8 +142,8 @@ router.get('/alerts',
 })
 
 router.get('/alerts/:type',
-  // validateMiddleware,
-  // jwtRest({secret: process.env.JWT_SECRET}),
+  validateMiddleware,
+  jwtRest({secret: process.env.JWT_SECRET}),
   function(req, res, next) {
     let queryArray = []
     if (req.query.trident && Array.isArray(req.query.trident)) {
@@ -178,8 +178,8 @@ router.get('/alerts/:type',
 })
 
 router.get('/count', 
-	// validateMiddleware,
-	// jwtRest.({secret: process.env.JWT_SECRET}),
+	validateMiddleware,
+	jwtRest({secret: process.env.JWT_SECRET}),
 	function(req, res, next ){
 		let queryArray = []
 		if (req.query.trident && Array.isArray(req.query.trident)) {
