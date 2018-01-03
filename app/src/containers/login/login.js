@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { auth } from '../../functions/auth'
+import * as actionCreators from '../../actions'
+import { connect } from 'react-redux'
 import './login.css';
 
 /**
@@ -7,7 +9,7 @@ import './login.css';
  * Props are passed to it using Redux.
  * @type {Object}
  */
-export default class Login extends Component {
+export class Login extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -19,6 +21,8 @@ export default class Login extends Component {
   }
   
   componentWillMount(){
+    localStorage.removeItem('jwt')
+    this.props.login(null)
     if(localStorage.getItem('loggedOut')){
       console.log(window.location)
       localStorage.removeItem('loggedOut')
@@ -38,7 +42,7 @@ export default class Login extends Component {
     auth(email, pswd).then((res)=>{
       let _error = res.data
       if(res.isValid){
-        login.setState({_error: ''})
+        // login.setState({_error: ''})
         login.props.history.push('/dashboard')
       }else{
         login.setState({_error})
@@ -88,3 +92,5 @@ export default class Login extends Component {
     );
   }
 }
+
+export default connect(null, actionCreators)(Login)

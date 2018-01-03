@@ -35,7 +35,14 @@ export class PortalMap extends Component {
     }
   }
 
-  componentDidMount(){
+  componentWillReceiveProps(nextProps){
+    if(this.props.trident !== nextProps.trident){
+      getMapCoords([nextProps.trident])
+      .then(res => {
+        // console.log(res)
+        this.setState({coords: res})
+      })
+    }
     // let leafletMap = this.leafletMap.leafletElement
     // let tileLayer = this.tileLayer
     // leafletMap.on('mouseover', () => {
@@ -95,8 +102,12 @@ export class PortalMap extends Component {
   }
 
   handleZoom(e){
-    let circleRadius = 200000/e.target._zoom
-    if(e.target._zoom >= 6) circleRadius = 100000/Math.pow((e.target._zoom - 2),2)
+    let zoom = e.target._zoom
+    let circleRadius = 200000/zoom
+    console.log(zoom)
+    if(zoom >= 6 && zoom <= 13) circleRadius = 100000/Math.pow((zoom - 2),2)
+    else if(zoom > 13 && zoom < 17) circleRadius = 10000/Math.pow((zoom - 2),2)
+    else if(zoom > 17) circleRadius = 5000/Math.pow((zoom - 2),2)
     this.setState({circleRadius})
   }
 

@@ -4,28 +4,55 @@ import PortalMap from '../../components/map'
 import TridentPanel from '../../components/trident-panel'
 import AlertType from '../../components/alert-type-panel'
 import { connect } from 'react-redux'
-// import { getTridentAlerts } from '../../functions/getTridentAlerts'
+import { getTridentAlerts } from '../../functions/getTridentAlerts'
 import { getAlerts } from '../../functions/getAlerts'
 
 import './trident-page.css'
 
 export class TridentPage extends Component {
+	constructor(props){
+		super(props)
+		this.state = {
+			trident: null
+		}
+	}
 	componentWillMount(){
-		// let trident = localStorage.getItem('selectedTrident')
-  //   getTridentAlerts([trident])
-  //   .then((res)=>{
-  //     this.props.tridentAlerts(res.alerts)
-  //     this.props.tridentSourceIPs(res.ips)
-  //     this.props.tridentSignatureAlerts(res.signatureAlerts)
-  //     this.props.tridentDestIPs(res.dest_ips)
-  //   })
-  //   .catch((err)=>{
-  //     console.log('there has been an error')
-  //     console.log(err)
-  //   })
+		let trident = localStorage.getItem('selectedTrident')
+		this.setState({trident})
+    getTridentAlerts([trident])
+    .then((res)=>{
+      this.props.tridentAlerts(res.alerts)
+      this.props.tridentSourceIPs(res.ips)
+      this.props.tridentSignatureAlerts(res.signatureAlerts)
+      this.props.tridentDestIPs(res.dest_ips)
+    })
+    .catch((err)=>{
+      console.log('there has been an error')
+      console.log(err)
+    })
+	}
+	componentWillReceiveProps(nextProps){
+		if(nextProps.selectedTrident !== null && nextProps.selectedTrident !== this.state.trident){
+			// console.log('receiving new props')
+			// console.log(nextProps.selectedTrident)
+			// console.log(this.state.trident)
+			let trident = nextProps.selectedTrident
+			this.setState({trident})
+	    getTridentAlerts([trident])
+	    .then((res)=>{
+	      this.props.tridentAlerts(res.alerts)
+	      this.props.tridentSourceIPs(res.ips)
+	      this.props.tridentSignatureAlerts(res.signatureAlerts)
+	      this.props.tridentDestIPs(res.dest_ips)
+	    })
+	    .catch((err)=>{
+	      console.log('there has been an error')
+	      console.log(err)
+	    })
+		}
 	}
 	render(){
-		let trident = localStorage.getItem('selectedTrident') 
+		let trident = this.state.trident 
 		let sourceIPs = this.props.sourceIPs
 		let destIPs = this.props.destIPs
 		let alerts = this.props.signature
@@ -51,7 +78,8 @@ export class TridentPage extends Component {
 const mapStateToProps = (state) => ({
 	sourceIPs: state.sourceIPs,
 	destIPs: state.destIPs,
-	signature : state.signatureAlerts
+	signature : state.signatureAlerts,
+	selectedTrident: state.selectedTrident
 })
 
 export default connect(mapStateToProps, actionCreators)(TridentPage)

@@ -14,6 +14,16 @@ export default class AlertType extends Component {
 			this.setState({alertList:res.alerts})
 		})
 	}
+	componentWillReceiveProps(nextProps){
+		// console.log(this.props.trident)
+		// console.log(nextProps.trident)
+		if(this.props.trident !== nextProps.trident){
+			this.props.alertFunc(nextProps.trident,this.props.type)
+			.then(res=>{
+				this.setState({alertList:res.alerts})
+			})
+		}
+	}
 	render(){
 		let alert = this.state.alertList
 		return(

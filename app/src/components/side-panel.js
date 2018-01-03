@@ -23,14 +23,14 @@ export class SidePanel extends Component {
 		// this.setState({route})
 	}
 	componentWillReceiveProps(nextProps){
-		console.log(this.props.history.location.pathname)
+		// console.log(this.props.history.location.pathname)
 		let name = this.props.history.location.pathname
 		let route = name.slice(1,name.length)
 		this.setState({route})
 	}
 	handlePanelClick(){
 		this.props.sidePanelClick(true)
-		console.log('clicked')
+		// console.log('clicked')
 		// console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
 	}
 	handleOnClick(){

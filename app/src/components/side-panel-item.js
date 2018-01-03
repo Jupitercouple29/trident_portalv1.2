@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
+import * as actionCreators from '../actions'
+import { connect } from 'react-redux'
 
 export class SidePanelItem extends Component {
 	constructor(props){
@@ -24,27 +26,27 @@ export class SidePanelItem extends Component {
 			this.setState({isHidden:true, expanded:false})
 		}
 		if(this.props.open && !this.props.items){
-			console.log(lcRoute)
+			// console.log(lcRoute)
 			this.setState({clicked:0})
 			this.props.history.push(`/${lcRoute}`)
 		}
 	}
 	handleExpandedItemsClick(route, trident){
 		let tridentNum = trident.slice(trident.length - 4, trident.length)
-		console.log(tridentNum)
+		// console.log(tridentNum)
 		localStorage.setItem('selectedTrident',tridentNum)
 		let lcRoute = route.toLowerCase()
-		
-		if(this.state.clicked === 0 || this.state.clicked === tridentNum){
-			console.log('clicked = 0')
+		this.props.tridentSelected(tridentNum)
+		// if(this.state.clicked === 0 || this.state.clicked === tridentNum){
+			// console.log('clicked = 0')
 			// console.log(this.state.clicked++)
 			this.props.history.push(`/${lcRoute}`)
-			this.setState({clicked:tridentNum})
-		}else{
-			console.log('clicked is greater than 0')
-			this.props.history.push(`/${lcRoute}`)
-			window.location.reload()
-		}	
+			// this.setState({clicked:tridentNum})
+		// }else{
+		// 	console.log('clicked is greater than 0')
+		// 	this.props.history.push(`/${lcRoute}`)
+		// 	window.location.reload()
+		// }	
 	}
 	displayItems(items, title, display){
 		let itemsToDisplay = items.map((item) => {
@@ -90,4 +92,4 @@ export class SidePanelItem extends Component {
 	}
 }
 
-export default withRouter(SidePanelItem)
+export default withRouter(connect(null, actionCreators)(SidePanelItem))
