@@ -92,36 +92,18 @@ export const signatureAlerts = (state = [], action) => {
   }
 }
 
-export const dnsAlerts = (state = [], action) => {
-  switch(action.type){
-    case actions.DNS_ALERTS:
-      return action.all
-    default:
-      return state
-  }
-}
-
-export const httpAlerts = (state = [], action) => {
-  switch(action.type){
-    case actions.HTTP_ALERTS:
-      return action.all
-    default:
-      return state
-  }
-}
-
-export const tlsAlerts = (state = [], action) => {
-  switch(action.type){
-    case actions.TLS_ALERTS:
-      return action.all
-    default:
-      return state
-  }
-}
-
 export const locationAlerts = (state = [], action) => {
   switch(action.type){
     case actions.MAP_ALERTS:
+      return action.all
+    default:
+      return state
+  }
+}
+
+export const info = (state = [], action) => {
+  switch(action.type){
+    case actions.INFO_ALERTS:
       return action.all
     default:
       return state

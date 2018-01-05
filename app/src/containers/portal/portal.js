@@ -9,8 +9,8 @@ import SupportPage from '../support/support-page'
 import ProfilePage from '../profile/profile-page'
 import AlertsPage from '../alerts/alerts-page'
 import ChartsPage from '../charts/charts-page'
+import InfoPage from '../info/info-page'
 import LoadingPage from '../../components/loading-page'
-import { getTridentAlerts } from '../../functions/getTridentAlerts'
 import { getTridents } from '../../functions/getTridents'
 import * as actionCreators from '../../actions'
 
@@ -37,21 +37,6 @@ export class Portal extends Component {
   componentWillMount(){
     // this.props.pageLocation(<Dashboard />)
     let tridents = this.props.tridents
-    // getTridentAlerts(tridents)
-    // .then((res)=>{
-    //   this.props.tridentAlerts(res.alerts)
-    //   this.props.tridentSourceIPs(res.ips)
-    //   this.props.tridentSignatureAlerts(res.signatureAlerts)
-    //   this.props.tridentDestIPs(res.dest_ips)
-    //   this.setState({isLoading:false})
-    // })
-    // .catch((err)=>{
-    //   this.setState({loadingMessage:
-    //     <h1 className="loading-error">There has been a connection error.<br/><br/>
-    //      Please try back again .
-    //     </h1>
-    //   })
-    // })
     getTridents(tridents)
     .then(result=>{
       this.props.dashboardInfo(result)
@@ -104,6 +89,9 @@ export class Portal extends Component {
           break
         case '/charts':
           pageLocation = <ChartsPage />
+          break
+        case '/info':
+          pageLocation = <InfoPage />
           break
         default:
           pageLocation = <Dashboard />

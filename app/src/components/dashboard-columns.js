@@ -1,9 +1,17 @@
 import React, { Component } from 'react'
 
 export default class Columns extends Component {
+	constructor(props){
+		super(props)
+		this.renderInfo = this.renderInfo.bind(this)
+	}
 	renderInfo(info){
 		let component = info.map((i, index) => {
-			return <p key={index}>{i}</p>
+			return <p 
+							onClick={this.props.clicked ? this.props.clicked.bind(this,this.props.name,i) : null} 
+							key={index}>
+								{i}
+							</p>
 		})
 		return component
 	}

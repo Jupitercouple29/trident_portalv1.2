@@ -1,8 +1,30 @@
 import React, { Component } from 'react'
 import Columns from './dashboard-columns'
+import { getItemClicked } from '../functions/getItemClicked'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import * as actionCreators from '../actions'
 
-export default class TridentPanel extends Component {
-
+export class TridentPanel extends Component {
+	constructor(props){
+		super(props)
+		this.handleOnclick = this.handleOnclick.bind(this)
+		this.handleAlertClick = this.handleAlertClick.bind(this)
+	}
+	handleOnclick(title, info){
+		console.log(title)
+		console.log(info)
+		let trident = localStorage.getItem('selectedTrident')
+		getItemClicked(trident, title, info)
+		.then(res => {
+			console.log(res)
+			this.props.infoAlerts(res)
+			this.props.history.push('/info')
+		})
+	}
+	handleAlertClick(info){
+		console.log(info)
+	}
 	distributeArrays(array){
 		let keys = []
 		let total = []
@@ -17,7 +39,11 @@ export default class TridentPanel extends Component {
 	distributeSignatures(array){
 		let alerts = array.map((a,i) => {
 								return <div key={a.key + i} className="trident-panel-alert">
-												<p className="trident-panel-alert-name medium">{a.key}</p>
+												<p 
+													className="trident-panel-alert-name medium"
+													onClick={this.handleAlertClick.bind(this,a.key)}>
+													{a.key}
+												</p>
 												<p className="trident-panel-alert-total small">{a.doc_count}</p>
 											</div>
 							})
@@ -31,8 +57,15 @@ export default class TridentPanel extends Component {
 		return(
 			<div className="trident-panel-container">
 				<div className="trident-panel small">
-					<Columns title={"Source IPs"} info={sourceIPArray[0]}/>
-					<Columns title={"Total # of Alerts"} info={sourceIPArray[1]}/>
+					<Columns 
+						title={"Source IPs"} 
+						info={sourceIPArray[0]} 
+						name={"source_ip"}
+						clicked={this.handleOnclick}/>
+					<Columns 
+						title={"Total # of Alerts"} 
+						info={sourceIPArray[1]} 
+						name={"source-ips-count"}/>
 				</div>
 				<div className="trident-panel medium">
 					<div className="trident-panel-alerts-container">
@@ -46,10 +79,19 @@ export default class TridentPanel extends Component {
 					</div>
 				</div>
 				<div className="trident-panel small">
-					<Columns title={"Destination IPs"} info={destIPArray[0]} />
-					<Columns title={"Total # of Alerts"} info={destIPArray[1]} />
+					<Columns 
+						title={"Destination IPs"} 
+						info={destIPArray[0]} 
+						name={"destination_ip"}
+						clicked={this.handleOnclick}/>
+					<Columns 
+						title={"Total # of Alerts"} 
+						info={destIPArray[1]} 
+						name={"dest-ips-count"}/>
 				</div>
 			</div>
 		)
 	}
 }
+
+export default withRouter(connect(null, actionCreators)(TridentPanel))

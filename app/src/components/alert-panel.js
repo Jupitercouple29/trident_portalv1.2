@@ -18,11 +18,11 @@ export default class AlertPanel extends Component {
 	showAlerts(){
 		if(this.props.alerts){
 			let listAlerts = this.props.alerts.map((a, i)=>{
-			let source = a._source
-			return <AlertPanelItem alert={source} key={i} alertKey={i}/>
-		})
+			 let source = a._source
+			 return <AlertPanelItem alert={source} key={i} alertKey={i}/>
+		  })
 		return listAlerts
-		}else if(this.props.alertFunc){
+		// }else if(this.props.alertFunc){
       // return configureAlertType(this.props.alertFunc, this.props.trident)
       // .then(res=>console.log(alert))
     }

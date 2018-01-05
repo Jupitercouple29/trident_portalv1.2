@@ -15,7 +15,6 @@ export class AlertsPage extends Component {
 	}
 	componentWillReceiveProps(nextProps){
 		if(this.props.alerts !== nextProps.alerts){
-			console.log('you should update here')
 			let location = nextProps.alerts[0]._source.geoip.location
     	let lat = location ? location.lat : null
     	let lon = location ? location.lon : null

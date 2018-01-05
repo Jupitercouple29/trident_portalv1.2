@@ -158,25 +158,21 @@ exports.searchMultiTridentAlerts = (trident) => {
           "order": {
             "_count": "desc"
           }
-        },
-        "aggs": {
-          "source_ips": {
-            "terms": {
-              "field": "source_ip.keyword",
-              "size": 10000,
-              "order": {
-                "_count": "desc"
-              }
-            },
-            "aggs": {
-              "dest_ips": {
-                "terms": {
-                  "field": "destination_ip.keyword",
-                  "size": 10000
-                }
-              }
-            }
+        }
+      },
+      "source_ips": {
+        "terms": {
+          "field": "source_ip.keyword",
+          "size": 10000,
+          "order": {
+            "_count": "desc"
           }
+        }
+      },
+      "dest_ips": {
+        "terms": {
+          "field": "destination_ip.keyword",
+          "size": 10000
         }
       }
     },
@@ -224,5 +220,35 @@ exports.mSearchNumOfAlerts = (trident) => {
     },
     "size": 10
   }
+  return queryString
+}
+
+exports.searchItemClicked = (trident, title, info) => {
+  let itemMatch = {}
+  itemMatch[title] = info
+  let queryString = {
+    "sort": [
+      {
+        "timestamp": {
+          "order": "desc"
+        }
+      }
+    ], 
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "match": {
+              "filename": trident
+            }
+          },
+          {
+            "match": itemMatch
+          }
+        ]
+      }
+    },
+    "size":1000
+}
   return queryString
 }

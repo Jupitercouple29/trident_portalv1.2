@@ -11,6 +11,7 @@ const { searchObject } = require('../lib/elasticsearch_query')
 const { searchMultiTridentAlerts } = require('../lib/elasticsearch_query')
 const { compileLatAndLongArray } = require('../lib/common')
 const { mSearchNumOfAlerts } = require('../lib/elasticsearch_query')
+const { searchItemClicked } = require('../lib/elasticsearch_query')
 
 const express = require('express')
 const router = express.Router()
@@ -71,67 +72,25 @@ router.get('/alerts',
   validateMiddleware,
   jwtRest({secret: process.env.JWT_SECRET}),
   function(req, res, next) {
-  if (req.query.trident && Array.isArray(req.query.trident)) {
-    let tridentString = ''
-    req.query.trident.map((param, i) => {
-      let trident = "Trident" + param + ' '
-      tridentString += trident
-    })
-    let queryString = searchMultiTridentAlerts(tridentString)
+  if (req.query.trident) {
+    let trident = "Trident" + req.query.trident
+    let queryString = searchMultiTridentAlerts(trident)
     return client.search({index, body: queryString})
     .then(function(resp) {
       let alerts = resp.hits.hits
       let signatureAlerts = resp.aggregations.signatures.buckets
-      let old_array = [],
-        temp_array = [],
-        new_array = [],
-        ip_array = []
-      let old_dest_array = [],
-        temp_dest_array = [],
-        new_dest_array = [],
-        dest_array = []
-      let k = 0
-      signatureAlerts.forEach(bucket => {
-        bucket.source_ips.buckets.forEach(ip => {
-          old_array.push(ip)
-          temp_array.push(ip)
-          ip.dest_ips.buckets.forEach(dest => {
-            old_dest_array.push(dest)
-            temp_dest_array.push(dest)
-          })
-        })
-      })
-      for (var i = 0; i < old_array.length; i++) {
-        new_array[i] = {}
-        new_array[i].doc_count = 0
-        for (var j = 0; j < temp_array.length; j++) {
-          if (old_array[i].key === temp_array[j].key) {
-            new_array[i].key = old_array[i].key
-            new_array[i].doc_count += temp_array[j].doc_count
-          }
-        }
-      }
-      for (var i = 0; i < old_dest_array.length; i++) {
-        new_dest_array[i] = {}
-        new_dest_array[i].doc_count = 0
-        for (var j = 0; j < temp_dest_array.length; j++) {
-          if (old_dest_array[i].key === temp_dest_array[j].key) {
-            new_dest_array[i].key = old_dest_array[i].key
-            new_dest_array[i].doc_count += temp_dest_array[j].doc_count
-          }
-        }
-      }
-      ip_array = uniqDescOrderedList(new_array)
-      dest_array = uniqDescOrderedList(new_dest_array)
+      let dest_ips = resp.aggregations.dest_ips.buckets.slice(0,20)
+      let source_ips = resp.aggregations.source_ips.buckets.slice(0,20)
       var body = {
         alerts: alerts,
-        ips: ip_array,
+        ips: source_ips,
         signatureAlerts,
-        dest_ips: dest_array
+        dest_ips: dest_ips
       }
       log.info(requestLog(req, 200))
       res.status(200).send(body)
-    }).catch(function(err) {
+    })
+    .catch(function(err) {
       log.error(requestLog(req, 400, err.message))
       res.status(400).send(err.message)
     })
@@ -145,19 +104,15 @@ router.get('/alerts/:type',
   validateMiddleware,
   jwtRest({secret: process.env.JWT_SECRET}),
   function(req, res, next) {
-    let queryArray = []
-    if (req.query.trident && Array.isArray(req.query.trident)) {
+    if (req.query.trident) {
       let queryString = ''
       let tridentString = ''
       let type = req.params.type
-      req.query.trident.map((param, i) => {
-        let trident = "Trident" + param + " "
-        tridentString += trident        
-      })
+      let trident = "Trident" + req.query.trident
       if (req.params.type == "signatures") {
-          queryString = searchSignatureObject(tridentString)
+          queryString = searchSignatureObject(trident)
         } else {
-          queryString = searchEventObject(tridentString, type)
+          queryString = searchEventObject(trident, type)
         }
       return client.search({index, body: queryString})
       .then(function(resp) {
@@ -167,7 +122,8 @@ router.get('/alerts/:type',
         }
         log.info(requestLog(req, 200))
         res.status(200).send(body)
-      }).catch(function(err) {
+      })
+      .catch(function(err) {
         log.error(requestLog(req, 400, err.message))
         res.status(400).send(err.message)
       })
@@ -200,7 +156,8 @@ router.get('/count',
         })
         log.info(requestLog(req, 200))
         res.status(200).send(body)
-      }).catch(function(err) {
+      })
+      .catch(function(err) {
         log.error(requestLog(req, 400, err.message))
         res.status(400).send(err.message)
       })
@@ -210,4 +167,21 @@ router.get('/count',
     }
 	})
 
+router.get('/item', 
+  // validateMiddleware,
+  // jwtRest({secret: process.env.JWT_SECRET}),
+  function(req, res, next){
+    let trident = "Trident" + req.query.trident
+    let title = req.query.title
+    let info = req.query.info
+    let queryString = searchItemClicked(trident,title,info)
+    return client.search({index, body: queryString})
+    .then(result => {
+      res.status(200).send(result.hits.hits)
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(401).send(err.responses)
+    })
+  })
 module.exports = router

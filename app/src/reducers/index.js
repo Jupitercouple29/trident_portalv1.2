@@ -8,9 +8,7 @@ import { validUser,
          destIPs,
          currentAlerts,
          signatureAlerts,
-         dnsAlerts,
-         httpAlerts,
-         tlsAlerts,
+         info,
          locationAlerts,
          dashboardProps } from './reducers';
 
@@ -24,9 +22,7 @@ const rootReducer = combineReducers({
   destIPs,
   currentAlerts,
   dashboardProps,
-  httpAlerts,
-  dnsAlerts,
-  tlsAlerts,
+  info,
   signatureAlerts,
   locationAlerts
 });

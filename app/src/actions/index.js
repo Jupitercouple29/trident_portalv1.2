@@ -7,11 +7,9 @@ export const SOURCE_IPS = 'SOURCE_IPS'
 export const DEST_IPS = 'DEST_IPS'
 export const DASHBOARD_INFO = 'DASHBOARD_INFO'
 export const CURRENT_ALERTS = 'CURRENT_ALERTS'
-export const DNS_ALERTS = 'DNS_ALERTS'
-export const HTTP_ALERTS = 'HTTP_ALERTS'
 export const SIGNATURE_ALERTS = 'SIGNATURE_ALERTS'
-export const TLS_ALERTS = "TLS_ALERTS"
-export const MAP_ALERTS = "MAP_ALERTS"
+export const MAP_ALERTS = 'MAP_ALERTS'
+export const INFO_ALERTS = 'INFO_ALERTS'
 
 export const tridentArray = (tridents) => ({
   type: TRIDENT_ARRAY,
@@ -59,26 +57,16 @@ export const dashboardInfo = (all) => ({
 })
 
 export const tridentSignatureAlerts = (all) => ({
-    type: SIGNATURE_ALERTS,
-    all
-})
-
-export const tridentDNSAlerts = (all) => ({
-    type: DNS_ALERTS,
-    all
-})
-
-export const tridentHTTPAlerts = (all) => ({
-    type: HTTP_ALERTS,
-    all
-})
-
-export const tridentTLSAlerts = (all) => ({
-    type: TLS_ALERTS,
-    all
+  type: SIGNATURE_ALERTS,
+  all
 })
 
 export const mapAlerts = (all) => ({
-    type: MAP_ALERTS,
-    all
+  type: MAP_ALERTS,
+  all
+})
+
+export const infoAlerts = (all) => ({
+  type:INFO_ALERTS,
+  all
 })
