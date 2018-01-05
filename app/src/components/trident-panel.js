@@ -41,7 +41,7 @@ export class TridentPanel extends Component {
 								return <div key={a.key + i} className="trident-panel-alert">
 												<p 
 													className="trident-panel-alert-name medium"
-													onClick={this.handleAlertClick.bind(this,a.key)}>
+													onClick={this.handleOnclick.bind(this,"alert.signature.keyword",a.key)}>
 													{a.key}
 												</p>
 												<p className="trident-panel-alert-total small">{a.doc_count}</p>

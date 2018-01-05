@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import { formatDate } from '../functions/formatDate'
-import { configureAlertType } from '../functions/configureAlertType'
 import AlertPanelItem from './alert-panel-item'
 
 export default class AlertPanel extends Component {
@@ -22,15 +20,13 @@ export default class AlertPanel extends Component {
 			 return <AlertPanelItem alert={source} key={i} alertKey={i}/>
 		  })
 		return listAlerts
-		// }else if(this.props.alertFunc){
-      // return configureAlertType(this.props.alertFunc, this.props.trident)
-      // .then(res=>console.log(alert))
     }
 	}
   render(){
     let alertList = this.showAlerts()
+    let size = this.props.size
     return(
-     	<div className="alert-panel">
+     	<div className={`alert-panel ${size}`}>
         <div className="alert-panel-header">
           <h3>{this.props.title}</h3>
         </div>

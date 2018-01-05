@@ -33,7 +33,8 @@ router.post('/', function(req, res, next){
         {name:result.name},
         {tridents:result.tridents},
         {company:result.company},
-        {creds:result.creds}
+        {creds:result.creds},
+        {seller:result.seller}
       )
       console.log(pswd)
       console.log(result.password)
@@ -77,6 +78,7 @@ router.post('/update', function(req, res, next){
   let email = req.body.email ? req.body.email : null
   let pswd = req.body.pswd ? req.body.pswd : null
   let tridents = req.body.tridents 
+  let image = req.body.image
   if(name && email && tridents){
      let rootRef = firebase.database().ref('users');
       rootRef.orderByChild('email').equalTo(email).once('value')

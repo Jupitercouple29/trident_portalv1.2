@@ -1,13 +1,24 @@
 import React, { Component } from 'react'
 import logo from '../media/gbms-tech-logo.png'
+import DCILogo from '../media/DCI_logo.jpg'
+import AISLogo from '../media/AIS_logo.jpg'
 import { withRouter } from 'react-router-dom'
 
 export class NavBar extends Component {
 	constructor(props){
 		super(props)
-
+		this.state = {
+			logo: logo
+		}
 		this.handleHamburgerClick = this.handleHamburgerClick.bind(this)
 		this.signOut = this.signOut.bind(this)
+	}
+	componentWillMount(){
+		if(this.props.user.seller === "DCI_logo"){
+			this.setState({logo:DCILogo})
+		}else if (this.props.user.seller === "AIS_logo"){
+			this.setState({logo:AISLogo})
+		}
 	}
 	handleHamburgerClick(){
 		this.props.sidePanelClick(!this.props.displaySidePanel)
@@ -19,13 +30,14 @@ export class NavBar extends Component {
 	}
 	render(){
 		let userName = this.props.user ? this.props.user.name : "unavailable"
+		let pageLogo = this.state.logo
 		return (
 			<div className="nav-bar-container"> 
 				<div className="nav-bar">
 					<div className="nav-bar-left">
 						<img
 	            className="gbms-tech-logo"
-	            src={logo}
+	            src={pageLogo}
 	            alt="Phalanx Secure"
 	          />
 	          <div className="hamburger-container" >

@@ -172,6 +172,7 @@
 
 .dashboard-panel-column p {
 	margin: 5px;
+	cursor: pointer;
 }
 
 .dashboard-panel-column h3 {
@@ -208,6 +209,9 @@
 	animation-fill-mode: both;
 }
 
+.alert-panel.large {
+	height: 600px;
+}
 .alert-panel-header {
 	padding: 5px 15px 0 15px;
 }
@@ -256,4 +260,12 @@
 
 .alert-tooltip-count {
   font-size: 1em;
+}
+
+.trident-panel-header {
+	text-decoration: underline;
+}
+
+.trident-panel-alert {
+	cursor: pointer;
 }
