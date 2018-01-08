@@ -26,9 +26,10 @@ export default class AlertType extends Component {
 	}
 	render(){
 		let alert = this.state.alertList
+		let message = this.props.message
 		return(
 			<div className="alert-panel-container">
-				<AlertPanel alerts={alert} title={this.props.title} />
+				<AlertPanel alerts={alert} title={this.props.title} message={message} />
 			</div>
 		)
 	}

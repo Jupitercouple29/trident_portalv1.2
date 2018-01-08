@@ -65,7 +65,7 @@ export default class ProfilePage extends Component {
 				<div 
 					style={{height:"400px",width:"100%",border:"1px solid grey"}}
 					id="my_canvas"
-					ref={(canvas)=>{this.canvas = canvas;}}
+					ref={canvas=>this.canvas = canvas}
 					tabIndex="0"
 					onFocus={this.handleFocus}
 					onDragOver={this.handleAllowDrop}
