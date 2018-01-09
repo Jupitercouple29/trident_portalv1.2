@@ -15,7 +15,7 @@ export class TridentPage extends Component {
 		this.state = {
 			trident: null,
 			loading: true,
-			alertMessage:"Loading..."
+			alertMessage:<div className="loading-message"> Loading... </div>
 		}
 	}
 	componentWillMount(){
@@ -24,7 +24,8 @@ export class TridentPage extends Component {
     getTridentAlerts(trident)
     .then((res)=>{
 	    if(res.alerts.length < 1){
-	    	this.setState({alertMessage:"Trident is unavailable"})
+	    	console.log("no tridens available")
+	    	this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
 	    }
       this.props.tridentAlerts(res.alerts)
       this.props.tridentSourceIPs(res.ips)
@@ -44,10 +45,10 @@ export class TridentPage extends Component {
 			// console.log(this.state.trident)
 			let trident = nextProps.selectedTrident
 			this.setState({trident})
-	    getTridentAlerts([trident])
+	    getTridentAlerts(trident)
 	    .then((res)=>{
 	    	if(res.alerts.length < 1){
-	    		this.setState({alertMessage:"Trident is unavailable"})
+	    		this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
 	    	}
 	      this.props.tridentAlerts(res.alerts)
 	      this.props.tridentSourceIPs(res.ips)

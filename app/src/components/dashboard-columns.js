@@ -28,7 +28,7 @@ export default class Columns extends Component {
 		let info = this.renderInfo(this.props.info)
 		let size = this.props.size || "small"
 		let name = this.props.name || ""
-		let message = this.state.message
+		let message = this.props.message
 		let showInfo = info && info.length > 1 ? info : message
 		return(
 			<div className={`dashboard-panel-column ${name} ${size}`}>

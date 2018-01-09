@@ -13,6 +13,15 @@ export class AlertsPage extends Component {
 			heading:<h1>Please select an Alert from the map above</h1>
 		}
 	}
+	componentWillMount(){
+		if(this.props.alerts && this.props.alerts.length >= 1){
+			console.log('this is an alert already selected')
+			let location = this.props.alerts[0]._source.geoip.location
+    	let lat = location ? location.lat : null
+    	let lon = location ? location.lon : null
+			this.setState({heading:<h1>Map Alerts for Latitude: {lat} and Longitude: {lon}</h1>})
+		}
+	}
 	componentWillReceiveProps(nextProps){
 		if(this.props.alerts !== nextProps.alerts){
 			let location = nextProps.alerts[0]._source.geoip.location

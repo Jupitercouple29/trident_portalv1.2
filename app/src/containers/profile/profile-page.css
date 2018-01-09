@@ -1,3 +1,38 @@
 .profile-page-container {
-	color: blue;
+	display: flex;
+	justify-content: center;
+}
+
+.profile-page-info-container {
+	min-width: 250px;
+	margin-right: 50px;
+	padding: 20px;
+}
+
+.profile-page-info-container, .profile-page-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.profile-page-info label, .profile-page-notification-container label {
+	padding-bottom: 10px;
+}
+
+.profile-page-info input, .profile-page-notification-container input {
+	height: 25px;
+	margin-bottom: 20px;
+	font-size: 18px;
+}
+
+.profile-page-notification-container {
+	display: flex;
+	flex-direction: column;	
+	margin-top: 40px;
+}
+
+#logo-container {
+	margin: 20px 0;
+	height:100px;
+	width:250px;
+	border:1px solid;
 }

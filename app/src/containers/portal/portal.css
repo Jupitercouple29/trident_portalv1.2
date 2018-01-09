@@ -66,6 +66,7 @@
 	background-color: rgba(0,0,0,.5);
 	height: 100%;
 	position: fixed;
+	min-width: 50px;
 }
 
 .side-panel-item {
@@ -77,13 +78,13 @@
 
 .side-panel-item:hover {
 	border-right: 4px solid rgba(96,250,132,.5);
-	color: white;
-}
-
-.side-panel-item-container:hover {
-	/*border-right: 4px solid rgba(96,250,132,.2);*/
 	color: rgba(96,250,132,.2);
 }
+
+./*side-panel-item:hover {
+	border-right: 4px solid rgba(96,250,132,.2);
+	color: rgba(96,250,132,.2);
+}*/
 
 .side-panel-item i {
 	width: 20px;
@@ -95,7 +96,7 @@
 
 .side-panel-item-container {
  border-right: 4px transparent;
- color: inherit;
+ color: white;
 }
 
 .side-panel-item-container.selected:hover{
@@ -120,16 +121,24 @@
 }
 
 .side-panel-item-expanded p {
-	margin: 5px 0;
-	cursor: pointer;
+	padding: 5px 0;
+	margin: 0;
+	cursor: pointer; 
+	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 
 .side-panel-item-expanded p:hover {
-	margin: 5px 0;
+	/*margin: 5px 0;*/
 	cursor: pointer;
 	color: rgba(96,250,132,.2);
+	border-right: 4px solid rgba(96,250,132,.5);
 }
 
+.side-panel-item-expanded p.hidden {
+	display: none;
+}
 .hamburger-container {
 	margin-left: 30px;
 	padding-bottom: 5px;

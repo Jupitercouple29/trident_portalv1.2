@@ -61,8 +61,7 @@ export class TridentPanel extends Component {
 		let sourceIPArray = this.distributeArrays(this.props.sourceIPs)
 		let destIPArray = this.distributeArrays(this.props.destIPs)
 		let alertsArray = this.distributeSignatures(this.props.alerts)
-		let message = this.state.message
-		let showInfo = this.state.message.length > 2 ? message : alertsArray
+		let message = this.props.message
 		let showAlerts = alertsArray && alertsArray.length >= 1 ? alertsArray : message
 		return(
 			<div className="trident-panel-container">
@@ -71,7 +70,7 @@ export class TridentPanel extends Component {
 						title={"Source IPs"} 
 						info={sourceIPArray[0]} 
 						name={"source_ip"}
-						message={showInfo}
+						message={message}
 						clicked={this.handleOnclick}/>
 					<Columns 
 						title={"Total # of Alerts"} 
@@ -94,12 +93,11 @@ export class TridentPanel extends Component {
 						title={"Destination IPs"} 
 						info={destIPArray[0]} 
 						name={"destination_ip"}
-						message={showInfo}
+						message={message}
 						clicked={this.handleOnclick}/>
 					<Columns 
 						title={"Total # of Alerts"} 
 						info={destIPArray[1]} 
-						message={showInfo}
 						name={"dest-ips-count"}/>
 				</div>
 			</div>
