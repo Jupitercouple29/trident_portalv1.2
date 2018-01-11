@@ -1,8 +1,10 @@
 var jwt = require('jsonwebtoken');
+const jwtRest = require('express-jwt')
 var firebase = require('firebase');
 var bcrypt = require('bcryptjs');
 var requestLog = require('../lib/common').requestLog
 var validateEmail = require('../lib/common').validateEmail
+const { validateMiddleware } = require('../lib/common')
 var express = require('express');
 var router = express.Router();
 
@@ -34,33 +36,39 @@ router.post('/', function(req, res, next){
         {tridents:result.tridents},
         {company:result.company},
         {creds:result.creds},
+        {phone:result.phone},
+        {logo:result.logo},
         {seller:result.seller}
       )
       console.log(pswd)
       console.log(result.password)
-      bcrypt.compare(pswd, result.password, function(err, response){
-        if(err){
-          let _error = 'Login failed: Email/Password is incorrect';
-          log.error(requestLog(req, 'Bcrypt Compare Error'))
-          res.status(400).send(_error);
-        } else if(response){
-          var jwtToken = jwt.sign(
-            {user:validUser, date:new Date()},
-            process.env.JWT_SECRET
-          );
-          var user = Object.assign(
-            {},
-            {validUser:validUser},
-            {jwtToken: jwtToken}
-          )
-          log.info(requestLog(req,200))
-          res.status(200).send(user)
-        } else {
-          let _error = 'Login failed: Email/Password is incorrect';
-          log.error(requestLog(req, 'Invalid Password'))
-          res.status(401).send(_error);
-        }
-      })
+      if(email && pswd){
+        bcrypt.compare(pswd, result.password, function(err, response){
+          if(err){
+            let _error = 'Login failed: Email/Password is incorrect';
+            log.error(requestLog(req, 'Bcrypt Compare Error'))
+            res.status(400).send(_error);
+          } else if(response){
+            var jwtToken = jwt.sign(
+              {user:validUser, date:new Date()},
+              process.env.JWT_SECRET
+            );
+            var user = Object.assign(
+              {},
+              {validUser:validUser},
+              {jwtToken: jwtToken}
+            )
+            log.info(requestLog(req,200))
+            res.status(200).send(user)
+          } else {
+            let _error = 'Login failed: Email/Password is incorrect';
+            log.error(requestLog(req, 'Invalid Password'))
+            res.status(401).send(_error);
+          }
+        })
+      }else{
+        res.status(200).send(validUser)
+      }
     } else {
         let _error = 'Login failed: Email/Password is incorrect';
         log.error(requestLog(req, 'Invalid Email'))
@@ -174,5 +182,44 @@ router.post('/new_user', function(req, res, next){
     })
   })
 })
+
+router.post('/update/profile', 
+  // validateMiddleware,
+  // jwtRest({secret:process.env.JWT_SECRET}),
+  function (req, res, next){
+    let name = req.body.info.name
+    let email = req.body.info.email
+    let newEmail = req.body.info.newEmail
+    let company = req.body.info.company
+    let phone = req.body.info.phone
+    let logo = req.body.info.logo || ''
+    if(!validateEmail(email)) res.status(401).send('Please enter a valid email')
+    let rootRef = firebase.database().ref('users');
+    rootRef.orderByChild('email').equalTo(email).once('value')
+    .then(snap => {
+      console.log('just after then statement')
+      if(snap.val()){
+        console.log('inside snapval')
+        let userKey = Object.keys(snap.val())
+        let userRef = rootRef.child(userKey[0])
+        userRef.update({
+          name: name,
+          email: newEmail,
+          company: company,
+          phone: phone,
+          logo: logo
+        })
+        requestLog(req, 'Profile has been updated for ' + name)
+        res.status(201).send('success')
+      }else{
+        requestLog(req, 'Unable to find user to update')
+        res.status(401).send('Invalid email. Unable to update users at ' + email)
+      }
+    })
+    .catch(err => {
+      requestLog(req, 'Firebase error')
+      res.status(401).send('Firebase error. Unable to update user at ' + email)
+    })
+  })
 
 module.exports = router

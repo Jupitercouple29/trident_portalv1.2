@@ -7,11 +7,15 @@ export const auth = (email, pswd) => {
     pswd:pswd
   })
   .then(function(response){
-    localStorage.setItem('jwt', response.data.jwtToken)
-    user.isValid = true;
-    user.token = response.data.jwtToken;
-    user.data = response.data.validUser;
-    return user;
+    if(response.data.jwtToken){
+      localStorage.setItem('jwt', response.data.jwtToken)
+      user.isValid = true;
+      user.token = response.data.jwtToken;
+      user.data = response.data.validUser;
+      return user;
+    }else{
+      return response.data
+    }
   })
   .catch(function(error){
     if(error === "Error: Network Error" ){

@@ -1,36 +1,42 @@
 import React, { Component } from 'react'
+import { updateUser } from '../../functions/updateUser'
+import { auth } from '../../functions/auth'
+import * as actionCreators from '../../actions'
+import { connect } from 'react-redux'
 
 import ('./profile-page.css')
 
 
-export default class ProfilePage extends Component {
+export class ProfilePage extends Component {
 	constructor(props){
 		super(props)
+		this.state = {
+			name: this.props.user.name,
+			email: this.props.user.email,
+			phone: this.props.user.phone || "N/A",
+			company: this.props.user.company || "N/A",
+			logo: this.props.user.logo || "",
+			updateMessage: ''
+		}
 		this.handlePaste = this.handlePaste.bind(this)
-		this.handleAllowDrop	= this.handleAllowDrop.bind(this)
 		this.handleDrop = this.handleDrop.bind(this)
-		this.handleDrag = this.handleDrag.bind(this)
-		// this.getDataUri = this.getDataUri.bind(this)
+		this.onFormSubmit = this.onFormSubmit.bind(this)
 	}
-	componentDidMount(){
-		
+	componentWillMount(){
+		auth(this.props.user.email)
+		.then(res => {
+			this.setState({
+				name:res.name,
+				email:res.email,
+				phone:res.phone,
+				company:res.company,
+				logo:res.logo
+			})
+		})
 	}
-	handleAllowDrop(e){
-		e.preventDefault()
-	}
-	handleDrag(e){
-		e.dataTransfer.setData("text", e.target.id)
-	}
-	
 	handleDrop(e){
 		e.preventDefault()
-		// console.log('you just dropped something')
-		// console.log(e)
-		// console.log(e.dataTransfer)
-		// console.log(e.dataTransfer)
-		// console.log(e.dataTransfer)
-		// console.log(e.dataTransfer.files)
-		console.log(e.dataTransfer.getData('Text'))
+		var that = this;
 		var image = new Image()
 		image.src = e.dataTransfer.getData('Text')
 		image.onload = () => {
@@ -41,23 +47,15 @@ export default class ProfilePage extends Component {
 			console.log(canvas.toDataURL('image/png'))
 			var myImage = canvas.toDataURL('image/png')
 		 	var img = document.getElementById('my-image')
-      img.height = "100"
-      img.width = "250"
+      img.height = "50"
+      img.width = "150"
       img.src = myImage
+      that.setState({logo:myImage})
 		}
-		// this.getDataUri(e.dataTransfer.getData('Text'), (dataUri) => {
-		// 	console.log(dataUri)
-		// } )
 	}
 	handlePaste(e){
-		console.log('you just pasted')
-		console.log(e)
-		console.log(e.clipboardData)
-		console.log(e.clipboardData.dataTransfer)
-		console.log(e.clipboardData.files)
-		console.log(e.clipboardData.items)
-		console.log(e.clipboardData.types)
 		var myImage = ''
+		var that = this
     var items = (e.clipboardData || e.originalEvent.clipboardData).items;
   	console.log(JSON.stringify(items)); // will give you the mime types
   	for (var index in items) {
@@ -71,57 +69,95 @@ export default class ProfilePage extends Component {
 	        console.log(e.target.result)
 	        myImage = e.target.result
 	        var img = document.getElementById('my-image')
-	        img.height = "100"
-	        img.width = "250"
+	        img.height = "50"
+	        img.width = "150"
 	        img.src = myImage
+	        that.setState({logo:myImage})
 	       }; // data url!
 	      	reader.readAsDataURL(blob);
 	    }
-  	}
-		// var canvas = document.createElement('canvas')
-		
-		// var ctx = canvas.getContext('2d')
-		// var img = new Image()
-		// img.onload = () => { ctx.drawImage(img,0,0)}
-		
-		// // this.el.innerHTML = "Hello World"
-		// myDiv.appendChild(canvas)
-		
+  	}		
 	}
-
-	handleFocus(e){
-		console.log(e)
-	}
-	keyBoardListener(evt) {
-    if (evt.ctrlKey) {
-      switch(evt.keyCode) {
-        case 67: // c
-          // copy(evt.target);
-          console.log('c')
-          break;
-        case 86: // v
-          // paste(evt.target);
-          console.log('v')
-          break;
-      }
+	onInputChange(type, event){
+    let stateVal = { }
+    stateVal[type] = event.target.value
+    this.setState(stateVal)
+  }
+	onFormSubmit(event){
+    event.preventDefault()
+    let info = {
+    	email: this.props.user.email,
+    	newEmail: this.state.email.toLowerCase(),
+    	name: this.state.name,
+    	company: this.state.company,
+    	phone: this.state.phone,
+    	logo: this.state.logo
     }
-	}
+    updateUser(info)
+    .then(res => {
+    	console.log(res)
+    	if(res === 'success'){
+				this.setState({updateMessage:"Update was successful"})
+    	}
+    })
+    .catch(err => {
+
+    })
+    
+  }
 	render(){
+		let name = this.state.name
+		let email = this.state.email
+		let company = this.state.company
+		let phone = this.state.phone
 		return(
 			<div className="profile-page-container">
 				<div className="profile-page-info-container left">
 					<h3 className="profile-page-header">My Profile</h3>
-					<div className="profile-page-info">
-						<label className="profile-page-name-label">Name</label>
-						<input className="profile-page-name-input"/>
-						<label className="profile-page-email-label">E-mail</label>
-						<input className="profile-page-email-input"/>
-						<label className="profile-page-company-label">Company/Reseller</label>
-						<input className="profile-page-company-input"/>
-						<label className="profile-page-phone-label">Phone</label>
-						<input className="profile-page-phone-input"/>
-						<button className="profile-page-update-button">Update</button>
-					</div>
+					<form className="profile-page-info" onSubmit={this.onFormSubmit}>
+						<label 
+							className="profile-page-name-label"
+							htmlFor="name">
+								Name
+						</label>
+						<input 
+							className="profile-page-name-input"
+							value={name}
+							onChange={this.onInputChange.bind(this,'name')}/>
+						<label 
+							className="profile-page-email-label"
+							htmlFor="email">
+								E-mail
+						</label>
+						<input 
+							className="profile-page-email-input"
+							value={email}
+							onChange={this.onInputChange.bind(this,'email')}/>
+						<label 
+							className="profile-page-company-label"
+							htmlFor="company">
+								Company/Reseller
+						</label>
+						<input 
+							className="profile-page-company-input"
+							value={company}
+							onChange={this.onInputChange.bind(this,'company')}/>
+						<label 
+							className="profile-page-phone-label"
+							htmlFor="phone">
+								Phone
+						</label>
+						<input 
+							className="profile-page-phone-input"
+							value={phone}
+							onChange={this.onInputChange.bind(this,'phone')}/>
+						<button 
+							className="profile-page-update-button"
+							type="submit">
+								Update
+						</button>
+						<label className="profile-page-update-message">{this.state.updateMessage}</label>
+					</form>
 				</div>
 				<div className="profile-page-info-container right">
 					<div 
@@ -132,9 +168,14 @@ export default class ProfilePage extends Component {
 						onDragOver={this.handleAllowDrop}
 						onPaste={this.handlePaste}
 						onDrop={this.handleDrop}>
-						<img id="my-image"></img>
+						{this.state.logo === '' ? <p>Company Logo</p> : ''}
+						<img id="my-image" src={this.state.logo} height="30" width="150"></img>
 					</div>
-					<button className="profile-page-update-logo-button">Update Logo</button>
+					<button 
+						className="profile-page-update-logo-button"
+						onClick={this.onFormSubmit}>
+							Update Logo
+						</button>
 					<div className="profile-page-notification-container">
 						<label className="profile-page-timezone-label">Timezone</label>
 						<input className="profile-page-timezone-input"/>
@@ -146,3 +187,9 @@ export default class ProfilePage extends Component {
 		)
 	}
 }
+
+const mapStateToProps = (state) => ({
+	user: state.validUser
+})
+
+export default connect(mapStateToProps, actionCreators)(ProfilePage)

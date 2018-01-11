@@ -18,6 +18,8 @@ export class NavBar extends Component {
 			this.setState({logo:DCILogo})
 		}else if (this.props.user.seller === "AIS_logo"){
 			this.setState({logo:AISLogo})
+		}else if (this.props.user.logo){
+			this.setState({logo:this.props.user.logo})
 		}
 	}
 	handleHamburgerClick(){

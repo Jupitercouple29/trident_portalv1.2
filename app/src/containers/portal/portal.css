@@ -53,7 +53,7 @@
 }
 
 .gbms-tech-logo {
-	height: 30px;
+	height: 50px;
 	width: 150px;
 }
 
@@ -141,7 +141,7 @@
 }
 .hamburger-container {
 	margin-left: 30px;
-	padding-bottom: 5px;
+	padding: 10px 0 5px 0;
 }
 
 i.fa-chevron-up, i.fa-chevron-down { 
