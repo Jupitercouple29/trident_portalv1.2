@@ -28,7 +28,7 @@ export default class AlertPanel extends Component {
     let alertList = this.showAlerts()
     let size = this.props.size
     let message = this.props.message
-    let showAlerts = this.props.alerts.length < 1 ? message : alertList
+    let showAlerts = this.props.alerts && this.props.alerts.length < 1 ? message : alertList
     return(
      	<div className={`alert-panel ${size}`}>
         <div className="alert-panel-header">

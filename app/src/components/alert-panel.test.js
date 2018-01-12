@@ -75,5 +75,15 @@ test('AlertPanel exist', () => {
 test('AlertPanel exist with no alerts', () => {
 	const panel = mount(<AlertPanel size="small" message="testing" alerts={[]} title="testing"/>)
 	expect(panel).toBeDefined()
-	console.log(panel.instance())
+})
+
+test('AlertPanel exist with no alerts and new props', () => {
+	const panel = mount(<AlertPanel size="small" message="testing"  title="testing"/>)
+	expect(panel).toBeDefined()
+	panel.setProps({message:'finished testing'})
+})
+test('AlertPanel exist with new props not equal to message', () => {
+	const panel = mount(<AlertPanel size="small" message="testing"  alerts={alert}title="testing"/>)
+	expect(panel).toBeDefined()
+	panel.setProps({nomessage:'finished testing'})
 })
