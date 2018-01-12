@@ -23,11 +23,6 @@ export class Login extends Component {
   componentWillMount(){
     localStorage.removeItem('jwt')
     this.props.login(null)
-    if(localStorage.getItem('loggedOut')){
-      console.log(window.location)
-      localStorage.removeItem('loggedOut')
-      window.location.reload()
-    }
   }
   onInputChange(type, event){
     let stateVal = { }

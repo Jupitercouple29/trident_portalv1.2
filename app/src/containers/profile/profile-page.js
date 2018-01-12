@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { updateUser } from '../../functions/updateUser'
 import { auth } from '../../functions/auth'
+import Timezone from '../../components/timezone'
 import * as actionCreators from '../../actions'
 import { connect } from 'react-redux'
 
@@ -38,6 +39,7 @@ export class ProfilePage extends Component {
 		e.preventDefault()
 		var that = this;
 		var image = new Image()
+		console.log(e.dataTransfer)
 		image.src = e.dataTransfer.getData('Text')
 		image.onload = () => {
 			var canvas = document.createElement('canvas'), context = canvas.getContext('2d')
@@ -54,6 +56,7 @@ export class ProfilePage extends Component {
 		}
 	}
 	handlePaste(e){
+		console.log(e)
 		var myImage = ''
 		var that = this
     var items = (e.clipboardData || e.originalEvent.clipboardData).items;
@@ -110,6 +113,7 @@ export class ProfilePage extends Component {
 		let email = this.state.email
 		let company = this.state.company
 		let phone = this.state.phone
+		let logo = this.state.logo
 		return(
 			<div className="profile-page-container">
 				<div className="profile-page-info-container left">
@@ -164,12 +168,14 @@ export class ProfilePage extends Component {
 						id="logo-container"
 						ref={canvas=>this.canvas = canvas}
 						tabIndex="0"
-						onFocus={this.handleFocus}
-						onDragOver={this.handleAllowDrop}
 						onPaste={this.handlePaste}
 						onDrop={this.handleDrop}>
 						{this.state.logo === '' ? <p>Company Logo</p> : ''}
-						<img id="my-image" src={this.state.logo} height="30" width="150"></img>
+						<img 
+							id="my-image" 
+							src={logo} 
+							onPaste={this.handlePaste}>
+						</img>
 					</div>
 					<button 
 						className="profile-page-update-logo-button"
@@ -178,9 +184,12 @@ export class ProfilePage extends Component {
 						</button>
 					<div className="profile-page-notification-container">
 						<label className="profile-page-timezone-label">Timezone</label>
-						<input className="profile-page-timezone-input"/>
+						<Timezone />
 						<label className="profile-page-notification-label">Notifications</label>
-						<input className="profile-page-notification-input"/>
+						<select className="profile-page-notification" name="notification">
+							<option value="yes">Yes</option>
+							<option value="no">No</option>
+						</select>
 					</div>
 				</div>
 			</div>

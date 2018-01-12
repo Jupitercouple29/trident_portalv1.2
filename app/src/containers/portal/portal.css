@@ -162,4 +162,9 @@ i.fa-user-circle {
 	left: 50px;
 	width: calc(100% - 125px);
 	padding: 8px 32px 8px 30px;
+	height: 100%;
+}
+
+.portal { 
+	height: 100%;
 }
