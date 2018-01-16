@@ -13,29 +13,16 @@ export class SidePanel extends Component {
 			isActive:true,
 			route:''
 		}
-		this.handleOnClick = this.handleOnClick.bind(this)
 		this.handlePanelClick = this.handlePanelClick.bind(this)
 		this.routeClicked = this.routeClicked.bind(this)
 	}
-	componentWillMount(){
-		// let name = this.props.history.location.pathname
-		// let route = name.slice(1,name.length)
-		// this.setState({route})
-	}
 	componentWillReceiveProps(nextProps){
-		// console.log(this.props.history.location.pathname)
 		let name = this.props.history.location.pathname
 		let route = name.slice(1,name.length)
 		this.setState({route})
 	}
 	handlePanelClick(){
 		this.props.sidePanelClick(true)
-		// console.log('clicked')
-		// console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
-	}
-	handleOnClick(){
-		this.props.sidePanelClick(true)
-		// this.setState({isHidden:!this.state.isHidden})
 	}
 	routeClicked(route){
 		this.setState({route:route})

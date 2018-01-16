@@ -14,8 +14,8 @@ export class TridentPanel extends Component {
 		this.handleOnclick = this.handleOnclick.bind(this)
 	}
 	handleOnclick(title, info){
-		console.log(title)
-		console.log(info)
+		// console.log(title)
+		// console.log(info)
 		let trident = localStorage.getItem('selectedTrident')
 		getItemClicked(trident, title, info)
 		.then(res => {
@@ -23,9 +23,6 @@ export class TridentPanel extends Component {
 			this.props.infoAlerts(res)
 			this.props.history.push('/info')
 		})
-	}
-	componentWillMount(){
-
 	}
 	componentWillReceiveProps(nextProp){
 		if(this.props.message !== nextProp.message){

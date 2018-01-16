@@ -2,6 +2,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 import AlertPanelItem from './alert-panel-item'
 
+
 test('AlertPanelItem exist with dns event_type and simulate onclick', () => {
 	const alert = {
 		timestamp:'1/1/11',

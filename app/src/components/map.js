@@ -69,9 +69,10 @@ export class PortalMap extends Component {
   showMapAlerts(){
     let key = 0
     let that = this
-    let { circleRadius } = this.state 
+    let { circleRadius, coords } = this.state 
     // console.log(circleRadius)
-    let Circles = this.state.coords.map(c => {
+    // console.log(this.state.coords)
+    let Circles = coords.map(c => {
       let lat = c[0]
       let long = c[1]
       let count = c[2]

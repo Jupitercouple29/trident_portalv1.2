@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 
 export default class Timezone extends Component {
 	render(){
-		return (
-			<select className="timezone" name="timezone">
-				<option value="-12" >(GMT -12:00) Eniwetok, Kwajalein</option>
+	 	return (
+	 	 	<select className="timezone" name="timezone">
+        <option value="-12" >(GMT -12:00) Eniwetok, Kwajalein</option>
         <option value="-11" >(GMT -11:00) Midway Island, Samoa</option>
         <option value="-10" >(GMT -10:00) Hawaii</option>
         <option value="-9"  >(GMT -9:00) Alaska</option>
@@ -39,5 +39,5 @@ export default class Timezone extends Component {
         <option value="12"  >(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka</option>
 			</select>
 		)
-	}
+  }
 }

@@ -15,8 +15,8 @@ export class AlertsPage extends Component {
 	}
 	componentWillMount(){
 		if(this.props.alerts && this.props.alerts.length >= 1){
-			console.log('this is an alert already selected')
-			let location = this.props.alerts[0]._source.geoip.location
+			let source = this.props.alerts[0]._source
+			let location = source.geoip ? source.geoip.location : null
     	let lat = location ? location.lat : null
     	let lon = location ? location.lon : null
 			this.setState({heading:<h1>Map Alerts for Latitude: {lat} and Longitude: {lon}</h1>})
@@ -24,7 +24,8 @@ export class AlertsPage extends Component {
 	}
 	componentWillReceiveProps(nextProps){
 		if(this.props.alerts !== nextProps.alerts){
-			let location = nextProps.alerts[0]._source.geoip.location
+			let source = nextProps.alerts[0]._source
+			let location = source.geoip ? source.geoip.location : null
     	let lat = location ? location.lat : null
     	let lon = location ? location.lon : null
 			this.setState({heading:<h1>Map Alerts for Latitude: {lat} and Longitude: {lon}</h1>})

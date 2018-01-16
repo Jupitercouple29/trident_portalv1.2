@@ -25,7 +25,7 @@ export default class Columns extends Component {
 	}
 	render(){
 		let title = this.props.title
-		let info = this.renderInfo(this.props.info)
+		let info = this.props.info ? this.renderInfo(this.props.info) : null
 		let size = this.props.size || "small"
 		let name = this.props.name || ""
 		let message = this.props.message
