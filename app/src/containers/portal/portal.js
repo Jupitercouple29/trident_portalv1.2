@@ -63,8 +63,8 @@ export class Portal extends Component {
   }
   
   componentWillUnmount(){
-    let sidePanel = document.getElementsByClassName('side-panel-container')[0]
-    ReactDOM.findDOMNode(sidePanel).removeEventListener('resize', this.side)
+    // let sidePanel = document.getElementsByClassName('side-panel-container')[0]
+    // ReactDOM.findDOMNode(sidePanel).removeEventListener('resize', this.side)
   }
 
   componentWillReceiveProps(nextProps){

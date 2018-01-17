@@ -17,6 +17,7 @@ jest.mock('../info/info-page', () => 'info-page')
 jest.mock('../../components/nav-bar', () => 'nav-bar')
 
 test('Portal exist', () => {
+	port.setState({isLoading:false})
 	expect(port).toBeDefined()
 })
 
@@ -30,10 +31,76 @@ test('Portal with errors from getTridents', () => {
 	expect(port).toBeDefined()
 })
 
-test('Portal will receive new props', () => {
+test('Portal will receive new props for trident page', () => {
 	const location = {pathname:'/trident'}
 	const port = mount(<Portal 
 											history={{location:{pathname:'/trident'}}}
 											pageLocation={jest.fn()}/>)
 	port.setProps({location})
+	expect(port).toBeDefined()
+})
+
+test('Portal will receive new props for dashboard page', () => {
+	const location = {pathname:'/dashboard'}
+	const port = mount(<Portal 
+											history={{location:{pathname:'/dashboard'}}}
+											pageLocation={jest.fn()}/>)
+	port.setProps({location})
+	port.setState({isLoading:false})
+	expect(port).toBeDefined()
+})
+
+test('Portal will receive new props for support page', () => {
+	const location = {pathname:'/support'}
+	const port = mount(<Portal 
+											history={{location:{pathname:'/support'}}}
+											pageLocation={jest.fn()}/>)
+	port.setState({isLoading:false})
+	port.setProps({location})
+	expect(port).toBeDefined()
+})
+
+test('Portal will receive new props for profile page', () => {
+	const location = {pathname:'/profile'}
+	const port = mount(<Portal 
+											history={{location:{pathname:'/profile'}}}
+											pageLocation={jest.fn()}/>)
+	port.setProps({location})
+	expect(port).toBeDefined()
+})
+
+test('Portal will receive new props for alert page', () => {
+	const location = {pathname:'/alerts'}
+	const port = mount(<Portal 
+											history={{location:{pathname:'/alerts'}}}
+											pageLocation={jest.fn()}/>)
+	port.setProps({location})
+	expect(port).toBeDefined()
+})
+
+test('Portal will receive new props for chart page', () => {
+	const location = {pathname:'/charts'}
+	const port = mount(<Portal 
+											history={{location:{pathname:'/charts'}}}
+											pageLocation={jest.fn()}/>)
+	port.setProps({location})
+	expect(port).toBeDefined()
+})
+
+test('Portal will receive new props for info page', () => {
+	const location = {pathname:'/info'}
+	const port = mount(<Portal 
+											history={{location:{pathname:'/info'}}}
+											pageLocation={jest.fn()}/>)
+	port.setProps({location})
+	expect(port).toBeDefined()
+})
+
+test('Portal will receive new props for default page', () => {
+	const location = {pathname:'/profile'}
+	const port = mount(<Portal 
+											history={{location:{pathname:'/default'}}}
+											pageLocation={jest.fn()}/>)
+	port.setProps({location})
+	expect(port).toBeDefined()
 })

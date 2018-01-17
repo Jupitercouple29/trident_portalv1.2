@@ -9,11 +9,9 @@ export const updateUser = (info) => {
 		info:info
 	})
 	.then(function(response) {
-		console.log(response)
 		return response.data
 	})
 	.catch(err => {
-		console.log(err)
 		return err.response
 	})
 }

@@ -96,6 +96,16 @@
     ],
     "testEnvironment": "node",
     "testURL": "http://localhost",
+    "modulePathIgnorePatterns":[
+      "<rootDir>/src/App.js",
+      "<rootDir>/src/index.js",
+      "<rootDir>/src/registerServiceWorker.js"
+    ],
+    "testPathIgnorePatterns":[
+      "<rootDir>/src/App.js",
+      "<rootDir>/src/index.js",
+      "<rootDir>/src/registerServiceWorker.js"
+    ],
     "transform": {
       "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",

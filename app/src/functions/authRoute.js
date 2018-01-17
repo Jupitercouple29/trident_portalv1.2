@@ -19,6 +19,7 @@ export const AuthRoute = ({component, ...props}) => {
         let diff = Math.abs(new Date() - new Date(decoded.date))
         // 14 hours = 50400000 ms
         if(diff < 50400000 ){
+          console.log(props)
           if(props.validUser == null){
             let keys = decoded.user.tridents
             let tridents = []
