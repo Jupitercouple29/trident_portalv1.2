@@ -8,6 +8,9 @@ const { validateMiddleware } = require('../lib/common')
 var express = require('express');
 var router = express.Router();
 
+if(process.env.NODE_ENV === 'test'){
+  require('dotenv').config();
+}
 
 var firebaseApp = firebase.initializeApp({
   apiKey: process.env.FIREBASE_API_KEY,
@@ -40,8 +43,6 @@ router.post('/', function(req, res, next){
         {logo:result.logo},
         {seller:result.seller}
       )
-      console.log(pswd)
-      console.log(result.password)
       if(email && pswd){
         bcrypt.compare(pswd, result.password, function(err, response){
           if(err){
@@ -184,8 +185,8 @@ router.post('/new_user', function(req, res, next){
 })
 
 router.post('/update/profile', 
-  // validateMiddleware,
-  // jwtRest({secret:process.env.JWT_SECRET}),
+  validateMiddleware,
+  jwtRest({secret:process.env.JWT_SECRET}),
   function (req, res, next){
     let name = req.body.info.name
     let email = req.body.info.email
