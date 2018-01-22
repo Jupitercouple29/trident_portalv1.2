@@ -28,7 +28,6 @@ export class Dashboard extends Component {
 	}
 
 	render(){
-		// console.log(this.props.dashboardInfo)
 		let dashboard = this.props.dashboard
 		let tridents = this.props.user.tridents
 		let numAlerts = this.state.numAlerts

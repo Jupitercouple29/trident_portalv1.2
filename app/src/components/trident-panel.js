@@ -14,12 +14,9 @@ export class TridentPanel extends Component {
 		this.handleOnclick = this.handleOnclick.bind(this)
 	}
 	handleOnclick(title, info){
-		// console.log(title)
-		// console.log(info)
 		let trident = localStorage.getItem('selectedTrident')
 		getItemClicked(trident, title, info)
 		.then(res => {
-			console.log(res)
 			this.props.infoAlerts(res)
 			this.props.history.push('/info')
 		})
@@ -51,7 +48,6 @@ export class TridentPanel extends Component {
 							<p className="trident-panel-alert-total small">{a.doc_count}</p>
 						</div>
 		})
-		// console.log(alerts)
 		return alerts
 	}
 	render(){

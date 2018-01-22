@@ -31,8 +31,6 @@ export class Login extends Component {
     if(session && session !== 'undefined'){
       let token = localStorage.getItem('session')
       let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
-      console.log(decoded.logoutDate)
-      console.log(decoded.loginAttempts)
       this.setState({
         loginAttempts: decoded.loginAttempts + 1       
       }) 
@@ -52,7 +50,6 @@ export class Login extends Component {
     let pswd = this.state.pswd
     let login = this
     let loginAttempts = this.state.loginAttempts
-    console.log(loginAttempts)
     let session = localStorage.getItem('session')
     if(session && session !== 'undefined'){
       let token = localStorage.getItem('session')
@@ -86,25 +83,18 @@ export class Login extends Component {
   logoutTimer(log){
     let session = localStorage.getItem('session')
     if(session && session !== 'undefined'){
-      console.log(this.state.loginAttempts)
       let token = localStorage.getItem('session')
       let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
       let time = new Date(decoded.logoutDate)
       let timeLeft = new Date(time.getTime() + 3*60000)
-      console.log(timeLeft - new Date())
-      
-      console.log('timeLeft + 2')
       if(this.state.loginAttempts > 3){
         let diff = timeLeft - new Date()
         let min = Math.floor(diff/60000)
-        console.log(min)
         let sec = ((diff % 60000) / 1000).toFixed(0)
-        console.log(sec)
         this.setState({_error: 'Too many attempts. Logged out for ' + min + ':' + (sec < 10 ? '0' : '') + sec })
       }
       // timeLeft.setSeconds(timeLeft.getSeconds() + 2)
       if(timeLeft <= new Date()){
-        console.log('time has expired')
         this.setState({loginAttempts:1,_error:''})
         localStorage.removeItem('session')
       }

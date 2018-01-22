@@ -78,6 +78,7 @@ router.post('/', function(req, res, next){
             }
           })
         }else{
+          log.info(requestLog(req, 200, validuser))
           res.status(200).send(validUser)
         }
       } else {

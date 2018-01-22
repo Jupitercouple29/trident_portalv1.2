@@ -28,10 +28,10 @@ router.get('/ping',
       requestTimeout: 30000
     }, function(error) {
       if (error) {
-        console.error('elasticsearch cluster is down');
+        log.error(requestLog(error, 500, 'Elasticsearch cluster is not responding'))
         res.status(500).send('Elasticsearch cluster is not responding')
       } else {
-        console.log('All is well')
+        log.info(requestLog(req, 200, 'All is well'))
         res.status(200).send('All is well')
       }
     })
@@ -42,16 +42,11 @@ router.get('/',
   jwtRest({secret: process.env.JWT_SECRET}),
   function(req, res, next) {
     let queryString = ''
-    console.log(req.query)
     if (req.query.trident && Array.isArray(req.query.trident)) {
       req.query.trident.map((param, i) => {
         let trident = "Trident" + param + " "
         queryString += trident
       })
-      let date = new Date()
-      let minusHour = new Date().setHours(new Date().getHours() - 1)
-      console.log(date)
-      console.log(new Date(minusHour))
       let query = searchObject(queryString)
       return client.search({index, body: query})
       .then(function(resp) {
@@ -176,10 +171,11 @@ router.get('/item',
     let queryString = searchItemClicked(trident,title,info)
     return client.search({index, body: queryString})
     .then(result => {
+      log.info(requestLog(req, 200, result))
       res.status(200).send(result.hits.hits)
     })
     .catch(err => {
-      console.log(err)
+      log.error(requrestLog(req, 401, err))
       res.status(401).send(err.responses)
     })
   })

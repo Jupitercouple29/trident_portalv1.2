@@ -23,13 +23,11 @@ export class PortalMap extends Component {
 
       getMapCoords([this.props.trident])
       .then(res => {
-        // console.log(res)
         this.setState({coords: res})
       })
     }else if(this.props.tridents){
       getMapCoords(this.props.tridents)
       .then(res => {
-        // console.log(res)
         this.setState({coords: res})
       })
     }
@@ -39,7 +37,6 @@ export class PortalMap extends Component {
     if(this.props.trident !== nextProps.trident){
       getMapCoords([nextProps.trident])
       .then(res => {
-        // console.log(res)
         this.setState({coords: res})
       })
     }
@@ -57,12 +54,8 @@ export class PortalMap extends Component {
     info.trident = this.props.tridents
     getMapAlert(info)
     .then((res)=>{
-      console.log(res)
       this.props.mapAlerts(res)
       // this.props.history.push('/alerts')
-    })
-    .catch((err)=>{
-      console.log(err)
     })
   }
 
@@ -70,8 +63,6 @@ export class PortalMap extends Component {
     let key = 0
     let that = this
     let { circleRadius, coords } = this.state 
-    // console.log(circleRadius)
-    // console.log(this.state.coords)
     let Circles = coords.map(c => {
       let lat = c[0]
       let long = c[1]
@@ -105,7 +96,6 @@ export class PortalMap extends Component {
   handleZoom(e){
     let zoom = e.target._zoom
     let circleRadius = 200000/zoom
-    console.log(zoom)
     if(zoom >= 6 && zoom <= 13) circleRadius = 100000/Math.pow((zoom - 2),2)
     else if(zoom > 13 && zoom < 17) circleRadius = 10000/Math.pow((zoom - 2),2)
     else if(zoom > 17) circleRadius = 5000/Math.pow((zoom - 2),2)

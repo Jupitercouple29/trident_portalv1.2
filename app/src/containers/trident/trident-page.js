@@ -24,7 +24,6 @@ export class TridentPage extends Component {
     getTridentAlerts(trident)
     .then((res)=>{
 	    if(res.alerts.length < 1){
-	    	console.log("no tridens available")
 	    	this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
 	    }
       this.props.tridentAlerts(res.alerts)
@@ -33,16 +32,9 @@ export class TridentPage extends Component {
       this.props.tridentDestIPs(res.dest_ips)
       this.setState({loading:false})
     })
-    .catch((err)=>{
-      console.log('there has been an error')
-      console.log(err)
-    })
 	}
 	componentWillReceiveProps(nextProps){
 		if(nextProps.selectedTrident !== null && nextProps.selectedTrident !== this.state.trident){
-			// console.log('receiving new props')
-			// console.log(nextProps.selectedTrident)
-			// console.log(this.state.trident)
 			let trident = nextProps.selectedTrident
 			this.setState({trident})
 	    getTridentAlerts(trident)
@@ -54,11 +46,6 @@ export class TridentPage extends Component {
 	      this.props.tridentSourceIPs(res.ips)
 	      this.props.tridentSignatureAlerts(res.signatureAlerts)
 	      this.props.tridentDestIPs(res.dest_ips)
-
-	    })
-	    .catch((err)=>{
-	      console.log('there has been an error')
-	      console.log(err)
 	    })
 		}
 	}

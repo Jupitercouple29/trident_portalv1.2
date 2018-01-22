@@ -30,7 +30,6 @@ export const auth = (email, pswd, loginAttempts) => {
       user.token = ''
       user.data = "Network Error"
     }else{
-      console.log(error.response.data.jwtToken)
       localStorage.setItem('session', error.response.data.jwtToken)
       user.isValid = false;
       user.token = error.response.data.jwtToken;

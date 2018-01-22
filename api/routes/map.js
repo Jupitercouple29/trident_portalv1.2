@@ -44,7 +44,6 @@ function(req, res, next) {
       res.status(400).send(err.message)
     })
   }else{
-    console.log('there has been an error')
     log.error(requestLog(req), 400, 'Params is not an array')
     res.status(400).send('Params is not an array')
   }

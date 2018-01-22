@@ -18,7 +18,6 @@ export const getMapCoords = (info) => {
     return response.data
   })
   .catch((error)=>{
-    console.log('there has been an error in getMapCoords')
     return error.response
   })
 }

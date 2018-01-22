@@ -15,8 +15,6 @@ export default class AlertType extends Component {
 		})
 	}
 	componentWillReceiveProps(nextProps){
-		// console.log(this.props.trident)
-		// console.log(nextProps.trident)
 		if(this.props.trident !== nextProps.trident){
 			this.props.alertFunc(nextProps.trident,this.props.type)
 			.then(res=>{

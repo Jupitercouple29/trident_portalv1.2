@@ -39,14 +39,12 @@ export class ProfilePage extends Component {
 		e.preventDefault()
 		var that = this;
 		var image = new Image()
-		console.log(e.dataTransfer)
 		image.src = e.dataTransfer.getData('Text')
 		image.onload = () => {
 			var canvas = document.createElement('canvas'), context = canvas.getContext('2d')
 			canvas.width = image.width
 			canvas.height = image.height
 			context.drawImage(image, 0, 0, image.width, image.height)
-			console.log(canvas.toDataURL('image/png'))
 			var myImage = canvas.toDataURL('image/png')
 		 	var img = document.getElementById('my-image')
       img.height = "50"
@@ -56,20 +54,15 @@ export class ProfilePage extends Component {
 		}
 	}
 	handlePaste(e){
-		console.log(e)
 		var myImage = ''
 		var that = this
     var items = (e.clipboardData || e.originalEvent.clipboardData).items;
-  	console.log(JSON.stringify(items)); // will give you the mime types
   	for (var index in items) {
 	    var item = items[index];
-	    console.log(item)
 	    if (item.kind === 'file') {
 	      var blob = item.getAsFile();
-	      console.log(blob)
 	      var reader = new FileReader();
 	      reader.onload = function(e){
-	        console.log(e.target.result)
 	        myImage = e.target.result
 	        var img = document.getElementById('my-image')
 	        img.height = "50"
@@ -98,7 +91,6 @@ export class ProfilePage extends Component {
     }
     updateUser(info)
     .then(res => {
-    	console.log(res)
     	if(res === 'success'){
 				this.setState({updateMessage:"Update was successful"})
     	}
@@ -182,6 +174,7 @@ export class ProfilePage extends Component {
 						onClick={this.onFormSubmit}>
 							Update Logo
 						</button>
+						<p>To update logo, copy (ctrl+c) and <br/> paste (ctrl+v) your logo to the box.</p>
 					<div className="profile-page-notification-container">
 						<label className="profile-page-timezone-label">Timezone</label>
 						<Timezone />

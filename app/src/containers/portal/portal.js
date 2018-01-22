@@ -39,13 +39,10 @@ export class Portal extends Component {
     let tridents = this.props.tridents
     getTridents(tridents)
     .then(result=>{
-      console.log(result)
-      console.log('here is result')
       this.props.dashboardInfo(result)
       this.setState({isLoading:false})
     })
     .catch((err)=>{
-      console.log('error for getTridents')
       this.setState({loadingMessage:
         <h1 className="loading-error">There has been a connection error.<br/><br/>
          Please try back again .
