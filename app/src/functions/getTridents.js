@@ -23,6 +23,8 @@ export const getTridents = (info) => {
     return data
   })
   .catch((error)=>{
-    return error.response
+    console.log('here is the catch in getTridents')
+    throw new Error(error.response)
+    // return error.response
   })
 }

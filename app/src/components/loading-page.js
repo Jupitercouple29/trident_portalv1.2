@@ -6,14 +6,14 @@ export default class LoadingPage extends Component {
     let message = this.props.message
     return(
       <div className="loading-page-container">
-        <h3 className="loading-page-message">
+        <section className="loading-page-message">
           {message}
-        </h3>
+        </section>
         <img
         className="loading-page-img"
         src={TridentImage}
-        height={'500px'}
-        width={'500px'}
+        height={'300px'}
+        width={'300px'}
         alt={'Loading....'}
         />
       </div>

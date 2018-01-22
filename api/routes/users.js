@@ -25,61 +25,74 @@ router.post('/', function(req, res, next){
   let body = req.body;
   let email = body.email;
   let pswd = body.pswd;
+  let loginAttempts = body.loginAttempts
   let validUser = {};
   let rootRef = firebase.database().ref('users');
-  rootRef.orderByChild('email').equalTo(req.body.email).once('value')
-  .then(function (snap){
-    if(snap.val()){
-      let userKey = Object.keys(snap.val())
-      let result = snap.val()[userKey[0]]
-      validUser = Object.assign(
-        {},
-        {email:result.email},
-        {name:result.name},
-        {tridents:result.tridents},
-        {company:result.company},
-        {creds:result.creds},
-        {phone:result.phone},
-        {logo:result.logo},
-        {seller:result.seller}
-      )
-      if(email && pswd){
-        bcrypt.compare(pswd, result.password, function(err, response){
-          if(err){
-            let _error = 'Login failed: Email/Password is incorrect';
-            log.error(requestLog(req, 'Bcrypt Compare Error'))
-            res.status(400).send(_error);
-          } else if(response){
-            var jwtToken = jwt.sign(
-              {user:validUser, date:new Date()},
-              process.env.JWT_SECRET
-            );
-            var user = Object.assign(
-              {},
-              {validUser:validUser},
-              {jwtToken: jwtToken}
-            )
-            log.info(requestLog(req,200))
-            res.status(200).send(user)
-          } else {
-            let _error = 'Login failed: Email/Password is incorrect';
-            log.error(requestLog(req, 'Invalid Password'))
-            res.status(401).send(_error);
-          }
-        })
-      }else{
-        res.status(200).send(validUser)
-      }
-    } else {
-        let _error = 'Login failed: Email/Password is incorrect';
+  let jwtToken = jwt.sign(
+    {logoutDate:new Date(),loginAttempts},
+    process.env.JWT_SECRET
+  );
+  let _error = {
+    message:'Login failed: Email/Password is incorrect',
+    jwtToken
+  }
+  if(loginAttempts < 4){
+    rootRef.orderByChild('email').equalTo(req.body.email).once('value')
+    .then(function (snap){
+      if(snap.val()){
+        let userKey = Object.keys(snap.val())
+        let userRef = rootRef.child(userKey[0])
+        let result = snap.val()[userKey[0]]
+        validUser = Object.assign(
+          {},
+          {email:result.email},
+          {name:result.name},
+          {tridents:result.tridents},
+          {company:result.company},
+          {creds:result.creds},
+          {phone:result.phone},
+          {logo:result.logo},
+          {seller:result.seller}
+        )
+        if(email && pswd){
+          bcrypt.compare(pswd, result.password, function(err, response){
+            if(err){
+              log.error(requestLog(req, 'Bcrypt Compare Error'))
+              res.status(400).send(_error);
+            } else if(response){
+              let jwtToken = jwt.sign(
+                {user:validUser, date:new Date()},
+                process.env.JWT_SECRET
+              );
+              var user = Object.assign(
+                {},
+                {validUser:validUser},
+                {jwtToken: jwtToken}
+              )
+              log.info(requestLog(req,200))
+              res.status(200).send(user)
+            } else {
+              userRef.update({logoutDate:new Date()})
+              log.error(requestLog(req, 'Invalid Password'))
+              res.status(401).send(_error);
+            }
+          })
+        }else{
+          res.status(200).send(validUser)
+        }
+      } else {
         log.error(requestLog(req, 'Invalid Email'))
         res.status(401).send(_error);
-    }
-  }).catch(function(err){
-    let _error = 'Login failed: Email/Password is incorrect';
-    log.error(err, 'Invalid Email')
+      }
+    })
+    .catch(function(err){
+      log.error(err, 'Invalid Email')
+      res.status(401).send(_error);
+    })
+  }else{
+    log.error(req, 'Invalid Email')
     res.status(401).send(_error);
-  })
+  }
 })
 
 router.post('/update', function(req, res, next){

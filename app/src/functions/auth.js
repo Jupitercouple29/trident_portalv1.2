@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-export const auth = (email, pswd) => {
+export const auth = (email, pswd, loginAttempts) => {
   let user = {};
   return axios.post(process.env.REACT_APP_API_URL + '/users', {
     email:email,
-    pswd:pswd
+    pswd:pswd,
+    loginAttempts:loginAttempts
   })
   .then(function(response){
     if(response.data.jwtToken){
@@ -29,9 +30,11 @@ export const auth = (email, pswd) => {
       user.token = ''
       user.data = "Network Error"
     }else{
+      console.log(error.response.data.jwtToken)
+      localStorage.setItem('session', error.response.data.jwtToken)
       user.isValid = false;
-      user.token = '';
-      user.data = error.response.data
+      user.token = error.response.data.jwtToken;
+      user.data = error.response.data.message
     }
     return user;
   })

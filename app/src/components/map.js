@@ -113,7 +113,7 @@ export class PortalMap extends Component {
   }
 
 	render(){
-    let mapAlerts = this.showMapAlerts()
+    let mapAlerts = this.state.coords.length ? this.showMapAlerts() : null
 		return(
 			<section className="portal-map-container">
         <section className="portal-map" id="mapid" ref="map">

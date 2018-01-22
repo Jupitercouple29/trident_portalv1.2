@@ -30,6 +30,7 @@
 .loading-page-message, .loading-page-error {
 	display: flex;
 	justify-content: center;
+	margin-bottom: 50px;
 }
 
 .loading-page-container {
