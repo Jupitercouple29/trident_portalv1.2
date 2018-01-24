@@ -75,6 +75,13 @@ export class SidePanel extends Component {
 					open={displaySidePanel} 
 					icon={"fa fa-pie-chart fa-lg"} 
 					title={"Charts"}/>
+					<SidePanelItem 
+					display={display}
+					route={this.routeClicked}
+					selected={this.state.route}
+					open={displaySidePanel} 
+					icon={"fa fa-file-pdf-o fa-lg"} 
+					title={"Reports"}/>
 			</div>
 		)
 	}
