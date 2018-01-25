@@ -22,10 +22,7 @@ export default class AlertPanelItem extends Component {
 		let source = this.props.alert
 		let date = formatDate(source.timestamp)
 		let sourceIP = source.source_ip
-		// let sourcePort = source.source_port
-		// let proto = source.proto
 		let destIP = source.destination_ip
-		// let destPort = source.destination_port
 		let trident = source.filename
 		let event = source.event_type
 		let showEvent

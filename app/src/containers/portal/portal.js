@@ -10,6 +10,7 @@ import ProfilePage from '../profile/profile-page'
 import AlertsPage from '../alerts/alerts-page'
 import ChartsPage from '../charts/charts-page'
 import InfoPage from '../info/info-page'
+import Reports from '../reports/reports-page'
 import LoadingPage from '../../components/loading-page'
 import { getTridents } from '../../functions/getTridents'
 import * as actionCreators from '../../actions'
@@ -63,8 +64,8 @@ export class Portal extends Component {
   }
   
   componentWillUnmount(){
-    let sidePanel = document.getElementsByClassName('side-panel-container')[0]
-    ReactDOM.findDOMNode(sidePanel).removeEventListener('resize', this.side)
+    // let sidePanel = document.getElementsByClassName('side-panel-container')[0]
+    // ReactDOM.findDOMNode(sidePanel).removeEventListener('resize', this.side)
   }
 
   componentWillReceiveProps(nextProps){
@@ -92,6 +93,9 @@ export class Portal extends Component {
           break
         case '/info':
           pageLocation = <InfoPage />
+          break
+        case '/reports':
+          pageLocation = <Reports />
           break
         default:
           pageLocation = <Dashboard />

@@ -5,14 +5,16 @@ export default class AlertPanel extends Component {
 	constructor(props){
 		super(props)
     this.state = {
-      alertList: []
+      alertList: [],
+      message: this.props.message
     }
 		this.showAlerts = this.showAlerts.bind(this)
-		this.handleClick = this.handleClick.bind(this)
 	}
-	handleClick(){
-		
-	}
+	componentWillReceiveProps(nextProps){
+    if(this.props.message !== nextProps.message){
+      this.setState({message:nextProps.message})
+    }
+  }
 	showAlerts(){
 		if(this.props.alerts){
 			let listAlerts = this.props.alerts.map((a, i)=>{
@@ -25,6 +27,8 @@ export default class AlertPanel extends Component {
   render(){
     let alertList = this.showAlerts()
     let size = this.props.size
+    let message = this.props.message
+    let showAlerts = this.props.alerts && this.props.alerts.length < 1 ? message : alertList
     return(
      	<div className={`alert-panel ${size}`}>
         <div className="alert-panel-header">
@@ -38,7 +42,7 @@ export default class AlertPanel extends Component {
           <label className="alert-panel-label event-type">Event Type</label>
         </div>
         <div className="alert-panel-alerts-container">
-					{alertList}
+					{showAlerts}
         </div>
       </div>
     )

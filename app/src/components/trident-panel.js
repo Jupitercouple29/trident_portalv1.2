@@ -8,22 +8,23 @@ import * as actionCreators from '../actions'
 export class TridentPanel extends Component {
 	constructor(props){
 		super(props)
+		this.state = {
+			message:this.props.message
+		}
 		this.handleOnclick = this.handleOnclick.bind(this)
-		this.handleAlertClick = this.handleAlertClick.bind(this)
 	}
 	handleOnclick(title, info){
-		console.log(title)
-		console.log(info)
 		let trident = localStorage.getItem('selectedTrident')
 		getItemClicked(trident, title, info)
 		.then(res => {
-			console.log(res)
 			this.props.infoAlerts(res)
 			this.props.history.push('/info')
 		})
 	}
-	handleAlertClick(info){
-		console.log(info)
+	componentWillReceiveProps(nextProp){
+		if(this.props.message !== nextProp.message){
+			this.setState({message:nextProp.message})
+		}
 	}
 	distributeArrays(array){
 		let keys = []
@@ -38,22 +39,23 @@ export class TridentPanel extends Component {
 	}
 	distributeSignatures(array){
 		let alerts = array.map((a,i) => {
-								return <div key={a.key + i} className="trident-panel-alert">
-												<p 
-													className="trident-panel-alert-name medium"
-													onClick={this.handleOnclick.bind(this,"alert.signature.keyword",a.key)}>
-													{a.key}
-												</p>
-												<p className="trident-panel-alert-total small">{a.doc_count}</p>
-											</div>
-							})
-		// console.log(alerts)
+			return <div key={a.key + i} className="trident-panel-alert">
+							<p 
+								className="trident-panel-alert-name medium"
+								onClick={this.handleOnclick.bind(this,"alert.signature.keyword",a.key)}>
+								{a.key}
+							</p>
+							<p className="trident-panel-alert-total small">{a.doc_count}</p>
+						</div>
+		})
 		return alerts
 	}
 	render(){
 		let sourceIPArray = this.distributeArrays(this.props.sourceIPs)
 		let destIPArray = this.distributeArrays(this.props.destIPs)
 		let alertsArray = this.distributeSignatures(this.props.alerts)
+		let message = this.props.message
+		let showAlerts = alertsArray && alertsArray.length >= 1 ? alertsArray : message
 		return(
 			<div className="trident-panel-container">
 				<div className="trident-panel small">
@@ -61,6 +63,7 @@ export class TridentPanel extends Component {
 						title={"Source IPs"} 
 						info={sourceIPArray[0]} 
 						name={"source_ip"}
+						message={message}
 						clicked={this.handleOnclick}/>
 					<Columns 
 						title={"Total # of Alerts"} 
@@ -74,7 +77,7 @@ export class TridentPanel extends Component {
 							<h3 className="trident-panel-header small">Total</h3>
 						</div>
 						<div className="trident-panel-alerts">
-							{alertsArray}
+							{showAlerts}
 						</div>
 					</div>
 				</div>
@@ -83,6 +86,7 @@ export class TridentPanel extends Component {
 						title={"Destination IPs"} 
 						info={destIPArray[0]} 
 						name={"destination_ip"}
+						message={message}
 						clicked={this.handleOnclick}/>
 					<Columns 
 						title={"Total # of Alerts"} 

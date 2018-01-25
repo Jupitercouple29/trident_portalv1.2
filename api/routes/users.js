@@ -1,11 +1,16 @@
 var jwt = require('jsonwebtoken');
+const jwtRest = require('express-jwt')
 var firebase = require('firebase');
 var bcrypt = require('bcryptjs');
 var requestLog = require('../lib/common').requestLog
 var validateEmail = require('../lib/common').validateEmail
+const { validateMiddleware } = require('../lib/common')
 var express = require('express');
 var router = express.Router();
 
+if(process.env.NODE_ENV === 'test'){
+  require('dotenv').config();
+}
 
 var firebaseApp = firebase.initializeApp({
   apiKey: process.env.FIREBASE_API_KEY,
@@ -20,57 +25,75 @@ router.post('/', function(req, res, next){
   let body = req.body;
   let email = body.email;
   let pswd = body.pswd;
+  let loginAttempts = body.loginAttempts
   let validUser = {};
   let rootRef = firebase.database().ref('users');
-  rootRef.orderByChild('email').equalTo(req.body.email).once('value')
-  .then(function (snap){
-    if(snap.val()){
-      let userKey = Object.keys(snap.val())
-      let result = snap.val()[userKey[0]]
-      validUser = Object.assign(
-        {},
-        {email:result.email},
-        {name:result.name},
-        {tridents:result.tridents},
-        {company:result.company},
-        {creds:result.creds},
-        {seller:result.seller}
-      )
-      console.log(pswd)
-      console.log(result.password)
-      bcrypt.compare(pswd, result.password, function(err, response){
-        if(err){
-          let _error = 'Login failed: Email/Password is incorrect';
-          log.error(requestLog(req, 'Bcrypt Compare Error'))
-          res.status(400).send(_error);
-        } else if(response){
-          var jwtToken = jwt.sign(
-            {user:validUser, date:new Date()},
-            process.env.JWT_SECRET
-          );
-          var user = Object.assign(
-            {},
-            {validUser:validUser},
-            {jwtToken: jwtToken}
-          )
-          log.info(requestLog(req,200))
-          res.status(200).send(user)
-        } else {
-          let _error = 'Login failed: Email/Password is incorrect';
-          log.error(requestLog(req, 'Invalid Password'))
-          res.status(401).send(_error);
+  let jwtToken = jwt.sign(
+    {logoutDate:new Date(),loginAttempts},
+    process.env.JWT_SECRET
+  );
+  let _error = {
+    message:'Login failed: Email/Password is incorrect',
+    jwtToken
+  }
+  if(loginAttempts < 4){
+    rootRef.orderByChild('email').equalTo(req.body.email).once('value')
+    .then(function (snap){
+      if(snap.val()){
+        let userKey = Object.keys(snap.val())
+        let userRef = rootRef.child(userKey[0])
+        let result = snap.val()[userKey[0]]
+        validUser = Object.assign(
+          {},
+          {email:result.email},
+          {name:result.name},
+          {tridents:result.tridents},
+          {company:result.company},
+          {creds:result.creds},
+          {phone:result.phone},
+          {logo:result.logo},
+          {seller:result.seller}
+        )
+        if(email && pswd){
+          bcrypt.compare(pswd, result.password, function(err, response){
+            if(err){
+              log.error(requestLog(req, 'Bcrypt Compare Error'))
+              res.status(400).send(_error);
+            } else if(response){
+              let jwtToken = jwt.sign(
+                {user:validUser, date:new Date()},
+                process.env.JWT_SECRET
+              );
+              var user = Object.assign(
+                {},
+                {validUser:validUser},
+                {jwtToken: jwtToken}
+              )
+              log.info(requestLog(req,200))
+              res.status(200).send(user)
+            } else {
+              userRef.update({logoutDate:new Date()})
+              log.error(requestLog(req, 'Invalid Password'))
+              res.status(401).send(_error);
+            }
+          })
+        }else{
+          log.info(requestLog(req, 200, validuser))
+          res.status(200).send(validUser)
         }
-      })
-    } else {
-        let _error = 'Login failed: Email/Password is incorrect';
+      } else {
         log.error(requestLog(req, 'Invalid Email'))
         res.status(401).send(_error);
-    }
-  }).catch(function(err){
-    let _error = 'Login failed: Email/Password is incorrect';
-    log.error(err, 'Invalid Email')
+      }
+    })
+    .catch(function(err){
+      log.error(err, 'Invalid Email')
+      res.status(401).send(_error);
+    })
+  }else{
+    log.error(req, 'Invalid Email')
     res.status(401).send(_error);
-  })
+  }
 })
 
 router.post('/update', function(req, res, next){
@@ -174,5 +197,44 @@ router.post('/new_user', function(req, res, next){
     })
   })
 })
+
+router.post('/update/profile', 
+  validateMiddleware,
+  jwtRest({secret:process.env.JWT_SECRET}),
+  function (req, res, next){
+    let name = req.body.info.name
+    let email = req.body.info.email
+    let newEmail = req.body.info.newEmail
+    let company = req.body.info.company
+    let phone = req.body.info.phone
+    let logo = req.body.info.logo || ''
+    if(!validateEmail(email)) res.status(401).send('Please enter a valid email')
+    let rootRef = firebase.database().ref('users');
+    rootRef.orderByChild('email').equalTo(email).once('value')
+    .then(snap => {
+      console.log('just after then statement')
+      if(snap.val()){
+        console.log('inside snapval')
+        let userKey = Object.keys(snap.val())
+        let userRef = rootRef.child(userKey[0])
+        userRef.update({
+          name: name,
+          email: newEmail,
+          company: company,
+          phone: phone,
+          logo: logo
+        })
+        requestLog(req, 'Profile has been updated for ' + name)
+        res.status(201).send('success')
+      }else{
+        requestLog(req, 'Unable to find user to update')
+        res.status(401).send('Invalid email. Unable to update users at ' + email)
+      }
+    })
+    .catch(err => {
+      requestLog(req, 'Firebase error')
+      res.status(401).send('Firebase error. Unable to update user at ' + email)
+    })
+  })
 
 module.exports = router

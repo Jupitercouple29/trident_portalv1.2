@@ -18,6 +18,8 @@ export class NavBar extends Component {
 			this.setState({logo:DCILogo})
 		}else if (this.props.user.seller === "AIS_logo"){
 			this.setState({logo:AISLogo})
+		}else if (this.props.user.logo){
+			this.setState({logo:this.props.user.logo})
 		}
 	}
 	handleHamburgerClick(){
@@ -29,7 +31,7 @@ export class NavBar extends Component {
 		this.props.history.push('/login')
 	}
 	render(){
-		let userName = this.props.user ? this.props.user.name : "unavailable"
+		let userName = this.props.user.name || "unavailable"
 		let pageLogo = this.state.logo
 		return (
 			<div className="nav-bar-container"> 

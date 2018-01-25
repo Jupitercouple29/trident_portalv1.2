@@ -14,7 +14,8 @@ export class TridentPage extends Component {
 		super(props)
 		this.state = {
 			trident: null,
-			loading: true
+			loading: true,
+			alertMessage:<div className="loading-message"> Loading... </div>
 		}
 	}
 	componentWillMount(){
@@ -22,34 +23,29 @@ export class TridentPage extends Component {
 		this.setState({trident})
     getTridentAlerts(trident)
     .then((res)=>{
+	    if(res.alerts.length < 1){
+	    	this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
+	    }
       this.props.tridentAlerts(res.alerts)
       this.props.tridentSourceIPs(res.ips)
       this.props.tridentSignatureAlerts(res.signatureAlerts)
       this.props.tridentDestIPs(res.dest_ips)
       this.setState({loading:false})
     })
-    .catch((err)=>{
-      console.log('there has been an error')
-      console.log(err)
-    })
 	}
 	componentWillReceiveProps(nextProps){
 		if(nextProps.selectedTrident !== null && nextProps.selectedTrident !== this.state.trident){
-			// console.log('receiving new props')
-			// console.log(nextProps.selectedTrident)
-			// console.log(this.state.trident)
 			let trident = nextProps.selectedTrident
 			this.setState({trident})
-	    getTridentAlerts([trident])
+	    getTridentAlerts(trident)
 	    .then((res)=>{
+	    	if(res.alerts.length < 1){
+	    		this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
+	    	}
 	      this.props.tridentAlerts(res.alerts)
 	      this.props.tridentSourceIPs(res.ips)
 	      this.props.tridentSignatureAlerts(res.signatureAlerts)
 	      this.props.tridentDestIPs(res.dest_ips)
-	    })
-	    .catch((err)=>{
-	      console.log('there has been an error')
-	      console.log(err)
 	    })
 		}
 	}
@@ -58,6 +54,7 @@ export class TridentPage extends Component {
 		let sourceIPs = this.props.sourceIPs
 		let destIPs = this.props.destIPs
 		let alerts = this.props.signature
+		let message = this.state.alertMessage
 		return(
 			<div className="trident-page-container">
 				<div className="dashboard-header">
@@ -65,13 +62,13 @@ export class TridentPage extends Component {
 					<h3 className="dashboard-path">Home / Trident</h3>
 				</div>	
 				<PortalMap trident={trident}/>
-				{this.state.loading ? "Loading ..." : <TridentPanel sourceIPs={sourceIPs} destIPs={destIPs} alerts={alerts} />}	
-				{this.state.loading ? null : <AlertType alertFunc={getAlerts} trident={[trident]} type={"alert"} title={"Signature Events"}/>}
-				{this.state.loading ? null : <AlertType alertFunc={getAlerts} trident={[trident]} type={"dns"} title={"DNS Events"}/>}
-				{this.state.loading ? null : <AlertType alertFunc={getAlerts} trident={[trident]} type={"http"} title={"HTTP Events"}/>}
-				{this.state.loading ? null : <AlertType alertFunc={getAlerts} trident={[trident]} type={"tls"} title={"TLS Events"}/>}
-				{this.state.loading ? null : <AlertType alertFunc={getAlerts} trident={[trident]} type={"fileinfo"} title={"File Events"}/>}
-				{this.state.loading ? null : <AlertType alertFunc={getAlerts} trident={[trident]} type={"ssh"} title={"SSH Events"}/>}
+				<TridentPanel sourceIPs={sourceIPs} destIPs={destIPs} alerts={alerts} message={message} />
+				<AlertType alertFunc={getAlerts} trident={trident} type={"alert"} title={"Signature Events"} message={message}/>
+				<AlertType alertFunc={getAlerts} trident={trident} type={"dns"} title={"DNS Events"} message={message} />
+				<AlertType alertFunc={getAlerts} trident={trident} type={"http"} title={"HTTP Events"} message={message} />
+				<AlertType alertFunc={getAlerts} trident={trident} type={"tls"} title={"TLS Events"} message={message} />
+				<AlertType alertFunc={getAlerts} trident={trident} type={"fileinfo"} title={"File Events"} message={message} />
+				<AlertType alertFunc={getAlerts} trident={trident} type={"ssh"} title={"SSH Events"} message={message} />
 			</div>
 		)
 	}

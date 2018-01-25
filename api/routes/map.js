@@ -1,5 +1,4 @@
 const jwtRest = require('express-jwt')
-const jwt = require('jsonwebtoken')
 const express = require('express')
 const { requestLog } = require('../lib/common')
 const { validateMiddleware } = require('../lib/common')

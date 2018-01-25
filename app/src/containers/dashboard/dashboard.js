@@ -3,8 +3,6 @@ import TridentPanel from '../../components/dashboard-trident-panel'
 import InfoPanel from '../../components/info-panel'
 import PortalMap from '../../components/map'
 import AlertPanel from '../../components/alert-panel'
-import LoadingPage from '../../components/loading-page'
-import { getTridents } from '../../functions/getTridents'
 import { getNumOfAlerts } from '../../functions/getNumOfAlerts'
 import { formatDate } from '../../functions/formatDate'
 import * as actionCreators from '../../actions'
@@ -18,6 +16,7 @@ export class Dashboard extends Component {
 			numAlerts: {},
 			isLoading: true,
       loadingMessage: <h1 className="loading-message">Gathering your information...</h1>,
+      alertMessage: "Loading..."
 		}
 	}
 	componentWillMount(){
@@ -29,10 +28,13 @@ export class Dashboard extends Component {
 	}
 
 	render(){
-		// console.log(this.props.dashboardInfo)
-		let eventsLastHour = this.props.dashboard.alertsLastHour ? this.props.dashboard.alertsLastHour.toLocaleString() : 0
-		let lastEventTime = this.props.dashboard.lastEventTime ? formatDate(this.props.dashboard.lastEventTime) : formatDate(new Date())
+		let dashboard = this.props.dashboard
+		let tridents = this.props.user.tridents
+		let numAlerts = this.state.numAlerts
+		let eventsLastHour = dashboard.alertsLastHour ? dashboard.alertsLastHour.toLocaleString() : 0
+		let lastEventTime = dashboard.lastEventTime ? formatDate(dashboard.lastEventTime) : formatDate(new Date())
 		let numTridents = this.props.tridents.length ? this.props.tridents.length : 0
+		let message = this.state.alertMessage
 		return (
 			<div className="dashboard-container">
 				<div className="dashboard-header">
@@ -51,12 +53,12 @@ export class Dashboard extends Component {
 				</div>	
 				<PortalMap />
 				<div className="dashboard-panel-container">
-					<TridentPanel alerts={this.state.numAlerts} tridents={this.props.user.tridents}/>
-					<TridentPanel alerts={this.state.numAlerts} tridents={this.props.user.tridents}/>
+					<TridentPanel alerts={numAlerts} tridents={tridents} message={message}/>
+					<TridentPanel alerts={numAlerts} tridents={tridents} message={message}/>
 				</div>
 				<div className="dashboard-panel-container">
 					<div className="dashboard-panel">
-					 <AlertPanel alerts={this.props.dashboard.alerts} title={"Current Events"} />
+					 <AlertPanel alerts={dashboard.alerts} title={"Current Events"} message={message}/>
 					</div>
 				</div>
 			</div>

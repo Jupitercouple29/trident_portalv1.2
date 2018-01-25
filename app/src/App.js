@@ -32,6 +32,7 @@ export class App extends Component {
               <AuthRoute path="/charts" component={Portal}/>
               <AuthRoute path="/alerts" component={Portal}/>
               <AuthRoute path="/info" component={Portal}/>
+              <AuthRoute path="/reports" component={Portal}/>
             </Switch>
           </div>
         </Router>

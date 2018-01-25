@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { auth } from '../../functions/auth'
 import * as actionCreators from '../../actions'
 import { connect } from 'react-redux'
+import jwt from 'jsonwebtoken'
 import './login.css';
 
 /**
@@ -15,19 +16,28 @@ export class Login extends Component {
     this.state = {
       email: '',
       pswd: '',
-      _error:''
+      _error:'',
+      loginAttempts:1,
+      timeRemaining: 0
     }
     this.onFormSubmit = this.onFormSubmit.bind(this)
+    this.handleFocus = this.handleFocus.bind(this)
+    this.logoutTimer = this.logoutTimer.bind(this)
   }
-  
   componentWillMount(){
     localStorage.removeItem('jwt')
     this.props.login(null)
-    if(localStorage.getItem('loggedOut')){
-      console.log(window.location)
-      localStorage.removeItem('loggedOut')
-      window.location.reload()
+    let session = localStorage.getItem('session')
+    if(session && session !== 'undefined'){
+      let token = localStorage.getItem('session')
+      let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
+      this.setState({
+        loginAttempts: decoded.loginAttempts + 1       
+      }) 
     }
+  }
+  componentDidMount(){
+    this.interval = setInterval(this.logoutTimer, 1000)
   }
   onInputChange(type, event){
     let stateVal = { }
@@ -39,18 +49,60 @@ export class Login extends Component {
     let email = this.state.email.toLowerCase()
     let pswd = this.state.pswd
     let login = this
-    auth(email, pswd).then((res)=>{
+    let loginAttempts = this.state.loginAttempts
+    let session = localStorage.getItem('session')
+    if(session && session !== 'undefined'){
+      let token = localStorage.getItem('session')
+      let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
+      loginAttempts = decoded.loginAttempts + 1
+    }else loginAttempts = loginAttempts + 1
+    auth(email, pswd, loginAttempts).then((res)=>{
       let _error = res.data
       if(res.isValid){
-        // login.setState({_error: ''})
         login.props.history.push('/dashboard')
       }else{
-        login.setState({_error})
+        login.setState({
+          _error,
+          loginAttempts:loginAttempts,
+          email:'',
+          pswd: ''
+        })
       }
-    });
+    })
+  }
+  handleFocus(e){
+    let target = e.target.id
+    if(this.state.loginAttempts > 3){
+      if(target === 'email'){
+        this.setState({email:''})
+      }else if(target === 'pswd'){
+        this.setState({pswd:''})
+      }
+    } 
+  }
+  logoutTimer(log){
+    let session = localStorage.getItem('session')
+    if(session && session !== 'undefined'){
+      let token = localStorage.getItem('session')
+      let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
+      let time = new Date(decoded.logoutDate)
+      let timeLeft = new Date(time.getTime() + 3*60000)
+      if(this.state.loginAttempts > 3){
+        let diff = timeLeft - new Date()
+        let min = Math.floor(diff/60000)
+        let sec = ((diff % 60000) / 1000).toFixed(0)
+        this.setState({_error: 'Too many attempts. Logged out for ' + min + ':' + (sec < 10 ? '0' : '') + sec })
+      }
+      // timeLeft.setSeconds(timeLeft.getSeconds() + 2)
+      if(timeLeft <= new Date()){
+        this.setState({loginAttempts:1,_error:''})
+        localStorage.removeItem('session')
+      }
+    }
   }
   render(){
-    const { _error, isLoading } = this.state
+    const { _error, loginAttempts } = this.state
+    let disabled = loginAttempts > 3
     return(
       <div className="login-container">
         <div className="login-body">
@@ -66,6 +118,7 @@ export class Login extends Component {
                   id="email"
                   value={this.state.email}
                   onChange={this.onInputChange.bind(this,'email')}
+                  onFocus={this.handleFocus.bind(this)}
                 />
               </div>
               <div className="pswd-container">
@@ -75,11 +128,12 @@ export class Login extends Component {
                   type="password"
                   className="input-pswd"
                   id="pswd"
-                  value={this.state.pass}
+                  value={this.state.pswd}
                   onChange={this.onInputChange.bind(this,'pswd')}
+                  onFocus={this.handleFocus.bind(this)}
                 />
               </div>
-              <button className="login-submit" type="submit" disabled={isLoading}>
+              <button className="login-submit" type="submit" disabled={disabled}>
                 Login
               </button>
               <div className="login-error-container">

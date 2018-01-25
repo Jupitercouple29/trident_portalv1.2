@@ -6,7 +6,6 @@ import * as actionCreators from '../../actions'
 
 export class InfoPage extends Component{
 	componentWillMount(){
-		console.log(this.props.info)
 		if(this.props.info.length < 1){
 			this.props.history.push('/trident')
 		}

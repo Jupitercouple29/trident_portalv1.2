@@ -1,79 +1,197 @@
 import React, { Component } from 'react'
+import { updateUser } from '../../functions/updateUser'
+import { auth } from '../../functions/auth'
+import Timezone from '../../components/timezone'
+import * as actionCreators from '../../actions'
+import { connect } from 'react-redux'
 
-export default class ProfilePage extends Component {
+import ('./profile-page.css')
+
+
+export class ProfilePage extends Component {
 	constructor(props){
 		super(props)
+		this.state = {
+			name: this.props.user.name,
+			email: this.props.user.email,
+			phone: this.props.user.phone || "N/A",
+			company: this.props.user.company || "N/A",
+			logo: this.props.user.logo || "",
+			updateMessage: ''
+		}
 		this.handlePaste = this.handlePaste.bind(this)
-		this.handleAllowDrop	= this.handleAllowDrop.bind(this)
 		this.handleDrop = this.handleDrop.bind(this)
-		this.handleDrag = this.handleDrag.bind(this)
+		this.onFormSubmit = this.onFormSubmit.bind(this)
 	}
-	componentDidMount(){
-		// var copy = document.queryCommandSupported('copy')
-		// console.log(copy)
-		// var canvas = document.getElementById('my_canvas')
-		// var ctx = canvas.getContext("2d")
-		
-	}
-	handleAllowDrop(e){
-		e.preventDefault()
-	}
-	handleDrag(e){
-		e.dataTransfer.setData("text", e.target.id)
+	componentWillMount(){
+		auth(this.props.user.email)
+		.then(res => {
+			this.setState({
+				name:res.name,
+				email:res.email,
+				phone:res.phone,
+				company:res.company,
+				logo:res.logo
+			})
+		})
 	}
 	handleDrop(e){
 		e.preventDefault()
-		var data = e.dataTransfer.getData('text')
-		console.log(data)
-		var canvas = document.getElementById('my_canvas')
-		canvas.appendChild(<div>Hello</div>)
+		var that = this;
+		var image = new Image()
+		image.src = e.dataTransfer.getData('Text')
+		image.onload = () => {
+			var canvas = document.createElement('canvas'), context = canvas.getContext('2d')
+			canvas.width = image.width
+			canvas.height = image.height
+			context.drawImage(image, 0, 0, image.width, image.height)
+			var myImage = canvas.toDataURL('image/png')
+		 	var img = document.getElementById('my-image')
+      img.height = "50"
+      img.width = "150"
+      img.src = myImage
+      that.setState({logo:myImage})
+		}
 	}
 	handlePaste(e){
-		console.log('you just pasted')
-		console.log(e)
-		console.log(e.clipboardData)
-		console.log(e.clipboardData.files)
-		console.log(e.clipboardData.items)
-		console.log(e.clipboardData.types)
-		this.el = document.createElement('div',null,'Hello World')
-		var canvas = document.getElementById('my_canvas')
-		this.el.innerHTML = "Hello World"
-		canvas.appendChild(this.el)
-		
+		var myImage = ''
+		var that = this
+    var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+  	for (var index in items) {
+	    var item = items[index];
+	    if (item.kind === 'file') {
+	      var blob = item.getAsFile();
+	      var reader = new FileReader();
+	      reader.onload = function(e){
+	        myImage = e.target.result
+	        var img = document.getElementById('my-image')
+	        img.height = "50"
+	        img.width = "150"
+	        img.src = myImage
+	        that.setState({logo:myImage})
+	       }; // data url!
+	      	reader.readAsDataURL(blob);
+	    }
+  	}		
 	}
-
-	handleFocus(e){
-		console.log(e)
-	}
-	keyBoardListener(evt) {
-    if (evt.ctrlKey) {
-      switch(evt.keyCode) {
-        case 67: // c
-          // copy(evt.target);
-          console.log('c')
-          break;
-        case 86: // v
-          // paste(evt.target);
-          console.log('v')
-          break;
-      }
+	onInputChange(type, event){
+    let stateVal = { }
+    stateVal[type] = event.target.value
+    this.setState(stateVal)
+  }
+	onFormSubmit(event){
+    event.preventDefault()
+    let info = {
+    	email: this.props.user.email,
+    	newEmail: this.state.email.toLowerCase(),
+    	name: this.state.name,
+    	company: this.state.company,
+    	phone: this.state.phone,
+    	logo: this.state.logo
     }
-	}
+    updateUser(info)
+    .then(res => {
+    	if(res === 'success'){
+				this.setState({updateMessage:"Update was successful"})
+    	}
+    })
+    .catch(err => {
+
+    })
+    
+  }
 	render(){
+		let name = this.state.name
+		let email = this.state.email
+		let company = this.state.company
+		let phone = this.state.phone
+		let logo = this.state.logo
 		return(
-			<div>
-				<div 
-					style={{height:"400px",width:"100%",border:"1px solid grey"}}
-					id="my_canvas"
-					ref={(canvas)=>{this.canvas = canvas;}}
-					tabIndex="0"
-					onFocus={this.handleFocus}
-					onDragOver={this.handleAllowDrop}
-					onPaste={this.handlePaste}
-					onDrop={this.handleDrop}>
+			<div className="profile-page-container">
+				<div className="profile-page-info-container left">
+					<h3 className="profile-page-header">My Profile</h3>
+					<form className="profile-page-info" onSubmit={this.onFormSubmit}>
+						<label 
+							className="profile-page-name-label"
+							htmlFor="name">
+								Name
+						</label>
+						<input 
+							className="profile-page-name-input"
+							value={name}
+							onChange={this.onInputChange.bind(this,'name')}/>
+						<label 
+							className="profile-page-email-label"
+							htmlFor="email">
+								E-mail
+						</label>
+						<input 
+							className="profile-page-email-input"
+							value={email}
+							onChange={this.onInputChange.bind(this,'email')}/>
+						<label 
+							className="profile-page-company-label"
+							htmlFor="company">
+								Company/Reseller
+						</label>
+						<input 
+							className="profile-page-company-input"
+							value={company}
+							onChange={this.onInputChange.bind(this,'company')}/>
+						<label 
+							className="profile-page-phone-label"
+							htmlFor="phone">
+								Phone
+						</label>
+						<input 
+							className="profile-page-phone-input"
+							value={phone}
+							onChange={this.onInputChange.bind(this,'phone')}/>
+						<button 
+							className="profile-page-update-button"
+							type="submit">
+								Update
+						</button>
+						<label className="profile-page-update-message">{this.state.updateMessage}</label>
+					</form>
 				</div>
-					
+				<div className="profile-page-info-container right">
+					<div 
+						id="logo-container"
+						ref={canvas=>this.canvas = canvas}
+						tabIndex="0"
+						onPaste={this.handlePaste}
+						onDrop={this.handleDrop}>
+						{this.state.logo === '' ? <p>Company Logo</p> : ''}
+						<img 
+							id="my-image" 
+							src={logo} 
+							onPaste={this.handlePaste}>
+						</img>
+					</div>
+					<button 
+						className="profile-page-update-logo-button"
+						onClick={this.onFormSubmit}>
+							Update Logo
+						</button>
+						<p>To update logo, copy (ctrl+c) and <br/> paste (ctrl+v) your logo to the box.</p>
+					<div className="profile-page-notification-container">
+						<label className="profile-page-timezone-label">Timezone</label>
+						<Timezone />
+						<label className="profile-page-notification-label">Notifications</label>
+						<select className="profile-page-notification" name="notification">
+							<option value="yes">Yes</option>
+							<option value="no">No</option>
+						</select>
+					</div>
+				</div>
 			</div>
 		)
 	}
 }
+
+const mapStateToProps = (state) => ({
+	user: state.validUser
+})
+
+export default connect(mapStateToProps, actionCreators)(ProfilePage)

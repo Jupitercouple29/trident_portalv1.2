@@ -19,34 +19,21 @@ export class SidePanelItem extends Component {
 		let lcRoute = route.toLowerCase()
 		this.props.route(lcRoute)
 		if(this.props.open && this.state.isHidden){
-			// console.log('in hidden')
 			this.setState({isHidden:false, expanded:true})
 		}else if(this.props.open && !this.state.isHidden){
-			// console.log('in not hidden')
 			this.setState({isHidden:true, expanded:false})
 		}
 		if(this.props.open && !this.props.items){
-			// console.log(lcRoute)
 			this.setState({clicked:0})
 			this.props.history.push(`/${lcRoute}`)
 		}
 	}
 	handleExpandedItemsClick(route, trident){
 		let tridentNum = trident.slice(trident.length - 4, trident.length)
-		// console.log(tridentNum)
 		localStorage.setItem('selectedTrident',tridentNum)
 		let lcRoute = route.toLowerCase()
 		this.props.tridentSelected(tridentNum)
-		// if(this.state.clicked === 0 || this.state.clicked === tridentNum){
-			// console.log('clicked = 0')
-			// console.log(this.state.clicked++)
-			this.props.history.push(`/${lcRoute}`)
-			// this.setState({clicked:tridentNum})
-		// }else{
-		// 	console.log('clicked is greater than 0')
-		// 	this.props.history.push(`/${lcRoute}`)
-		// 	window.location.reload()
-		// }	
+		this.props.history.push(`/${lcRoute}`)
 	}
 	displayItems(items, title, display){
 		let itemsToDisplay = items.map((item) => {
