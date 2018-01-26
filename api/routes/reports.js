@@ -7,12 +7,25 @@ var validateEmail = require('../lib/common').validateEmail
 const { validateMiddleware } = require('../lib/common')
 var express = require('express');
 var router = express.Router();
+var multer = require('multer')
+var storage = multer.diskStorage({
+	destination: function(req,file,callback){
+		callback(null, './uploads')
+	},
+	filename: function(req,file,callback){
+		callback(null, file.filename + '-' + Date.now())
+	}
+})
+var upload = multer({dest:'uploads/'})
 
 router.post('/',
-	validateMiddleware,
-	jwtRest({secret:process.env.JWT_SECRET}),
+	upload.any(),
+	// validateMiddleware,
+	// jwtRest({secret:process.env.JWT_SECRET}),
 	function(req, res, next){
-		console.log(req.body.info.file)
+		console.log(req.files)
+		console.log(req.headers)
+		// console.log(req.body.info.file)
 		// let name = req.body.info.name
 		// let email = req.body.info.email
 		// let file = req.body.info.file
@@ -31,7 +44,7 @@ router.post('/',
 		// 			reports:file
 		// 		})
 		// 		log.info(requestLog(req,200,'File has been added successfully'))
-		// 		res.status(200).send('success')
+				res.status(200).send('success')
 		// 	}else{
 		// 		log.error(requestLog(req, 404, 'Unable to find user to update'))
 		// 		res.status(404).send('Invalid email. Unable to update user at ' + email)

@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import { getReports } from '../../functions/getReports'
 import { postReport } from '../../functions/postReport'
 import { connect } from 'react-redux'
+import * as fs from 'fs'
+
+// import * as fs from 'fs'
+
 import "./reports-page.css"
 
 export class ReportsPage extends Component {
@@ -15,6 +19,7 @@ export class ReportsPage extends Component {
 		this.handlePaste = this.handlePaste.bind(this)
 		this.startRead = this.startRead.bind(this)
 		this.startReadFromDrag = this.startReadFromDrag.bind(this)
+		this.loaded = this.loaded.bind(this)
 	}
 	componentWillMount(){
 		getReports(this.props.user.email)
@@ -78,6 +83,7 @@ export class ReportsPage extends Component {
 		e.preventDefault()
 	}
 	startRead(e){
+		e.preventDefault()
 		var file = document.getElementById('admin-panel-pdf').files[0]
 		if(file){
 			// let fileURL = window.URL.createObjectURL(file)
@@ -86,12 +92,19 @@ export class ReportsPage extends Component {
 			// this.setState({
 			// 	pdf:`http://docs.google.com/gview?url=${fileURL}.pdf&embedded=true`
 			// })
+			let pdf = new Blob([file],{type:'applicatioin/pdf'})
+			console.log(pdf)
+			let form = document.getElementById('uploadForm')
+			let formData = new FormData(form);
+			// formData.append('file', 'myfile')
+			// formData.append('email',this.props.user.email)
+			console.log(formData)
 			let info = {
 				email:this.props.user.email,
-				file: file
+				file: formData
 			}
 			console.log(info)
-			postReport(info)
+			postReport(formData)
 			.then(res => {
 				console.log(res)
 			})
@@ -125,8 +138,20 @@ export class ReportsPage extends Component {
 	loaded(e){
 		alert("File Loaded Successfully")
 		let fileString = e.target.result
+		// let info = {
+		// 		email:this.props.user.email,
+		// 		file: 'file'
+		// 	}
+		// 	console.log(info)
+		// 	postReport(info)
+		// 	.then(res => {
+		// 		console.log(res)
+		// 	})
+		// 	.catch(err => {
+		// 		console.log(err.error)
+		// 	})
 		let area = document.getElementById('op')
-		// area.innerHTML= fileString
+		area.innerHTML= fileString
 	}
 	render(){
 		
@@ -138,7 +163,7 @@ export class ReportsPage extends Component {
 				</div>
 				<h1>Reports Page Under Contruction</h1>
 				<div className="reports-page-container">
-					<div className="reports-page admin-panel">
+					<form className="reports-page admin-panel" id="uploadForm" enctype="multipart/form-data" method="post">
 						<label htmlFor="name" className="admin-panel-label name">Trident</label>
 						<input 
 							id="name"
@@ -161,10 +186,11 @@ export class ReportsPage extends Component {
 							className="admin-panel-pdf"
 							tabIndex="0"
 							type="file"
+							name="userFile"
 							id="admin-panel-pdf"
 							onPaste={this.handlePaste}>
 						</input>
-						<button onClick={this.startRead}>Read</button>
+						<input type="submit" name="submit" value="submit" onClick={this.startRead}/>
 						<div 
 							id="draghere"
 							onDragOver={this.dragover}
@@ -174,7 +200,7 @@ export class ReportsPage extends Component {
 						</div>
 						<div id="op"></div>
 						<p>Copy (ctrl+c) and paste (ctrl+v) pdf file above</p>
-					</div>
+					</form>
 				</div>
 			</div>
 		)

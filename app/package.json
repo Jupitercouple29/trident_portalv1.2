@@ -38,6 +38,7 @@
     "react-router-dom": "^4.2.2",
     "recharts": "^1.0.0-beta.6",
     "redux": "^3.7.2",
+    "superagent": "^3.8.2",
     "webpack": "^3.10.0"
   },
   "devDependencies": {
@@ -96,12 +97,12 @@
     ],
     "testEnvironment": "node",
     "testURL": "http://localhost",
-    "modulePathIgnorePatterns":[
+    "modulePathIgnorePatterns": [
       "<rootDir>/src/App.js",
       "<rootDir>/src/index.js",
       "<rootDir>/src/registerServiceWorker.js"
     ],
-    "testPathIgnorePatterns":[
+    "testPathIgnorePatterns": [
       "<rootDir>/src/App.js",
       "<rootDir>/src/index.js",
       "<rootDir>/src/registerServiceWorker.js"

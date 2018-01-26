@@ -18,6 +18,7 @@ var reports = require('./routes/reports')
 var app = express();
 
 app.use(logger('dev'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());

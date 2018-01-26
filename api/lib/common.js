@@ -34,6 +34,15 @@ exports.uniqDescOrderedList = (array) => {
 exports.validateMiddleware = (req, res, next) => {
   var jwt = require('jsonwebtoken')
   console.log(req.headers)
+  console.log('here is the body')
+  console.log(req.body)
+  console.log('here is the data')
+  console.log(req.data)
+  console.log('here is the params')
+  console.log(req.params)
+  console.log('here is files')
+  console.log(req.files)
+  console.log(req.file)
   if(req.body && req.body.headers){
     req.headers.authorization = req.body.headers.Authorization
   }
