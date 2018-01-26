@@ -8,7 +8,7 @@ export const updateUser = (info) => {
 		},
 		info:info
 	})
-	.then(function(response) {
+	.then(response => {
 		return response.data
 	})
 	.catch(err => {

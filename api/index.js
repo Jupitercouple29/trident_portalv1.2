@@ -13,6 +13,7 @@ var express = require('express'),
 var users = require('./routes/users');
 var trident = require('./routes/trident')
 var map = require('./routes/map')
+var reports = require('./routes/reports')
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use(validator());
 app.use('/users', users);
 app.use('/trident', trident);
 app.use('/map', map);
+app.use('/reports', reports);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

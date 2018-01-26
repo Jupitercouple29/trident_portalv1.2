@@ -22,7 +22,7 @@
 	margin-top: 20px;
 }
 
-input#email, input#pswd {
+input#email, input#pswd, input#name{
 	background-color: rgba(0,0,0,.4);
     border-radius: 5px;
     color: #fff;

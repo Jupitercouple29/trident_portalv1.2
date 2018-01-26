@@ -33,17 +33,24 @@ exports.uniqDescOrderedList = (array) => {
 
 exports.validateMiddleware = (req, res, next) => {
   var jwt = require('jsonwebtoken')
+  console.log(req.headers)
+  if(req.body && req.body.headers){
+    req.headers.authorization = req.body.headers.Authorization
+  }
 	// console.log('inside of validateMiddleware')
   if(!req.headers.authorization){
+    console.log('no authorization headers')
     log.error(requestLog(req, 401, 'No Authorization header'))
     res.status(401).send('No Authorization')
   }else if(req.headers.authorization && req.headers.authorization.split(' ')[0] != 'Bearer'){
+    console.log('no authorization Bearer')
     log.error(requestLog(req, 401, 'No Authorized Bearer'))
     res.status(401).send('Not Authorized')
   }else if(req.headers.authorization.split(' ')[1]){
     let token = req.headers.authorization.split(' ')[1]
     jwt.verify(token, process.env.JWT_SECRET, function(err, decoded){
       if(err){
+        console.log('Not Authorized Invalid token')
         log.error(requestLog(req, 401, 'Not Authorized Invalid token'))
         res.status(401).send('Not Authorized')
       } else if(decoded){
