@@ -51,7 +51,7 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * SSL certs 
  */
 var sslOptions = {
   key:fs.readFileSync('config/pvt.crt'),
@@ -59,6 +59,9 @@ var sslOptions = {
   ca:fs.readFileSync('config/ca.crt')
 }
 
+/**
+ * Create HTTPS server.
+ */
 global.server = https.createServer(sslOptions,app);
 
 /**

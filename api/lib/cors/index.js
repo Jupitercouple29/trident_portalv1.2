@@ -1,3 +1,6 @@
+/**
+ * Enable Cors for all request
+ */
 function cors(options) {
 	const defaultAllowHeaders = ['Authorization', 'Content-Type'];
 	const defaultAllowMethods = [

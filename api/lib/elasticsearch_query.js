@@ -1,3 +1,9 @@
+/**
+ * Elasticsearch query for getting the coordinates of all the 
+ * alerts pertaining to the trident/s passed in
+ * @param  {tridents}  trident or tridents (ex. Trident 2411 Trident 2402)
+ * @return {queryString}  returns the querystring
+ */
 exports.coordinatesSearch = (tridents) => {
   let queryString = {
     "sort": [
@@ -33,6 +39,13 @@ exports.coordinatesSearch = (tridents) => {
   return queryString
 }
 
+/**
+ * Elasticsearch query that searches the given trident for all
+ * that have the event_type of the type passed in.
+ * @param  {trident}  trident (ex. Trident 2411)
+ * @param  {type}  ex. dns
+ * @return {queryString}  returns queryString
+ */
 exports.searchEventObject = (trident, type) => {
   let queryString = {
     "sort": [
@@ -63,6 +76,12 @@ exports.searchEventObject = (trident, type) => {
   return queryString
 }
 
+/**
+ * Elasticsearch query that finds all signature alerts for 
+ * the given trident
+ * @param  {trident}  trident (ex. Trident 2411)
+ * @return {queryString}
+ */
 exports.searchSignatureObject = (trident) => {
   let queryString = {
     "sort": [
@@ -95,6 +114,14 @@ exports.searchSignatureObject = (trident) => {
   return queryString
 }
 
+/**
+ * Elasticsearch query that gathers signature alerts and alerts last hour
+ * for the trident/s provided by the obj field
+ * @param  {obj}  trident/s (ex. Trident 2411 Trident 2402)
+ * @param  {date}  date
+ * @param  {minusHour} date minus 1 hour
+ * @return {queryString} returns the querystring
+ */
 exports.searchObject = (obj, date, minusHour) => {
   let queryString = {
     "sort": [
@@ -134,6 +161,12 @@ exports.searchObject = (obj, date, minusHour) => {
   return queryString
 }
 
+/**
+ * Elasticsearch query that gathers signature alerts, destination ips,
+ * and source ips based on the trident passed in 
+ * @param  {trident} trident (ex. Trident 2411)
+ * @return {queryString}
+ */
 exports.searchMultiTridentAlerts = (trident) => {
   let queryString = {
     sort: [
@@ -181,6 +214,14 @@ exports.searchMultiTridentAlerts = (trident) => {
   return queryString
 }
 
+/**
+ * Elasticsearch query that gets all alerts based on the latitude,
+ * longitude, and trident values
+ * @param  {lat}  latitude
+ * @param  {long}  longitude
+ * @param  {trident}  trident 
+ * @return {queryString} queryString
+ */
 exports.locationAlerts = (lat,long,trident) => {
   let queryString = {
     "sort":[
@@ -204,6 +245,12 @@ exports.locationAlerts = (lat,long,trident) => {
   return queryString
 }
 
+/**
+ * Elasticsearch query that simply is used to get the total
+ * number of alerts for the given trident
+ * @param  {trident}  trident
+ * @return {queryString}  queryString
+ */
 exports.mSearchNumOfAlerts = (trident) => {
  let queryString = {
     "sort": [
@@ -223,6 +270,14 @@ exports.mSearchNumOfAlerts = (trident) => {
   return queryString
 }
 
+/**
+ * Elasticsearch query that gathers alert info based on a clicked item
+ * (ex. source_ips = 10.10.222.234 where title is source_ip and info is 10.10.222.234)
+ * @param  {trident} trident
+ * @param  {title}  the name of the item to query
+ * @param  {info}  the exact info to query against 
+ * @return {queryString}
+ */
 exports.searchItemClicked = (trident, title, info) => {
   let itemMatch = {}
   itemMatch[title] = info

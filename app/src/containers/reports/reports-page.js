@@ -25,6 +25,9 @@ export class ReportsPage extends Component {
 		getReports(this.props.user.email)
 		.then(res => {
 			console.log(res)
+			let keys = Object.keys(res)
+			// console.log(keys)
+			let buffer = Buffer.from(JSON.parse(res[keys[0]].report).data)
 			this.setState({
 				files: res
 			})
@@ -101,10 +104,10 @@ export class ReportsPage extends Component {
 			console.log(formData)
 			let info = {
 				email:this.props.user.email,
-				file: formData
+				file: file
 			}
 			console.log(info)
-			postReport(formData)
+			postReport(info)
 			.then(res => {
 				console.log(res)
 			})
@@ -163,7 +166,7 @@ export class ReportsPage extends Component {
 				</div>
 				<h1>Reports Page Under Contruction</h1>
 				<div className="reports-page-container">
-					<form className="reports-page admin-panel" id="uploadForm" enctype="multipart/form-data" method="post">
+					<form className="reports-page admin-panel" id="uploadForm" encType="multipart/form-data" method="post">
 						<label htmlFor="name" className="admin-panel-label name">Trident</label>
 						<input 
 							id="name"
@@ -201,6 +204,7 @@ export class ReportsPage extends Component {
 						<div id="op"></div>
 						<p>Copy (ctrl+c) and paste (ctrl+v) pdf file above</p>
 					</form>
+					<div id='report-link'></div>
 				</div>
 			</div>
 		)

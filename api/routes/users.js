@@ -171,6 +171,7 @@ router.post('/new_user', function(req, res, next){
   //         "Perc": [ "Trident2411", "Trident2412"]
   //      }
   let tridents = req.body.tridents
+  let seller = req.body.seller || ''
   if(!name) res.status(400).send('Please enter your name')
   if(!pswd) res.status(400).send('Please enter a password')
   if(!validateEmail(email)) res.status(400).send('Please enter a valid email')
@@ -188,7 +189,8 @@ router.post('/new_user', function(req, res, next){
         creds:creds,
         password:hash,
         company:company,
-        tridents: tridents
+        tridents:tridents,
+        seller:seller
       })
       .then(snap =>{
         log.info(requestLog(req, 201, name + 'has been added successfully'))

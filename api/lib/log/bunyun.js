@@ -2,6 +2,9 @@ module.exports = LogToBunyan;
 
 var bunyan = require('bunyan');
 
+/**
+ * Bunyan logger that allows custom log statements. Primarily used with Elasticsearch.
+ */
 function LogToBunyan(config) {
   // config is the object passed to the client constructor.
   var bun = bunyan.createLogger({name: 'mylogger'});

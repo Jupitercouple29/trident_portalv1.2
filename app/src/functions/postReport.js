@@ -8,20 +8,21 @@ export const postReport = (info) => {
 	// 	method:'POST',
 	// 	body: info
 	// })
-
-	return request.post(process.env.REACT_APP_API_URL + '/reports')
+	let email = info.email
+	let report = info.file
+	return request.post(process.env.REACT_APP_API_URL + `/reports/${email}`)
 		.set({Authorization:`Bearer ${token}`})
-		// .set({'Content-Type':'multipart/form-data'})
-		.send(info)
-		// .send(info.email)
+		.send(report)
 		.then(res => {
 			console.log(res)
 		})
 		.catch(err => {
 			console.log(err)
 		})
-	// return axios.post(process.env.REACT_APP_API_URL + '/reports', {
-	// 	info
+	// return axios.post(process.env.REACT_APP_API_URL + `/reports/${email}`, report, {
+	// 	headers:{
+	// 		Authorization: `Bearer ${token}`
+	// 	}
 	// })
 	// .then(response => {
  //    console.log(response.status);

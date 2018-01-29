@@ -15,6 +15,10 @@ const yyyy = today.getFullYear() + '.'
 // const index = "logstash-2017.10.07"
 const index = "logstash-" + yyyy + mm + dd
 
+/**
+ * Gathers the coordinates of the alerts pertaining to the trident/s
+ * that is passed in by req.query
+ */
 router.get('/alerts',
 validateMiddleware,
 jwtRest({secret: process.env.JWT_SECRET}),
@@ -22,6 +26,7 @@ function(req, res, next) {
   let queryArray = []
   if (req.query.trident && Array.isArray(req.query.trident)) {
     let tridents = ''
+    //forms a concatenated list of tridents
     req.query.trident.map((param, i) => {
       let trident = "Trident" + param + " ";
       tridents = tridents.concat(trident)
@@ -49,6 +54,9 @@ function(req, res, next) {
   }
 })
 
+/**
+ * Gathers all alerts pertaining to a specific geo location
+ */
 router.get('/alerts/alert',
   validateMiddleware,
   jwtRest({secret: process.env.JWT_SECRET}),

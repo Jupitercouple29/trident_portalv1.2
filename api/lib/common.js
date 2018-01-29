@@ -1,3 +1,9 @@
+/**
+ * @param  {req} the request body
+ * @param  {status} a custom resolve status
+ * @param  {mes} a custom message to be displayed 
+ * @return {log} returns a log statement that is appended to the logger
+ */
 exports.requestLog = function(req, status, mes){
   let url = req.url.slice(0, req.url.indexOf('?'))
   let method = req.method
@@ -7,7 +13,12 @@ exports.requestLog = function(req, status, mes){
   let log = url + ' ' + method + ' ' + status + ' ' + date + ' ' + message
   return log
 }
-
+ /**
+  * @param  {lat}  latitude 
+  * @param  {longArray} an array of longitude values
+  * @return {latAndLongArray} returns an array of latitude, 
+  *   longitude, and count for each latitude
+  */
 exports.compileLatAndLongArray = (lat, longArray) => {
   let latAndLongArray = []
   longArray.map((long) => {
@@ -16,6 +27,10 @@ exports.compileLatAndLongArray = (lat, longArray) => {
   return latAndLongArray
 }
 
+/**
+ * @param  {array}  an array of items
+ * @return {newOrder}  returns a new array with only unique values
+ */
 exports.uniqDescOrderedList = (array) => {
   let newSet = new Set(array.map(e => JSON.stringify(e)))
   let newOrder = Array.from(newSet).map(e => JSON.parse(e))
@@ -31,6 +46,13 @@ exports.uniqDescOrderedList = (array) => {
   return newOrder
 }
 
+/**
+ * Middleware for checking that the proper authorization headder
+ * is attached to the reqest. If valid returns next()
+ * @param  {req}
+ * @param  {res}
+ * @param  {next}
+ */
 exports.validateMiddleware = (req, res, next) => {
   var jwt = require('jsonwebtoken')
   console.log(req.headers)
@@ -69,6 +91,10 @@ exports.validateMiddleware = (req, res, next) => {
   }
 }
 
+/**
+ * @param  {email}  email string
+ * @return {boolean}  returns true if email syntax is correct
+ */
 exports.validateEmail = (email) => {
   var re = /^(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/;
   return re.test(email);

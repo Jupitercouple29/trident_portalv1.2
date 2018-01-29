@@ -8,6 +8,7 @@ var express = require('express'),
     jwt = require('express-jwt'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
+    bb = require ('express-busboy'),
     cors = require('cors');
 
 var users = require('./routes/users');
@@ -18,7 +19,14 @@ var reports = require('./routes/reports')
 var app = express();
 
 app.use(logger('dev'));
-
+app.use('*', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Accept, Origin, Content-Type, access_token');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+app.use(bodyParser.raw({type:'application/pdf', limit:'10mb'}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());
