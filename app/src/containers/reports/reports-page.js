@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { getReports } from '../../functions/getReports'
 import { postReport } from '../../functions/postReport'
 import { connect } from 'react-redux'
+import PDFJS from 'pdfjs-dist'
 import * as fs from 'fs'
 
 // import * as fs from 'fs'
@@ -12,199 +13,161 @@ export class ReportsPage extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			pdf: '',
 			trident:'',
-			email:''
+			email:'',
+			reports:'',
+			numPages:0,
+			pagenation:'',
+			buffer:'',
+			loadMsg:''
 		}
-		this.handlePaste = this.handlePaste.bind(this)
 		this.startRead = this.startRead.bind(this)
-		this.startReadFromDrag = this.startReadFromDrag.bind(this)
-		this.loaded = this.loaded.bind(this)
+		this.openPDF = this.openPDF.bind(this)
+		this.changePage = this.changePage.bind(this)
 	}
 	componentWillMount(){
 		getReports(this.props.user.email)
 		.then(res => {
-			console.log(res)
-			let keys = Object.keys(res)
-			// console.log(keys)
-			let buffer = Buffer.from(JSON.parse(res[keys[0]].report).data)
-			this.setState({
-				files: res
+			let reports = Object.keys(res).map((key, i) => {
+				return <button 
+									type="button"
+									key={"button" + i}
+									onClick={this.openPDF.bind(this,res[key].report)}
+								>{res[key].reportName}
+								</button>
 			})
+			this.setState({reports})
 		})
 		.catch(err => {
 			console.log(err)
-			this.setState({
-				files: 'No files listed'
-			})
 		})
-	}
-	componentDidMount(){
-		let dropingDiv = document.getElementById('draghere')
-		dropingDiv.addEventListener('dragover', this.dragover, false)
-		dropingDiv.addEventListener('dragenter', this.dragenter, false)
-		dropingDiv.addEventListener('drop', this.startReadFromDrag, false)
 	}
 	onInputChange(type, event){
     let stateVal = { }
     stateVal[type] = event.target.value
     this.setState(stateVal)
   }
-	handlePaste(e){
-		console.log(e)
-		e.preventDefault()
-		console.log(e.clipboardData.getData('text/plain'))
-		var myImage = ''
-		var that = this
-    var items = (e.clipboardData || e.originalEvent.clipboardData).items;
-    console.log(items)
-  	for (var index in items) {
-	    var item = items[index];
-	    console.log(item)
-	    if (item.kind === 'string'){
-	    	let area = document.getElementById('admin-panel-pdf')
-	    	area.innerHTML = e.clipboardData.getData('text/plain')
-	    }
-	    if (item.kind === 'file') {
-	      var blob = item.getAsFile();
-	      console.log(blob)
-	      var reader = new FileReader();
-	      reader.onload = function(e){
-	        myImage = e.target.result
-	        console.log(myImage)
-	       }; // data url!
-	      	reader.readAsDataURL(blob);
-	    }
-  	}		
-	}
-	dragenter(e){
-		e.stopPropagation()
-		e.preventDefault()
-	}
-	dragover(e){
-		e.stopPropagation()
-		e.preventDefault()
-	}
+  openPDF(report){
+  	let that = this
+  	let buffer = Buffer.from(JSON.parse(report).data)
+  	PDFJS.getDocument(buffer).then(function(pdf){
+				that.setState({buffer})
+				that.pagenation(pdf.numPages)
+				pdf.getPage(1).then(function(page){
+					var scale = 2 
+					var viewport = page.getViewport(scale)
+					var canvas = document.getElementById('pdf-report')
+					var context = canvas.getContext('2d')
+					canvas.height = viewport.height
+					canvas.width = viewport.width
+					page.render({ canvasContext: context, viewport: viewport})
+				})
+			})
+  }
+  pagenation(pages){
+  	let buttons=[]
+		for (var i = 1; i <= pages; i++){
+			buttons.push(<button type='button' onClick={this.changePage.bind(this,i)}>Page {i}</button>)
+		}
+		this.setState({pagenation:buttons})
+  }
+  changePage(pageNum){
+		let that = this
+		let buffer = this.state.buffer
+		PDFJS.getDocument(buffer).then(function(pdf){
+				console.log('Number of pages: ' + pdf.numPages)
+				that.setState({numPages:pdf.numPages,buffer})
+				that.pagenation(pdf.numPages)
+				pdf.getPage(pageNum).then(function(page){
+					var scale = 2 
+					var viewport = page.getViewport(scale)
+					var canvas = document.getElementById('pdf-report')
+					var context = canvas.getContext('2d')
+					canvas.height = viewport.height
+					canvas.width = viewport.width
+					page.render({ canvasContext: context, viewport: viewport})
+				})
+			})
+  }
 	startRead(e){
 		e.preventDefault()
 		var file = document.getElementById('admin-panel-pdf').files[0]
 		if(file){
-			// let fileURL = window.URL.createObjectURL(file)
-			// console.log(fileURL)
-			// window.open(file,'resizable,scrollbar')
-			// this.setState({
-			// 	pdf:`http://docs.google.com/gview?url=${fileURL}.pdf&embedded=true`
-			// })
-			let pdf = new Blob([file],{type:'applicatioin/pdf'})
-			console.log(pdf)
-			let form = document.getElementById('uploadForm')
-			let formData = new FormData(form);
-			// formData.append('file', 'myfile')
-			// formData.append('email',this.props.user.email)
-			console.log(formData)
 			let info = {
-				email:this.props.user.email,
+				email:this.state.email,
 				file: file
 			}
-			console.log(info)
 			postReport(info)
 			.then(res => {
 				console.log(res)
+				this.setState({loadMsg:'Document has been saved successfully',email:''})
 			})
 			.catch(err => {
-				console.log(err.error)
+				console.log(err.message)
+				if(err.message === 'Firebase error'){
+					this.setState({loadMsg:'Error with saving document. Please try again',email:''})
+				}else if(err.message === 'Invalid email'){
+					this.setState({loadMsg:'Please enter a valid email',email:''})
+				}else{
+					this.setState({loadMsg:<span>No user found at this email <i>{this.state.email}</i></span>,email:''})
+				}
 			})
-			this.getAsText(file)
-			// console.log(file)
-			// window.open(file.name, '_blank', 'fullscreen=yes')
-			// alert("Name: " + file.name + "\n" + "Last Modified Date: " + file.lastModifiedDate)
 		}
-	}
-	startReadFromDrag(e){
-		e.stopPropagation()
-		e.preventDefault()
-		let file = e.dataTransfer.files[0]
-		if(file){
-			let fileAttr = "Name: " + file.name + "\n" + "Last Modified Date: " + file.lastModifiedDate
-			this.getAsText(file)
-
-			// document.getElementById('draghere').text(fileAttr)
-			alert(fileAttr) 
-		}
-	
-	}
-	getAsText(readFile){
-		let reader = new FileReader()
-		reader.readAsText(readFile, "UTF-8")
-		reader.onload = this.loaded 
-	}
-	loaded(e){
-		alert("File Loaded Successfully")
-		let fileString = e.target.result
-		// let info = {
-		// 		email:this.props.user.email,
-		// 		file: 'file'
-		// 	}
-		// 	console.log(info)
-		// 	postReport(info)
-		// 	.then(res => {
-		// 		console.log(res)
-		// 	})
-		// 	.catch(err => {
-		// 		console.log(err.error)
-		// 	})
-		let area = document.getElementById('op')
-		area.innerHTML= fileString
 	}
 	render(){
-		
 		return(
 			<div>
 				<div className="dashboard-header">
 					<h2 className="dashboard-title">DASHBOARD</h2>
 					<h3 className="dashboard-path">Home / Reports</h3>
 				</div>
-				<h1>Reports Page Under Contruction</h1>
 				<div className="reports-page-container">
-					<form className="reports-page admin-panel" id="uploadForm" encType="multipart/form-data" method="post">
-						<label htmlFor="name" className="admin-panel-label name">Trident</label>
-						<input 
-							id="name"
-							type="input"
-							className="admin-panel-input name"
-							placeholder="ex: Perc 2411"
-							value={this.state.trident}
-							onChange={this.onInputChange.bind(this,'trident')}
-						></input>
-						<label htmlFor="email" className="admin-panel-label email">User's Email</label>
-						<input 
-							id="email"
-							type="email"
-							className="admin-panel-input email"
-							placeholder="email@email.com"
-							value={this.state.email}
-							onChange={this.onInputChange.bind(this,'email')}
-						></input>
-						<input 
-							className="admin-panel-pdf"
-							tabIndex="0"
-							type="file"
-							name="userFile"
-							id="admin-panel-pdf"
-							onPaste={this.handlePaste}>
-						</input>
-						<input type="submit" name="submit" value="submit" onClick={this.startRead}/>
-						<div 
-							id="draghere"
-							onDragOver={this.dragover}
-							onDragEnter={this.dragenter}
-							onDrop={this.startReadFromDrag}
-						>Drop Files Here
+					{this.props.user.creds === 'Admin' ? 
+					<div className="reports-page admin-panel-container">
+						<form className="reports-page admin-panel" 
+									id="uploadForm" 
+									encType="multipart/form-data" 
+									method="post">
+							<h3 className="admin-panel-heading">Submit a Report</h3>
+							<label htmlFor="email" className="admin-panel-label email">User's Email</label>
+							<input 
+								id="email"
+								type="email"
+								className="admin-panel-input email"
+								placeholder="email@email.com"
+								value={this.state.email}
+								onChange={this.onInputChange.bind(this,'email')}
+							></input>
+							<input 
+								className="admin-panel-pdf"
+								tabIndex="0"
+								type="file"
+								name="userFile"
+								id="admin-panel-pdf"
+								onPaste={this.handlePaste}>
+							</input>
+							<div className="admin-panel-input-container submit">
+								<input type="submit" 
+											 name="submit" 
+											 value="submit" 
+											 className="admin-panel-input submit"
+											 onClick={this.startRead}/>
+							</div>
+							<p id="loading-message">{this.state.loadMsg}</p>
+						</form>
+					</div>
+					: null}
+					<div className="reports-page reports-container">
+						<div className="reports-page reports">
+							{this.state.reports}
 						</div>
-						<div id="op"></div>
-						<p>Copy (ctrl+c) and paste (ctrl+v) pdf file above</p>
-					</form>
-					<div id='report-link'></div>
+						<div className="reports-page pdf-container">
+							<div className="reports-page pagenation">
+								{this.state.pagenation}
+							</div>
+							<canvas id='pdf-report'></canvas>
+						</div>
+					</div>
 				</div>
 			</div>
 		)

@@ -1,30 +1,60 @@
 .admin-panel { 
 	display: flex;
 	flex-direction: column;
-	width: 300px;
+	width: 350px;
 }
-
+.admin-panel-container {
+	display: flex;
+	justify-content: center;
+}
 .admin-panel-pdf {
-	width: 300px;
-	height: 40px;
+	width: 350px;
+	height: 22px;
 	border: 1px solid;
 }
 
 .admin-panel-input {
 	margin-bottom: 15px;
 }
-
-#draghere {
-	width:300px;
-	height: 100px;
-	background-color: rgba(221,214,155,0.4);
-	border: 1px dashed black;
-	text-align: center;
+.admin-panel-input.submit {
+	width: 60px;
+	margin-top: 10px;
 }
-#op {
-	width: 300px;
-	height: 300px;
-	overflow: auto;
-	background-color: rgba(221,214,221,0.3);
-	border: 1px dashed black;
+.admin-panel-input-container.submit{
+	display: flex;
+	justify-content: center;
+}
+.admin-panel-label {
+	padding: 0 0 5px 5px;
+}
+#loading-message{
+	margin: 0;
+}
+.reports-container{
+	display: flex;
+}
+
+.reports {
+	display: flex;
+	flex-direction: column;
+	background-color: rgba(0,0,0,0.4);
+	padding-top: 10px;
+}
+
+.reports button {
+	margin: 10px;
+}
+.pdf-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.pagenation {
+	display: flex;
+	justify-content: flex-end;
+	background-color: rgba(0,0,0,0.4);
+}
+
+.reports-page.reports {
+
 }

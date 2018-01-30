@@ -20,15 +20,12 @@ var storage = multer.diskStorage({
 })
 var upload = multer({dest:'uploads/'})
 
-router.post('/:email',
-	// validateMiddleware,
-	// jwtRest({secret:process.env.JWT_SECRET}),
+router.post('/', 
+	validateMiddleware,
+	jwtRest({secret:process.env.JWT_SECRET}),
 	function(req, res, next){
-		console.log(req.body)
-		let email = req.params.email
-		let file = req.body
-		let pdf = JSON.stringify(file)
-		console.log(pdf)
+		let email = req.body.email
+		let reportName = req.body.reportName
 		if(!validateEmail(email)) {
 			log.error(requestLog(req, 401, 'Invalid email'))
 			res.status(401).send('Please enter a valid email')
@@ -40,9 +37,50 @@ router.post('/:email',
 			if(snap.val()){
 				let userKey = Object.keys(snap.val())
 				let userRef = rootRef.child(userKey[0])
-				let reports = userRef.child('reports')
+				let reports = userRef.child('reportName')
 				reports.push({
-					report:pdf
+					report:reportName
+				})
+				log.info(requestLog(req,200,'File has been added successfully'))
+				res.status(200).send('success')
+			}else{
+				log.error(requestLog(req, 404, 'Unable to find user to update'))
+				res.status(404).send('Invalid email. Unable to update user at ' + email)
+			}
+		})
+		.catch(err => {
+			log.error(requestLog(req, 500, 'Firebase error'))
+			res.status(500).send('Firebase error. Unable to update user at ' + email)
+		})
+	})
+router.post('/:email/:reportName',
+	// validateMiddleware,
+	// jwtRest({secret:process.env.JWT_SECRET}),
+	function(req, res, next){
+		console.log(req.body)
+		let email = req.params.email
+		let reportName = req.params.reportName
+		let file = req.body
+		let pdf = JSON.stringify(file)
+		let report = {}
+		report[reportName] = pdf
+		console.log(report)
+		if(!validateEmail(email)) {
+			log.error(requestLog(req, 401, 'Invalid email'))
+			res.status(401).send('Invalid email')
+		}
+		let rootRef = firebase.database().ref('users');
+		rootRef.orderByChild('email').equalTo(email).once('value')
+		.then(snap => {
+			console.log(snap.val())
+			if(snap.val()){
+				let userKey = Object.keys(snap.val())
+				let userRef = rootRef.child(userKey[0])
+				let reports = userRef.child('reports')
+				
+				reports.push({
+					report: pdf,
+				  reportName: reportName
 				})
 				log.info(requestLog(req,200,'File has been added successfully'))
 				res.status(200).send('success')
