@@ -11,6 +11,8 @@ const { searchMultiTridentAlerts } = require('../lib/elasticsearch_query')
 const { compileLatAndLongArray } = require('../lib/common')
 const { mSearchNumOfAlerts } = require('../lib/elasticsearch_query')
 const { searchItemClicked } = require('../lib/elasticsearch_query')
+const { searchRangeByIPs } = require('../lib/elasticsearch_query')
+const { searchByIPs } = require('../lib/elasticsearch_query')
 
 const express = require('express')
 const router = express.Router()
@@ -73,8 +75,8 @@ router.get('/alerts',
     .then(function(resp) {
       let alerts = resp.hits.hits
       let signatureAlerts = resp.aggregations.signatures.buckets
-      let dest_ips = resp.aggregations.dest_ips.buckets.slice(0,20)
-      let source_ips = resp.aggregations.source_ips.buckets.slice(0,20)
+      let dest_ips = resp.aggregations.dest_ips.buckets
+      let source_ips = resp.aggregations.source_ips.buckets
       var body = {
         alerts: alerts,
         ips: source_ips,
@@ -177,6 +179,76 @@ router.get('/item',
     .catch(err => {
       log.error(requrestLog(req, 401, err))
       res.status(401).send(err.responses)
+    })
+  })
+
+router.get('/client/ip_range',
+  // validateMiddleware,
+  // jwtRest({secret:process.env.JWT_SECRET}),
+  function(req, res, next){
+    let trident = "Trident" + req.query.trident
+    let ipFrom = req.query.ipFrom
+    let ipTo = req.query.ipTo
+    let queryArray = []
+    console.log(ipTo)
+    console.log(ipFrom)
+    console.log(trident)
+    let queryStringSource = searchRangeByIPs(trident, "source_ip", ipFrom, ipTo)
+    let queryStringDest = searchRangeByIPs(trident, "destination_ip", ipFrom, ipTo)
+    queryArray.push({}, queryStringSource, {}, queryStringDest)
+    console.log(queryArray)
+    client.msearch({index, body: queryArray})
+    .then(result => {
+      // console.log(result.responses)
+      let alertsArray = []
+      alertsArray.push(result.responses[0].hits.hits, result.responses[1].hits.hits)
+      console.log(alertsArray[0].concat(alertsArray[1]))
+      res.status(200).send(alertsArray)
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(400).send(err)
+    })
+  })
+
+router.get('/client',
+  // validateMiddleware,
+  // jwtRest({secret:process.env.JWT_SECRET}),
+  function(req, res, next){
+    let trident = "Trident" + req.query.trident
+    let ipArray = req.query.ipArray
+    let queryStringSource = searchByIPs(trident, "source_ip", ipArray)
+    let queryStringDest = searchByIPs(trident, "destination_ip", ipArray)
+    let queryArray = []
+    queryArray.push({}, queryStringSource, {}, queryStringDest)
+    client.msearch({index, body: queryArray})
+    .then(result => {
+      let alertsArray = [], latAndLongArray = [], coordsArray = []
+      if (result.responses[0].aggregations && result.responses[0].aggregations.lat.buckets.length) {
+        result.responses[0].aggregations.lat.buckets.map(lat => {
+          latAndLongArray.push(compileLatAndLongArray(lat.key,lat.long.buckets))
+        })
+        coordsArray = coordsArray.concat(...latAndLongArray)
+      }
+      if (result.responses[1].aggregations && result.responses[1].aggregations.lat.buckets.length) {
+        result.responses[1].aggregations.lat.buckets.map(lat => {
+          latAndLongArray.push(compileLatAndLongArray(lat.key,lat.long.buckets))
+        })
+        coordsArray = coordsArray.concat(...latAndLongArray)
+      }
+      console.log(coordsArray)
+      alertsArray.push(result.responses[0].hits.hits, result.responses[1].hits.hits)
+      let alerts = alertsArray[0].concat(alertsArray[1])
+       let body = {
+        alerts,
+        coordsArray
+      }
+      // console.log(alerts)
+      res.status(200).send(body)
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(400).send(err)
     })
   })
 module.exports = router

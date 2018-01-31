@@ -28,14 +28,20 @@ export class ReportsPage extends Component {
 	componentWillMount(){
 		getReports(this.props.user.email)
 		.then(res => {
-			let reports = Object.keys(res).map((key, i) => {
+			console.log(res)
+			let reports
+			if(res === 'no reports available'){
+				reports = <h3>{res}</h3>
+			}else{
+				reports = Object.keys(res).map((key, i) => {
 				return <button 
 									type="button"
 									key={"button" + i}
 									onClick={this.openPDF.bind(this,res[key].report)}
 								>{res[key].reportName}
 								</button>
-			})
+				})
+			}
 			this.setState({reports})
 		})
 		.catch(err => {

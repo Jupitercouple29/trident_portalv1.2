@@ -54,7 +54,9 @@ router.post('/', function(req, res, next){
           {creds:result.creds},
           {phone:result.phone},
           {logo:result.logo},
-          {seller:result.seller}
+          {seller:result.seller},
+          {ips:result.ips},
+          {client:result.client}
         )
         if(email && pswd){
           bcrypt.compare(pswd, result.password, function(err, response){

@@ -304,6 +304,84 @@ exports.searchItemClicked = (trident, title, info) => {
       }
     },
     "size":1000
+  }
+  return queryString
 }
+
+exports.searchRangeByIPs = (trident, type, ipFrom, ipTo) => {
+  let range = {}
+  range[type] = {
+    "gte": ipFrom,
+    "lte": ipTo
+  }
+  let queryString = {
+    "sort":[
+      {
+        "timestamp":{
+          "order": "desc"
+        }
+      }
+    ],
+    "query":{
+      "bool":{
+        "must":[
+          {
+            "match":{
+              "filename": trident
+            }
+          }
+        ],
+        "filter":{range} 
+        
+      }
+    },
+    "size": 10000
+  }
+  return queryString
+}
+
+exports.searchByIPs = (trident, type, ipArray) => {
+  let terms ={}
+  terms[type] = ipArray
+  let queryString = {
+    "sort":[
+      {
+        "timestamp":{
+          "order": "desc"
+        }
+      }
+    ],
+    "query":{
+      "bool":{
+        "must":[
+          {
+            "match":{
+              "filename": "Trident2426"
+            }
+          }
+        ],
+        "filter":{ 
+          terms: terms
+        }
+      }
+    },
+    "aggs": {
+      "lat": {
+        "terms": {
+          "field": "geoip.latitude",
+          "size": 10000
+        },
+        "aggs":{
+          "long":{
+            "terms":{
+              "field": "geoip.longitude",
+              "size": 10000
+            }
+          }
+        }
+      }
+    },
+    "size": 5000
+  }
   return queryString
 }

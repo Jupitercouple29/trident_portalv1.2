@@ -14,6 +14,7 @@ export class SidePanelItem extends Component {
 		}
 		this.handleItemClick = this.handleItemClick.bind(this)
 		this.handleExpandedItemsClick = this.handleExpandedItemsClick.bind(this)
+		this.configureItemsToDisplay = this.configureItemsToDisplay.bind(this)
 	}
 	handleItemClick(route){
 		let lcRoute = route.toLowerCase()
@@ -28,12 +29,19 @@ export class SidePanelItem extends Component {
 			this.props.history.push(`/${lcRoute}`)
 		}
 	}
-	handleExpandedItemsClick(route, trident){
-		let tridentNum = trident.slice(trident.length - 4, trident.length)
-		localStorage.setItem('selectedTrident',tridentNum)
-		let lcRoute = route.toLowerCase()
-		this.props.tridentSelected(tridentNum)
-		this.props.history.push(`/${lcRoute}`)
+	handleExpandedItemsClick(route, name){
+		if(this.props.client){
+			let lcRoute = route.toLowerCase()
+			localStorage.setItem('selectedClient', name)
+			this.props.history.push(`/${lcRoute}`)
+		}else{
+			let tridentNum = name.slice(name.length - 4, name.length)
+			localStorage.setItem('selectedTrident',tridentNum)
+			let lcRoute = route.toLowerCase()
+			this.props.tridentSelected(tridentNum)
+			this.props.history.push(`/${lcRoute}`)
+		}
+		
 	}
 	displayItems(items, title, display){
 		let itemsToDisplay = items.map((item) => {
@@ -44,6 +52,19 @@ export class SidePanelItem extends Component {
 						</p>
 		})
 		return itemsToDisplay
+	}
+	configureItemsToDisplay(items){
+		if(this.props.client){
+			return Object.keys(items)
+			// console.log(Object.keys(items))
+			// console.log(items[keys[0]])
+		}else{
+			// console.log('tridents')
+			return this.getTridents(items)
+		}
+	}
+	displayClients(items){
+		return Object.keys(items)
 	}
 	getTridents(tridents){
 		let tridentArray = []
@@ -58,7 +79,7 @@ export class SidePanelItem extends Component {
 	render(){
 		let display = this.props.display
 		let showItems = this.state.isHidden ? 'hidden' : 'show'
-		let itemArray = this.props.items ? this.getTridents(this.props.items) : null 
+		let itemArray = this.props.items ? this.configureItemsToDisplay(this.props.items) : null 
 		let icon = this.props.icon
 		let title= this.props.title
 		let selected = this.props.selected === this.props.title.toLowerCase() ? 'selected' : ''

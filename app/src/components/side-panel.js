@@ -21,8 +21,12 @@ export class SidePanel extends Component {
 		let route = name.slice(1,name.length)
 		this.setState({route})
 	}
-	handlePanelClick(){
-		this.props.sidePanelClick(true)
+	handlePanelClick(event){
+		if(event === 'close'){
+			this.props.sidePanelClick(false)
+		}else{
+			this.props.sidePanelClick(true)
+		}
 	}
 	routeClicked(route){
 		this.setState({route:route})
@@ -31,7 +35,13 @@ export class SidePanel extends Component {
 		let displaySidePanel = this.props.displaySidePanel
 		let display = displaySidePanel ? 'show' : 'hidden'
 		return (
-			<div className="side-panel-container" ref='side-panel-container' onClick={this.handlePanelClick}>
+			<div className="side-panel-container" 
+					 ref='side-panel-container' 
+					 tabIndex='0'
+					 onMouseEnter={this.handlePanelClick}
+					 onMouseLeave={this.handlePanelClick.bind(this,'close')}
+					 onBlur={()=>{console.log('out of focus')}}
+					 onClick={this.handlePanelClick}>
 				<SidePanelItem 
 					display={display}
 					route={this.routeClicked}
@@ -75,13 +85,25 @@ export class SidePanel extends Component {
 					open={displaySidePanel} 
 					icon={"fa fa-pie-chart fa-lg"} 
 					title={"Charts"}/>
-					<SidePanelItem 
+				<SidePanelItem 
 					display={display}
 					route={this.routeClicked}
 					selected={this.state.route}
 					open={displaySidePanel} 
 					icon={"fa fa-file-pdf-o fa-lg"} 
 					title={"Reports"}/>
+				{this.props.user.seller ? 
+					<SidePanelItem 
+						display={display}
+						route={this.routeClicked}
+						selected={this.state.route}
+						open={displaySidePanel} 
+						icon={"fa fa-address-book fa-lg"}
+						items={this.props.user.ips} 
+						client={true}
+						title={"Clients"}/>
+					:
+					null}
 			</div>
 		)
 	}

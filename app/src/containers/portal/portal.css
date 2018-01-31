@@ -69,6 +69,10 @@
 	min-width: 50px;
 }
 
+.side-panel-container:focus { 
+	outline: none;
+}
+
 .side-panel-item {
 	display: flex;
 	align-items: center;

@@ -7,17 +7,19 @@ export default class TridentPanel extends Component {
 		let tridentArray = []
 		let alertsArray = []
 		let keys = this.props.tridents
+		if(this.props.alerts !== undefined){
 		let alertKeys = Object.keys(this.props.alerts)
-		Object.keys(keys).map((key) => {
-      this.props.tridents[key].map((trident) => {
-        tridentArray.push(key + " " + trident)
-        alertKeys.map((alert,i) => {
-        	if(alert == trident){
-						alertsArray.push(this.props.alerts[alert].toLocaleString())
-        	}
-        })
-      })
-    })
+			Object.keys(keys).map((key) => {
+	      this.props.tridents[key].map((trident) => {
+	        tridentArray.push(key + " " + trident)
+	        alertKeys.map((alert,i) => {
+	        	if(alert == trident){
+							alertsArray.push(this.props.alerts[alert].toLocaleString())
+	        	}
+	        })
+	      })
+	    })
+		}
     // console.log(tridentArray)
 		return(
 			<div className="dashboard-panel">
