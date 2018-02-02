@@ -14,7 +14,7 @@ export class ProfilePage extends Component {
 		this.state = {
 			name: this.props.user.name,
 			email: this.props.user.email,
-			phone: this.props.user.phone || "N/A",
+			phone: this.props.user.phone,
 			company: this.props.user.company || "N/A",
 			logo: this.props.user.logo || "",
 			updateMessage: ''
@@ -96,7 +96,7 @@ export class ProfilePage extends Component {
     	}
     })
     .catch(err => {
-
+			this.setState({updateMessage:"Unable to update. Please try again"})
     })
     
   }
@@ -104,7 +104,7 @@ export class ProfilePage extends Component {
 		let name = this.state.name
 		let email = this.state.email
 		let company = this.state.company
-		let phone = this.state.phone
+		let phone = this.state.phone ? this.state.phone : 'N/A'
 		let logo = this.state.logo
 		return(
 			<div className="profile-page-container">

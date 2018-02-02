@@ -122,7 +122,7 @@ export class Portal extends Component {
        <NavBar sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} user={user}/>
        <SidePanel sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} />
        <div className="portal-display">
-          {page}
+          {display}
        </div>
       </section>
     )

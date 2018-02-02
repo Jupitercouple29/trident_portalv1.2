@@ -5,8 +5,6 @@ import { connect } from 'react-redux'
 import PDFJS from 'pdfjs-dist'
 import * as fs from 'fs'
 
-// import * as fs from 'fs'
-
 import "./reports-page.css"
 
 export class ReportsPage extends Component {
@@ -19,16 +17,18 @@ export class ReportsPage extends Component {
 			numPages:0,
 			pagenation:'',
 			buffer:'',
-			loadMsg:''
+			loadMsg:'',
+			pageNum:1
 		}
 		this.startRead = this.startRead.bind(this)
 		this.openPDF = this.openPDF.bind(this)
 		this.changePage = this.changePage.bind(this)
+		this.pagenation = this.pagenation.bind(this)
+		this.plusMinusPage = this.plusMinusPage.bind(this)
 	}
 	componentWillMount(){
 		getReports(this.props.user.email)
 		.then(res => {
-			console.log(res)
 			let reports
 			if(res === 'no reports available'){
 				reports = <h3>{res}</h3>
@@ -45,7 +45,7 @@ export class ReportsPage extends Component {
 			this.setState({reports})
 		})
 		.catch(err => {
-			console.log(err)
+			this.setState({reports: <h3>Error retrieving reports</h3>})
 		})
 	}
 	onInputChange(type, event){
@@ -57,10 +57,10 @@ export class ReportsPage extends Component {
   	let that = this
   	let buffer = Buffer.from(JSON.parse(report).data)
   	PDFJS.getDocument(buffer).then(function(pdf){
-				that.setState({buffer})
-				that.pagenation(pdf.numPages)
+				that.setState({numPages:pdf.numPages, buffer})
+				that.pagenation()
 				pdf.getPage(1).then(function(page){
-					var scale = 2 
+					var scale = 1.5 
 					var viewport = page.getViewport(scale)
 					var canvas = document.getElementById('pdf-report')
 					var context = canvas.getContext('2d')
@@ -70,22 +70,35 @@ export class ReportsPage extends Component {
 				})
 			})
   }
-  pagenation(pages){
-  	let buttons=[]
-		for (var i = 1; i <= pages; i++){
-			buttons.push(<button type='button' onClick={this.changePage.bind(this,i)}>Page {i}</button>)
-		}
-		this.setState({pagenation:buttons})
+  pagenation(){
+  	let buttons = <div>
+  									<span id="pages">Number of pages {this.state.numPages}</span>
+										<button type="button" onClick={this.plusMinusPage.bind(this,'minus')}>{"<"}</button>
+										<span id="page-number">Page {this.state.pageNum}</span>
+										<button type="button" onClick={this.plusMinusPage.bind(this, 'plus')}>{">"}</button>
+									</div>
+			this.setState({pagenation:buttons})
+  }
+  plusMinusPage(num){
+  	if(num === 'minus'){
+  		let pageMinus = this.state.pageNum - 1 > 0 ? this.state.pageNum - 1 : 1
+			this.changePage(pageMinus)
+  		this.setState({pageNum:pageMinus})
+  	}
+  	else{
+  		let pagePlus = this.state.pageNum + 1 < this.state.numPages ? this.state.pageNum + 1 : this.state.numPages
+  		this.changePage(pagePlus)
+  		this.setState({pageNum:pagePlus})
+  	}
   }
   changePage(pageNum){
 		let that = this
 		let buffer = this.state.buffer
 		PDFJS.getDocument(buffer).then(function(pdf){
-				console.log('Number of pages: ' + pdf.numPages)
 				that.setState({numPages:pdf.numPages,buffer})
-				that.pagenation(pdf.numPages)
+				that.pagenation()
 				pdf.getPage(pageNum).then(function(page){
-					var scale = 2 
+					var scale = 1.5
 					var viewport = page.getViewport(scale)
 					var canvas = document.getElementById('pdf-report')
 					var context = canvas.getContext('2d')

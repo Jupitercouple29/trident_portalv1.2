@@ -12,6 +12,7 @@ export const updateUser = (info) => {
 		return response.data
 	})
 	.catch(err => {
-		return err.response
+		throw new Error(err.response)
+		// return err.response
 	})
 }

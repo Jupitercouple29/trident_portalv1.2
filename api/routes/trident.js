@@ -190,23 +190,19 @@ router.get('/client/ip_range',
     let ipFrom = req.query.ipFrom
     let ipTo = req.query.ipTo
     let queryArray = []
-    console.log(ipTo)
-    console.log(ipFrom)
-    console.log(trident)
     let queryStringSource = searchRangeByIPs(trident, "source_ip", ipFrom, ipTo)
     let queryStringDest = searchRangeByIPs(trident, "destination_ip", ipFrom, ipTo)
     queryArray.push({}, queryStringSource, {}, queryStringDest)
-    console.log(queryArray)
     client.msearch({index, body: queryArray})
     .then(result => {
       // console.log(result.responses)
       let alertsArray = []
       alertsArray.push(result.responses[0].hits.hits, result.responses[1].hits.hits)
-      console.log(alertsArray[0].concat(alertsArray[1]))
+      log.info(requestLog(req, 200, result))
       res.status(200).send(alertsArray)
     })
     .catch(err => {
-      console.log(err)
+      log.error(requestLog(req, 400, err))
       res.status(400).send(err)
     })
   })
@@ -222,32 +218,54 @@ router.get('/client',
     let queryArray = []
     queryArray.push({}, queryStringSource, {}, queryStringDest)
     client.msearch({index, body: queryArray})
-    .then(result => {
-      let alertsArray = [], latAndLongArray = [], coordsArray = []
-      if (result.responses[0].aggregations && result.responses[0].aggregations.lat.buckets.length) {
-        result.responses[0].aggregations.lat.buckets.map(lat => {
+    .then(resp => {
+      let result1 = resp.responses[0].aggregations
+      let result2 = resp.responses[1].aggregations 
+      let alertsArray = [], latAndLongArray = [], 
+          coordsArray = [], alerts = [], source_ips = [], 
+          dest_ips = [], signatures = []
+      if (result1 && result1.lat.buckets.length) {
+        result1.lat.buckets.map(lat => {
           latAndLongArray.push(compileLatAndLongArray(lat.key,lat.long.buckets))
         })
         coordsArray = coordsArray.concat(...latAndLongArray)
       }
-      if (result.responses[1].aggregations && result.responses[1].aggregations.lat.buckets.length) {
-        result.responses[1].aggregations.lat.buckets.map(lat => {
+      if (result2 && result2.lat.buckets.length) {
+        result2.lat.buckets.map(lat => {
           latAndLongArray.push(compileLatAndLongArray(lat.key,lat.long.buckets))
         })
         coordsArray = coordsArray.concat(...latAndLongArray)
       }
-      console.log(coordsArray)
-      alertsArray.push(result.responses[0].hits.hits, result.responses[1].hits.hits)
-      let alerts = alertsArray[0].concat(alertsArray[1])
-       let body = {
+      if (resp.responses[0].hits.hits && resp.responses[1].hits.hits){
+        alertsArray.push(resp.responses[0].hits.hits, resp.responses[1].hits.hits) 
+        alerts = alertsArray[0].concat(alertsArray[1])
+        alerts.sort(function(a,b){
+          var timeA = a._source.timestamp
+          var timeB = b._source .timestamp  
+          if(timeA < timeB){
+            return -1
+          }
+          if(timeA > timeB){
+            return 1
+          }
+          return 0
+        })
+      }
+      source_ips = result1.source_ips.buckets
+      dest_ips = result1.dest_ips.buckets
+      signatures = result1.signatures.buckets.concat(result2.signatures.buckets)
+      let body = {
         alerts,
-        coordsArray
+        coordsArray,
+        source_ips,
+        dest_ips,
+        signatures
       }
-      // console.log(alerts)
+      log.info(requestLog(req, 200, body))
       res.status(200).send(body)
     })
     .catch(err => {
-      console.log(err)
+      log.error(requestLog(req, 400, err))
       res.status(400).send(err)
     })
   })

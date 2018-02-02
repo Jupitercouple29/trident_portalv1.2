@@ -22,7 +22,6 @@ var firebaseApp = firebase.initializeApp({
 })
 
 router.post('/', function(req, res, next){
-  console.log(req.body)
   let body = req.body;
   let email = body.email;
   let pswd = body.pswd;
@@ -38,7 +37,6 @@ router.post('/', function(req, res, next){
     jwtToken
   }
   if(loginAttempts < 4){
-    console.log('inside of the function')
     rootRef.orderByChild('email').equalTo(req.body.email).once('value')
     .then(function (snap){
       if(snap.val()){
@@ -91,12 +89,10 @@ router.post('/', function(req, res, next){
       }
     })
     .catch(function(err){
-      console.log(err)
       log.error(err, 500, 'Firebase error')
       res.status(500).send('Firebase error \n' + _error);
     })
   }else{
-    console.log('there is an error')
     log.error(requestLog(req, 401, 'Invalid Email'))
     res.status(401).send(_error);
   }
@@ -223,9 +219,7 @@ router.post('/update/profile',
     let rootRef = firebase.database().ref('users')
     rootRef.orderByChild('email').equalTo(email).once('value')
     .then(snap => {
-      console.log('just after then statement')
       if(snap.val()){
-        console.log('inside snapval')
         let userKey = Object.keys(snap.val())
         let userRef = rootRef.child(userKey[0])
         userRef.update({

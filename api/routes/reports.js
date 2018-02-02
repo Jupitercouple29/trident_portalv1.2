@@ -33,7 +33,6 @@ router.post('/',
 		let rootRef = firebase.database().ref('users');
 		rootRef.orderByChild('email').equalTo(email).once('value')
 		.then(snap => {
-			console.log(snap.val())
 			if(snap.val()){
 				let userKey = Object.keys(snap.val())
 				let userRef = rootRef.child(userKey[0])
@@ -54,8 +53,8 @@ router.post('/',
 		})
 	})
 router.post('/:email/:reportName',
-	// validateMiddleware,
-	// jwtRest({secret:process.env.JWT_SECRET}),
+	validateMiddleware,
+	jwtRest({secret:process.env.JWT_SECRET}),
 	function(req, res, next){
 		console.log(req.body)
 		let email = req.params.email
@@ -64,7 +63,6 @@ router.post('/:email/:reportName',
 		let pdf = JSON.stringify(file)
 		let report = {}
 		report[reportName] = pdf
-		console.log(report)
 		if(!validateEmail(email)) {
 			log.error(requestLog(req, 401, 'Invalid email'))
 			res.status(401).send('Invalid email')
@@ -72,7 +70,6 @@ router.post('/:email/:reportName',
 		let rootRef = firebase.database().ref('users');
 		rootRef.orderByChild('email').equalTo(email).once('value')
 		.then(snap => {
-			console.log(snap.val())
 			if(snap.val()){
 				let userKey = Object.keys(snap.val())
 				let userRef = rootRef.child(userKey[0])
@@ -90,6 +87,8 @@ router.post('/:email/:reportName',
 			}
 		})
 		.catch(err => {
+			console.log('there is an error')
+			console.log(err)
 			log.error(requestLog(req, 500, 'Firebase error'))
 			res.status(500).send('Firebase error. Unable to update user at ' + email)
 		})
@@ -100,8 +99,6 @@ router.get('/',
 	jwtRest({secret:process.env.JWT_SECRET}),
 	function(req, res, next){
 		let email = req.query.email
-		console.log(email)
-		console.log(req.params)
 		if(!validateEmail(email)){
 			log.error(requestLog(req, 400, 'Invalid email'))
 			res.status(400).send('Please enter a valid email')
@@ -122,7 +119,6 @@ router.get('/',
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			log.error(requestLog(req, 500, 'Firebase error'))
 			res.status(500).send('Firebase error. Unable to retrieve user at ' + email)
 		})

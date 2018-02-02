@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import * as actionCreators from '../../actions'
 import PortalMap from '../../components/map'
 import AlertPanel from '../../components/alert-panel'
+import TridentPanel from '../../components/trident-panel'
 import { getClientAlerts } from '../../functions/getClientAlerts'
 
 export class ClientPage extends Component {
@@ -12,7 +13,10 @@ export class ClientPage extends Component {
 		this.state = {
 			coords: [],
 			alerts: [],
-			message: "Loading...",
+			source_ips:[],
+			dest_ips:[],
+			signatures:[],
+			message: <div className="loading-message">Loading...</div>,
 			client: localStorage.getItem('selectedClient')
 		}
 		this.getClientInfo = this.getClientInfo.bind(this)
@@ -22,12 +26,18 @@ export class ClientPage extends Component {
 		this.getClientInfo(client)
 	}
 	shouldComponentUpdate(nextProps, nextState){
-		console.log(this.props.history.location)
 		let client = localStorage.getItem('selectedClient')
 		if(this.state.client !== client){
-			console.log('shouldComponentUpdate')
 			this.getClientInfo(client)
-			this.setState({client:client,coords:[],alerts:[]})
+			this.setState({
+				client:client,
+				coords:[],
+				alerts:[],
+				source_ips:[],
+				dest_ips:[],
+				signatures:[],
+				message:<div className="loading-message">Loading...</div>
+			})
 			return true
 		}
 		return true
@@ -38,31 +48,39 @@ export class ClientPage extends Component {
 		keys.map(key => {
 			if(client === key){
 				let trident = this.props.user.client ? this.props.user.client[key] : 2426
-				console.log(trident)
+				localStorage.setItem('selectedTrident', trident)
 				ipArray = this.props.user.ips[key]
 				getClientAlerts(trident	,ipArray)
 				.then(res => {
-					this.setState({coords:res.coordsArray, alerts:res.alerts})
-					// console.log(res)
+					let message
+					if(!res.source_ips.length || !res.dest_ips.length || !res.signatures.length){
+						message = <div className="unavailable-message">No Events</div>
+					}
+					this.setState({
+						coords:res.coordsArray, 
+						alerts:res.alerts, 
+						source_ips:res.source_ips,
+						dest_ips:res.dest_ips,
+						signatures:res.signatures,
+						message
+					})
 				})
 				.catch(err => {
-					// console.log(err)
+					console.log(err)
 					this.setState({message:"Alerts unavailable"})
 				})
 			}
 		})	
 	}
 	render(){
-		// console.log(this.props.user.ips)
-		let { coords, message, alerts	} = this.state
-
-		console.log(coords)
+		let { coords, message, alerts, source_ips, dest_ips, signatures	} = this.state
 		return (
 			<div>
 				<PortalMap coords={coords}/>
 				<div className="dashboard-panel-container">
 					<div className="dashboard-panel">
-					 <AlertPanel alerts={alerts} title={"Current Events"} message={message}/>
+						<TridentPanel sourceIPs={source_ips} destIPs={dest_ips} alerts={signatures} message={message} />
+					 	<AlertPanel alerts={alerts} title={"Current Events"} message={message}/>
 					</div>
 				</div>		
 			</div>

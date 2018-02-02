@@ -379,6 +379,33 @@ exports.searchByIPs = (trident, type, ipArray) => {
             }
           }
         }
+      },
+       "signatures": {
+        "terms": {
+          "field": "alert.signature.keyword",
+          "size": 10000,
+          "order": {
+            "_count": "desc"
+          }
+        }
+      },
+      "source_ips": {
+        "terms": {
+          "field": "source_ip.keyword",
+          "size": 10000,
+          "order": {
+            "_count": "desc"
+          }
+        }
+      },
+      "dest_ips": {
+        "terms": {
+          "field": "destination_ip.keyword",
+          "size": 10000,
+          "order":{
+            "_count": "desc"
+          }
+        }
       }
     },
     "size": 5000

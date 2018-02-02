@@ -32,8 +32,6 @@ export class ChartsPage extends Component {
 			let select = document.getElementById('select-box')
 			let value = select.options[select.selectedIndex].value
 			let trident = value.slice(value.length - 4, value.length)
-			console.log(trident)
-			console.log(select.options)
 			getTridentAlerts(trident)
 	    .then((res)=>{
 		    if(res.alerts.length < 1){
@@ -65,7 +63,6 @@ export class ChartsPage extends Component {
 	}
 	getDataSet(data){
 		let dataSet = data.map((d, i) => {
-			console.log(d)
 			let set = {
 				name: d.key,
 				value: d.doc_count
@@ -77,7 +74,17 @@ export class ChartsPage extends Component {
 	render(){
 		let sourceIPs = this.props.sourceIPs ? this.props.sourceIPs : null
 		let sourceIPData = this.getDataSet(sourceIPs)
-		console.log(sourceIPData)
+		let pieChart = <PieChart width={200} height={200}>
+										<Pie data={sourceIPData}
+												 dataKey="value"
+												
+												 cx={100}
+												 cy={100}
+												 labelLine={false}
+												 outerRadius={80}
+												 fill="#8884d8">
+										</Pie>
+									</PieChart>
 		return(
 			<div>
 				<div className="dashboard-header">
@@ -89,15 +96,7 @@ export class ChartsPage extends Component {
 						{this.tridentDropDown()}
 					</div>
 					<div className="charts-page source-ip-pie-chart">
-						<PieChart width={200} height={200}>
-							<Pie data={sourceIPData}
-									 cx={100}
-									 cy={100}
-									 labelLine={false}
-									 outerRadius={80}
-									 fill="#8884d8">
-							</Pie>
-						</PieChart>
+						<h1>Under Construction</h1>
 					</div>
 				</div>
 			</div>

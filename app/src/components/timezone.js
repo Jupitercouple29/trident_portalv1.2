@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 export default class Timezone extends Component {
 	render(){
 	 	return (
-	 	 	<select className="timezone" name="timezone">
+	 	 	<select className="timezone" name="timezone" defaultValue="0">
         <option value="-12" >(GMT -12:00) Eniwetok, Kwajalein</option>
         <option value="-11" >(GMT -11:00) Midway Island, Samoa</option>
         <option value="-10" >(GMT -10:00) Hawaii</option>
@@ -18,7 +18,7 @@ export default class Timezone extends Component {
         <option value="-3"  >(GMT -3:00) Brazil, Buenos Aires, Georgetown</option>
         <option value="-2"  >(GMT -2:00) Mid-Atlantic</option>
         <option value="-1"  >(GMT -1:00 hour) Azores, Cape Verde Islands</option>
-        <option value="0"  selected="selected">(GMT) Western Europe Time, London, Lisbon, Casablanca, Greenwich</option>
+        <option value="0"  >(GMT) Western Europe Time, London, Lisbon, Casablanca, Greenwich</option>
         <option value="1"   >(GMT +1:00 hour) Brussels, Copenhagen, Madrid, Paris</option>
         <option value="2"   >(GMT +2:00) Kaliningrad, South Africa, Cairo</option>
         <option value="3"   >(GMT +3:00) Baghdad, Riyadh, Moscow, St. Petersburg</option>

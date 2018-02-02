@@ -58,3 +58,10 @@
 .reports-page.reports {
 
 }
+#pages {
+	padding-right: 30px;
+}
+
+#page-number {
+	padding: 0 10px;
+}

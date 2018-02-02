@@ -4,10 +4,6 @@ import request from 'superagent'
 export const postReport = (info) => {
 	let token = localStorage.getItem('jwt')
 	console.log(info)
-	// return fetch(process.env.REACT_APP_API_URL + '/reports',{
-	// 	method:'POST',
-	// 	body: info
-	// })
 	let email = info.email
 	let report = info.file
 	let reportName = info.file.name 
@@ -24,21 +20,4 @@ export const postReport = (info) => {
 			throw new Error(err.response.text)
 			
 		})
-	// return axios.post(process.env.REACT_APP_API_URL + `/reports/${email}`, report, {
-	// 	headers:{
-	// 		Authorization: `Bearer ${token}`
-	// 	}
-	// })
-	// .then(response => {
- //    console.log(response.status);
- //    console.log(response.statusText);
- //    console.log(response.headers);
- //    console.log(response.config);
-	// 	return response.data
-	// })
-	// .catch(err => {
-	// 	console.log(err.response)
-	// 	throw new Error(err.response)
-	// 	// return err.response
-	// })
 }

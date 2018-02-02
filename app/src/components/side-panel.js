@@ -40,7 +40,6 @@ export class SidePanel extends Component {
 					 tabIndex='0'
 					 onMouseEnter={this.handlePanelClick}
 					 onMouseLeave={this.handlePanelClick.bind(this,'close')}
-					 onBlur={()=>{console.log('out of focus')}}
 					 onClick={this.handlePanelClick}>
 				<SidePanelItem 
 					display={display}
@@ -92,7 +91,7 @@ export class SidePanel extends Component {
 					open={displaySidePanel} 
 					icon={"fa fa-file-pdf-o fa-lg"} 
 					title={"Reports"}/>
-				{this.props.user.seller ? 
+				{this.props.user.client ? 
 					<SidePanelItem 
 						display={display}
 						route={this.routeClicked}
