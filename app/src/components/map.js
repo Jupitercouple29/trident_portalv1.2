@@ -61,11 +61,11 @@ export class PortalMap extends Component {
     }else{
       info.trident = this.props.tridents
     }
-    console.log(info)
+    // console.log(info)
     getMapAlert(info)
     .then((res)=>{
       this.props.mapAlerts(res)
-      console.log(res)
+      // console.log(res)
       // this.props.history.push('/alerts')
     })
   }
