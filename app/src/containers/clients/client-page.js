@@ -50,6 +50,7 @@ export class ClientPage extends Component {
 				let trident = this.props.user.client ? this.props.user.client[key] : 2426
 				localStorage.setItem('selectedTrident', trident)
 				ipArray = this.props.user.ips[key]
+				this.props.ips(ipArray)
 				getClientAlerts(trident	,ipArray)
 				.then(res => {
 					let message
@@ -74,7 +75,7 @@ export class ClientPage extends Component {
 	}
 	render(){
 		let { coords, message, alerts, source_ips, dest_ips, signatures	} = this.state
-		// console.log(this.props.alerts)
+		console.log(this.props.alerts)
 		let mapMessage = <h2>Please select an alert from the map</h2>
 		return (
 			<div>
@@ -83,6 +84,7 @@ export class ClientPage extends Component {
 					<div className="dashboard-panel">
 						<TridentPanel sourceIPs={source_ips} destIPs={dest_ips} alerts={signatures} message={message} />
 					 	<AlertPanel alerts={alerts} title={"Current Events"} message={message}/>
+					 	<AlertPanel alerts={this.props.alerts} title={"Map Alerts"} message={mapMessage}/>
 					</div>
 				</div>		
 			</div>

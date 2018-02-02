@@ -10,6 +10,7 @@ export const CURRENT_ALERTS = 'CURRENT_ALERTS'
 export const SIGNATURE_ALERTS = 'SIGNATURE_ALERTS'
 export const MAP_ALERTS = 'MAP_ALERTS'
 export const INFO_ALERTS = 'INFO_ALERTS'
+export const IP_ARRAY = 'IP_ARRAY'
 
 export const tridentArray = (tridents) => ({
   type: TRIDENT_ARRAY,
@@ -68,5 +69,10 @@ export const mapAlerts = (all) => ({
 
 export const infoAlerts = (all) => ({
   type:INFO_ALERTS,
+  all
+})
+
+export const ips = (all) => ({
+  type:IP_ARRAY,
   all
 })

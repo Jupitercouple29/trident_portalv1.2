@@ -10,7 +10,8 @@ import { validUser,
          signatureAlerts,
          info,
          locationAlerts,
-         dashboardProps } from './reducers';
+         dashboardProps,
+         ipArray } from './reducers';
 
 const rootReducer = combineReducers({
   validUser,
@@ -24,7 +25,8 @@ const rootReducer = combineReducers({
   dashboardProps,
   info,
   signatureAlerts,
-  locationAlerts
+  locationAlerts,
+  ipArray
 });
 
 export default rootReducer;

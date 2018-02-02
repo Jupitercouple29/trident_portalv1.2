@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import * as actionCreaters from '../actions'
 import { getMapCoords } from '../functions/getMapCoords'
 import { getMapAlert } from '../functions/getMapAlert'
+import { getClientMapAlert } from '../functions/getClientMapAlert'
 
 export class PortalMap extends Component {
   constructor(props){
@@ -58,16 +59,22 @@ export class PortalMap extends Component {
     info.long = long
     if(this.props.history.location.pathname === '/clients'){
       info.trident = [localStorage.getItem('selectedTrident')]
+      info.ipArray = this.props.ipArray
+      getClientMapAlert(info)
+      .then(res => {
+        this.props.mapAlerts(res)
+      })
     }else{
       info.trident = this.props.tridents
+      getMapAlert(info)
+      .then((res)=>{
+        this.props.mapAlerts(res)
+        // console.log(res)
+        // this.props.history.push('/alerts')
+      })
     }
     // console.log(info)
-    getMapAlert(info)
-    .then((res)=>{
-      this.props.mapAlerts(res)
-      // console.log(res)
-      // this.props.history.push('/alerts')
-    })
+   
   }
 
   showMapAlerts(){
@@ -140,7 +147,9 @@ export class PortalMap extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  tridents: state.tridentArray
+  tridents: state.tridentArray,
+  ipArray: state.ipArray,
+  info:state.info
 })
 
 export default withRouter(connect(mapStateToProps, actionCreaters)(PortalMap))

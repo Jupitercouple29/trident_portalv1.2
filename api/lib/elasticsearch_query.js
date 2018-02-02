@@ -245,6 +245,34 @@ exports.locationAlerts = (lat,long,trident) => {
   return queryString
 }
 
+exports.clientMapAlert = (trident, source, lat, long, ipArray) => {
+  let terms = {}
+  terms[source] = ipArray
+  let queryString = {
+    "sort":[
+      {
+        "timestamp":{
+          "order": "desc"
+        }
+      }
+    ],
+    "query": {
+      "bool": {
+        "must": [
+          {"match": {"geoip.latitude":lat}},
+          {"match": {"geoip.longitude":long}},
+          {"match": {"filename": trident}}
+        ],
+        "filter":{
+          "terms": terms
+        }
+      }
+    },
+    "size": 1000
+  }
+  return queryString
+}
+
 /**
  * Elasticsearch query that simply is used to get the total
  * number of alerts for the given trident

@@ -109,3 +109,12 @@ export const info = (state = [], action) => {
       return state
   }
 }
+
+export const ipArray = (state = [], action) => {
+  switch(action.type){
+    case actions.IP_ARRAY:
+      return action.all
+    default:
+      return state
+  }
+}
