@@ -56,10 +56,16 @@ export class PortalMap extends Component {
     let info = {}
     info.lat = lat
     info.long = long
-    info.trident = this.props.tridents
+    if(this.props.history.location.pathname === '/clients'){
+      info.trident = [localStorage.getItem('selectedTrident')]
+    }else{
+      info.trident = this.props.tridents
+    }
+    console.log(info)
     getMapAlert(info)
     .then((res)=>{
       this.props.mapAlerts(res)
+      console.log(res)
       // this.props.history.push('/alerts')
     })
   }
