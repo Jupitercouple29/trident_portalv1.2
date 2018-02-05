@@ -3,10 +3,12 @@
 	flex-direction: column;
 	width: 350px;
 }
+
 .admin-panel-container {
 	display: flex;
 	justify-content: center;
 }
+
 .admin-panel-pdf {
 	width: 350px;
 	height: 22px;
@@ -16,20 +18,25 @@
 .admin-panel-input {
 	margin-bottom: 15px;
 }
+
 .admin-panel-input.submit {
 	width: 60px;
 	margin-top: 10px;
 }
+
 .admin-panel-input-container.submit{
 	display: flex;
 	justify-content: center;
 }
+
 .admin-panel-label {
 	padding: 0 0 5px 5px;
 }
+
 #loading-message{
 	margin: 0;
 }
+
 .reports-container{
 	display: flex;
 }
@@ -44,6 +51,7 @@
 .reports button {
 	margin: 10px;
 }
+
 .pdf-container {
 	display: flex;
 	flex-direction: column;
@@ -55,13 +63,18 @@
 	background-color: rgba(0,0,0,0.4);
 }
 
-.reports-page.reports {
-
-}
 #pages {
 	padding-right: 30px;
 }
 
 #page-number {
 	padding: 0 10px;
+}
+
+#close-pdf {
+	margin-left: 10px;
+}
+
+.pagenation-container {
+	padding: 5px;
 }

@@ -25,6 +25,7 @@ export class ReportsPage extends Component {
 		this.changePage = this.changePage.bind(this)
 		this.pagenation = this.pagenation.bind(this)
 		this.plusMinusPage = this.plusMinusPage.bind(this)
+		this.closePDF = this.closePDF.bind(this)
 	}
 	componentWillMount(){
 		getReports(this.props.user.email)
@@ -56,6 +57,10 @@ export class ReportsPage extends Component {
   openPDF(report){
   	let that = this
   	let buffer = Buffer.from(JSON.parse(report).data)
+  	let pdfReport = document.getElementsByClassName('pdf-report-container')[0]
+  	let pdfCanvas = document.createElement('canvas')
+  	pdfCanvas.setAttribute("id","pdf-report")
+  	pdfReport.appendChild(pdfCanvas)
   	PDFJS.getDocument(buffer).then(function(pdf){
 				that.setState({numPages:pdf.numPages, buffer})
 				that.pagenation()
@@ -70,12 +75,18 @@ export class ReportsPage extends Component {
 				})
 			})
   }
+  closePDF(){
+  	let canvas = document.getElementById('pdf-report')
+  	canvas.remove()
+  	this.setState({pagenation:''})
+  }
   pagenation(){
-  	let buttons = <div>
+  	let buttons = <div className="pagenation-container">
   									<span id="pages">Number of pages {this.state.numPages}</span>
 										<button type="button" onClick={this.plusMinusPage.bind(this,'minus')}>{"<"}</button>
 										<span id="page-number">Page {this.state.pageNum}</span>
 										<button type="button" onClick={this.plusMinusPage.bind(this, 'plus')}>{">"}</button>
+										<button type="button" id="close-pdf" onClick={this.closePDF}>X</button>
 									</div>
 			this.setState({pagenation:buttons})
   }
@@ -184,7 +195,8 @@ export class ReportsPage extends Component {
 							<div className="reports-page pagenation">
 								{this.state.pagenation}
 							</div>
-							<canvas id='pdf-report'></canvas>
+							<div className="pdf-report-container">
+							</div>
 						</div>
 					</div>
 				</div>

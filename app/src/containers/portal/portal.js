@@ -14,6 +14,7 @@ import InfoPage from '../info/info-page'
 import Reports from '../reports/reports-page'
 import ClientPage from '../clients/client-page'
 import LoadingPage from '../../components/loading-page'
+import Footer from '../../components/footer'
 import { getTridents } from '../../functions/getTridents'
 import * as actionCreators from '../../actions'
 
@@ -115,12 +116,13 @@ export class Portal extends Component {
     const { isLoading, loadingMessage } = this.state
     const display = user && !isLoading ? page : <LoadingPage message={loadingMessage}/>
     return(
-      <section className="portal" ref={elem => this.root = elem}>
+      <section className="portal">
        <NavBar sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} user={user}/>
        <SidePanel sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} />
        <div className="portal-display">
           {display}
        </div>
+       <Footer />
       </section>
     )
   }
