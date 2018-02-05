@@ -18,6 +18,8 @@ const index = "logstash-" + yyyy + mm + dd
 /**
  * Gathers the coordinates of the alerts pertaining to the trident/s
  * that is passed in by req.query
+ * @param {array} req.query.trident  the trident/s to be querried
+ * @return {array} returns all coordinates of the alerts pertaining to the trident
  */
 router.get('/alerts',
 validateMiddleware,
@@ -26,20 +28,25 @@ function(req, res, next) {
   let queryArray = []
   if (req.query.trident && Array.isArray(req.query.trident)) {
     let tridents = ''
-    //forms a concatenated list of tridents
+    //forms a concatenated list of tridents ex. "Trident2411 Trident2422"
     req.query.trident.map((param, i) => {
       let trident = "Trident" + param + " ";
       tridents = tridents.concat(trident)
       return tridents
     })
+    //elasticsearch query param
     let queryString = coordinatesSearch(tridents)
+    //elasticsearch search query that returns two buckets. One for the latitude and
+    // one for the longitude.
     return client.search({index, body: queryString}).then(function(resp) {
       let coordsArray = []
       let latAndLongArray = []
       if (resp.aggregations && resp.aggregations.lat.buckets.length) {
         resp.aggregations.lat.buckets.map(lat => {
+          //creates an array of lat and long values from the elasticsearch aggregations
           latAndLongArray.push(compileLatAndLongArray(lat.key,lat.long.buckets))
         })
+        //concatenates all the arrays of lat and long into one array
         coordsArray = [].concat(...latAndLongArray)
       }
       log.info(requestLog(req, 200))
@@ -56,6 +63,10 @@ function(req, res, next) {
 
 /**
  * Gathers all alerts pertaining to a specific geo location
+ * @param  {float}  req.query.lat   the latitude
+ * @param  {float}  req.query.long  the longitude
+ * @param  {array}  req.query.trident   the trident to be querried
+ * @return {array}  returns an array of alerts fitting the requested values
  */
 router.get('/alerts/alert',
   validateMiddleware,
@@ -65,13 +76,16 @@ router.get('/alerts/alert',
     let long = req.query.long
     if (req.query.trident && Array.isArray(req.query.trident)) {
       let tridents = ''
+      //forms a concatenated list of tridents ex. "Trident2411 Trident2422"
       req.query.trident.map((param, i) => {
         let trident = "Trident" + param + " ";
         tridents = tridents.concat(trident)
         return tridents
       })
+      //elasticsearch query param
       let queryString = locationAlerts(lat,long,tridents)
       return client.search({index, body: queryString}).then(function(resp) {
+        // elasticsearch results 
         let response = resp.hits.hits
         res.status(200).send(response)
       })

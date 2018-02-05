@@ -58,7 +58,7 @@ export class TridentPanel extends Component {
 		let showAlerts = alertsArray && alertsArray.length >= 1 ? alertsArray : message
 		return(
 			<div className="trident-panel-container">
-				<div className="trident-panel small">
+				<div className="trident-panel">
 					<Columns 
 						title={"Source IPs"} 
 						info={sourceIPArray[0]} 
@@ -70,7 +70,7 @@ export class TridentPanel extends Component {
 						info={sourceIPArray[1]} 
 						name={"source-ips-count"}/>
 				</div>
-				<div className="trident-panel medium">
+				<div className="trident-panel">
 					<div className="trident-panel-alerts-container">
 						<div className="trident-panel-alerts-headers">
 							<h3 className="trident-panel-header medium">Current Events</h3>
@@ -81,7 +81,7 @@ export class TridentPanel extends Component {
 						</div>
 					</div>
 				</div>
-				<div className="trident-panel small">
+				<div className="trident-panel">
 					<Columns 
 						title={"Destination IPs"} 
 						info={destIPArray[0]} 

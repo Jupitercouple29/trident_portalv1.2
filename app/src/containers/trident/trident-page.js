@@ -3,6 +3,7 @@ import * as actionCreators from '../../actions'
 import PortalMap from '../../components/map'
 import TridentPanel from '../../components/trident-panel'
 import AlertType from '../../components/alert-type-panel'
+import AlertPanel from '../../components/alert-panel'
 import { connect } from 'react-redux'
 import { getTridentAlerts } from '../../functions/getTridentAlerts'
 import { getAlerts } from '../../functions/getAlerts'
@@ -55,6 +56,7 @@ export class TridentPage extends Component {
 		let destIPs = this.props.destIPs
 		let alerts = this.props.signature
 		let message = this.state.alertMessage
+		let mapMessage = <h2>Please select an alert from the map</h2>
 		return(
 			<div className="trident-page-container">
 				<div className="dashboard-header">
@@ -63,6 +65,7 @@ export class TridentPage extends Component {
 				</div>	
 				<PortalMap trident={trident}/>
 				<TridentPanel sourceIPs={sourceIPs} destIPs={destIPs} alerts={alerts} message={message} />
+				<AlertPanel alerts={this.props.alerts} title={"Map Events"} message={mapMessage}/>
 				<AlertType alertFunc={getAlerts} trident={trident} type={"alert"} title={"Signature Events"} message={message}/>
 				<AlertType alertFunc={getAlerts} trident={trident} type={"dns"} title={"DNS Events"} message={message} />
 				<AlertType alertFunc={getAlerts} trident={trident} type={"http"} title={"HTTP Events"} message={message} />
@@ -78,7 +81,8 @@ const mapStateToProps = (state) => ({
 	sourceIPs: state.sourceIPs,
 	destIPs: state.destIPs,
 	signature : state.signatureAlerts,
-	selectedTrident: state.selectedTrident
+	selectedTrident: state.selectedTrident,
+	alerts: state.locationAlerts
 })
 
 export default connect(mapStateToProps, actionCreators)(TridentPage)

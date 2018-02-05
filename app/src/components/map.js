@@ -64,6 +64,13 @@ export class PortalMap extends Component {
       .then(res => {
         this.props.mapAlerts(res)
       })
+    }else if(this.props.history.location.pathname === '/trident' && this.props.trident){
+      info.trident = [this.props.trident]
+      getMapAlert(info)
+      .then((res)=>{
+        this.props.mapAlerts(res)
+        // this.props.history.push('/alerts')
+      })
     }else{
       info.trident = this.props.tridents
       getMapAlert(info)

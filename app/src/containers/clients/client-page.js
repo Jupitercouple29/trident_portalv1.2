@@ -83,7 +83,7 @@ export class ClientPage extends Component {
 					<div className="dashboard-panel">
 						<TridentPanel sourceIPs={source_ips} destIPs={dest_ips} alerts={signatures} message={message} />
 					 	<AlertPanel alerts={alerts} title={"Current Events"} message={message}/>
-					 	<AlertPanel alerts={this.props.alerts} title={"Map Alerts"} message={mapMessage}/>
+					 	<AlertPanel alerts={this.props.alerts} title={"Map Events"} message={mapMessage}/>
 					</div>
 				</div>		
 			</div>

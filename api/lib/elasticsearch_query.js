@@ -167,7 +167,7 @@ exports.searchObject = (obj, date, minusHour) => {
  * @param  {trident} trident (ex. Trident 2411)
  * @return {queryString}
  */
-exports.searchMultiTridentAlerts = (trident) => {
+exports.searchTridentAlerts = (trident) => {
   let queryString = {
     sort: [
       {

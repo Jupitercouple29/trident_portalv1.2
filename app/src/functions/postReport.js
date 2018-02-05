@@ -3,17 +3,15 @@ import request from 'superagent'
 
 export const postReport = (info) => {
 	let token = localStorage.getItem('jwt')
-	console.log(info)
 	let email = info.email
 	let report = info.file
 	let reportName = info.file.name 
-	console.log(reportName)
 	return request.post(process.env.REACT_APP_API_URL + `/reports/${email}/${reportName}`)
 		.set({Authorization:`Bearer ${token}`})
 		.send(report)
 		.then(res => {
 			return res
-			console.log(res)
+			// console.log(res)
 		})
 		.catch(err => {
 			console.log(err.response.text)

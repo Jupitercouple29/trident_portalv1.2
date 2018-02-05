@@ -7,7 +7,7 @@ const { coordinatesSearch } = require('../lib/elasticsearch_query')
 const { searchEventObject } = require('../lib/elasticsearch_query')
 const { searchSignatureObject } = require('../lib/elasticsearch_query')
 const { searchObject } = require('../lib/elasticsearch_query')
-const { searchMultiTridentAlerts } = require('../lib/elasticsearch_query')
+const { searchTridentAlerts } = require('../lib/elasticsearch_query')
 const { compileLatAndLongArray } = require('../lib/common')
 const { mSearchNumOfAlerts } = require('../lib/elasticsearch_query')
 const { searchItemClicked } = require('../lib/elasticsearch_query')
@@ -21,9 +21,12 @@ const today = new Date()
 const dd = ('0' + today.getDate()).slice(-2)
 const mm = ('0' + (today.getMonth() + 1)).slice(-2) + '.'
 const yyyy = today.getFullYear() + '.'
-// const index = "logstash-2017.12.26"
 const index = "logstash-" + yyyy + mm + dd
 
+/**
+ * Pings the elasticsearch client
+ * @return {string}  returns whether the elasticsearch cluster is running or not
+ */
 router.get('/ping',
   function(req, res, next) {
     return client.ping({
@@ -39,16 +42,24 @@ router.get('/ping',
     })
 })
 
+/**
+ * Gets alertsLastHour, lastEventTime, signatureAlerts, allAlerts from elasticsearch
+ * @param  {array} req.query.trident  an array of tridents
+ * @return {array} returns an array of values 
+ *  ex.  alertsLastHour, lastEventTime, signatureAlerts, allAlerts
+ */
 router.get('/',
   validateMiddleware,
   jwtRest({secret: process.env.JWT_SECRET}),
   function(req, res, next) {
     let queryString = ''
     if (req.query.trident && Array.isArray(req.query.trident)) {
+      //forms a concatenated list of tridents ex. "Trident2411 Trident2422"
       req.query.trident.map((param, i) => {
         let trident = "Trident" + param + " "
         queryString += trident
       })
+      //elasticsearch query params
       let query = searchObject(queryString)
       return client.search({index, body: query})
       .then(function(resp) {
@@ -64,13 +75,18 @@ router.get('/',
     }
 })
 
+/** 
+ * Gets all alerts, signature alerts, destination ips, and source ips for one trident
+ * @param  {number} req.query.trident  the trident number
+ * @return {object}  returns an object of values listed above
+ */
 router.get('/alerts',
   validateMiddleware,
   jwtRest({secret: process.env.JWT_SECRET}),
   function(req, res, next) {
   if (req.query.trident) {
     let trident = "Trident" + req.query.trident
-    let queryString = searchMultiTridentAlerts(trident)
+    let queryString = searchTridentAlerts(trident)
     return client.search({index, body: queryString})
     .then(function(resp) {
       let alerts = resp.hits.hits

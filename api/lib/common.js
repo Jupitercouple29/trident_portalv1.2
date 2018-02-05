@@ -1,4 +1,5 @@
 /**
+ * requestLog is used to add a custom message to the log statement
  * @param  {req} the request body
  * @param  {status} a custom resolve status
  * @param  {mes} a custom message to be displayed 
@@ -14,6 +15,8 @@ exports.requestLog = function(req, status, mes){
   return log
 }
  /**
+  * compileLatAndLongArray takes coordinates from an elasticsearch query and
+  * filters the longitude values with the corresponding latitude values. 
   * @param  {lat}  latitude 
   * @param  {longArray} an array of longitude values
   * @return {latAndLongArray} returns an array of latitude, 
@@ -28,6 +31,8 @@ exports.compileLatAndLongArray = (lat, longArray) => {
 }
 
 /**
+ * uniqDescOrderedList takes and array of items and filters all of the duplicate
+ * items out of the array leaving a unique set.
  * @param  {array}  an array of items
  * @return {newOrder}  returns a new array with only unique values
  */
@@ -47,7 +52,7 @@ exports.uniqDescOrderedList = (array) => {
 }
 
 /**
- * Middleware for checking that the proper authorization headder
+ * validateMiddleware checks that the proper authorization headder
  * is attached to the reqest. If valid returns next()
  * @param  {req}
  * @param  {res}
@@ -82,6 +87,7 @@ exports.validateMiddleware = (req, res, next) => {
 }
 
 /**
+ * validateEmail checks for a valid email string
  * @param  {email}  email string
  * @return {boolean}  returns true if email syntax is correct
  */
