@@ -75,7 +75,6 @@ export class ClientPage extends Component {
 	}
 	render(){
 		let { coords, message, alerts, source_ips, dest_ips, signatures	} = this.state
-		console.log(this.props.alerts)
 		let mapMessage = <h2>Please select an alert from the map</h2>
 		return (
 			<div>

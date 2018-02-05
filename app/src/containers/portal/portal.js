@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import NavBar from '../../components/nav-bar'
 import SidePanel from '../../components/side-panel'
 import Dashboard from '../dashboard/dashboard'
@@ -33,11 +34,9 @@ export class Portal extends Component {
     }
 
     this.handleSidePanelClick = this.handleSidePanelClick.bind(this)
-    this.sidePanelResize = this.sidePanelResize.bind(this)
+    this.noActivityLogout = this.noActivityLogout.bind(this)
   }
-
   componentWillMount(){
-    // this.props.pageLocation(<Dashboard />)
     let tridents = this.props.tridents
     getTridents(tridents)
     .then(result=>{
@@ -52,23 +51,21 @@ export class Portal extends Component {
       })
     })
   }
-  
   componentDidMount(){
-    // let sidePanel = document.getElementsByClassName('side-panel-container')[0]
-    // // console.log(ReactDOM.findDOMNode(sidePanel))
-    // ReactDOM.findDOMNode(sidePanel).addEventListener('resize', this.timer)
+    let portal = document.getElementById('root')
+    portal.addEventListener('mousemove', this.noActivityLogout)
   }
-  
-  sidePanelResize(){
-     // console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
-    // console.log(document.getElementsByClassName('side-panel-container')[0].clientWidth)
+  noActivityLogout(){
+    let portal = this
+    clearInterval(this.interval)
+    this.interval = setInterval(function(){
+      portal.props.history.push('/login')
+    }, 3600000)
   }
-  
   componentWillUnmount(){
-    // let sidePanel = document.getElementsByClassName('side-panel-container')[0]
-    // ReactDOM.findDOMNode(sidePanel).removeEventListener('resize', this.side)
+    let portal = document.getElementById('root')
+    portal.removeEventListener('mousemove', this.noActivityLogout)
   }
-
   componentWillReceiveProps(nextProps){
     if(nextProps.location.pathname !== this.state.page){
       let pageLocation = ''
@@ -118,7 +115,7 @@ export class Portal extends Component {
     const { isLoading, loadingMessage } = this.state
     const display = user && !isLoading ? page : <LoadingPage message={loadingMessage}/>
     return(
-      <section className="portal">
+      <section className="portal" ref={elem => this.root = elem}>
        <NavBar sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} user={user}/>
        <SidePanel sidePanelClick={this.handleSidePanelClick} displaySidePanel={displaySidePanel} />
        <div className="portal-display">
@@ -135,4 +132,4 @@ const mapStateToProps = (state) => ({
   tridents: state.tridentArray
 })
 
-export default connect(mapStateToProps, actionCreators)(Portal)
+export default withRouter(connect(mapStateToProps, actionCreators)(Portal))

@@ -26,6 +26,8 @@ export class Login extends Component {
   }
   componentWillMount(){
     localStorage.removeItem('jwt')
+    localStorage.removeItem('selectedTrident')
+    localStorage.removeItem('selectedClient')
     this.props.login(null)
     let session = localStorage.getItem('session')
     if(session && session !== 'undefined'){

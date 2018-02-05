@@ -7,18 +7,6 @@ var validateEmail = require('../lib/common').validateEmail
 const { validateMiddleware } = require('../lib/common')
 var express = require('express');
 var router = express.Router();
-var multer = require('multer')
-var Busboy = require('busboy')
-var fs = require('fs')
-var storage = multer.diskStorage({
-	destination: function(req,file,callback){
-		callback(null, './uploads')
-	},
-	filename: function(req,file,callback){
-		callback(null, file.filename + '-' + Date.now())
-	}
-})
-var upload = multer({dest:'uploads/'})
 
 router.post('/', 
 	validateMiddleware,

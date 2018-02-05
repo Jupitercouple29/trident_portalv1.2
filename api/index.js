@@ -8,7 +8,6 @@ var express = require('express'),
     jwt = require('express-jwt'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
-    bb = require ('express-busboy'),
     cors = require('cors');
 
 var users = require('./routes/users');
