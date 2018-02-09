@@ -121,6 +121,7 @@
 }
 
 .portal-map {
+	min-width: 930px;
 	/*width: calc(100% - 40px);*/
 }
 
@@ -149,6 +150,7 @@
 	animation-duration: 0.5s;
 	animation-name: zoomIn;
 	animation-fill-mode: both;
+	flex: 1;
 }
 
 .dashboard-panel-column.small {
@@ -212,6 +214,7 @@
 	animation-duration: 0.5s;
 	animation-name: zoomIn;
 	animation-fill-mode: both;
+	min-width: 930px;
 }
 
 .alert-panel.large {

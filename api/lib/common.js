@@ -40,13 +40,23 @@ exports.uniqDescOrderedList = (array) => {
   let newSet = new Set(array.map(e => JSON.stringify(e)))
   let newOrder = Array.from(newSet).map(e => JSON.parse(e))
   newOrder.sort((a, b) => {
+    let c
+    let d 
     if (a.doc_count) {
-      return b.doc_count - a.doc_count
+      c = a.doc_count
+      d = b.doc_count
     } else if (a.timestamp) {
-      return b.timestamp - a.timestamp
-    } else {
-      return a
+      c = a.timestamp
+      d = b.timestamp
+    } 
+    if(c > d){
+      return -1
     }
+    if(c < d){
+      return 1
+    }
+    return 0
+      
   })
   return newOrder
 }

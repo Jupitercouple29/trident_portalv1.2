@@ -215,19 +215,7 @@ router.get('/client/mapAlert',
     .then(result => {
       // console.log(result.responses)
       alertsArray.push(result.responses[0].hits.hits, result.responses[1].hits.hits)
-      alerts = alertsArray[0].concat(alertsArray[1])
-      alerts.sort(function(a,b){
-        var timeA = a._source.timestamp
-        var timeB = b._source .timestamp  
-        if(timeA < timeB){
-          return -1
-        }
-        if(timeA > timeB){
-          return 1
-        }
-        return 0
-      })
-    
+      alerts = uniqDescOrderedList(alertsArray[0].concat(alertsArray[1]))    
       log.info(requestLog(req, 200, alerts))
       res.status(200).send(alerts)
     })
@@ -249,6 +237,7 @@ router.get('/client',
     queryArray.push({}, queryStringSource, {}, queryStringDest)
     client.msearch({index, body: queryArray})
     .then(resp => {
+      console.log(resp)
       let result1 = resp.responses[0].aggregations
       let result2 = resp.responses[1].aggregations 
       let alertsArray = [], latAndLongArray = [], 
@@ -268,18 +257,7 @@ router.get('/client',
       }
       if (resp.responses[0].hits.hits && resp.responses[1].hits.hits){
         alertsArray.push(resp.responses[0].hits.hits, resp.responses[1].hits.hits) 
-        alerts = alertsArray[0].concat(alertsArray[1])
-        alerts.sort(function(a,b){
-          var timeA = a._source.timestamp
-          var timeB = b._source .timestamp  
-          if(timeA < timeB){
-            return -1
-          }
-          if(timeA > timeB){
-            return 1
-          }
-          return 0
-        })
+        alerts = uniqDescOrderedList(alertsArray[0].concat(alertsArray[1]))
       }
       source_ips = result1.source_ips.buckets
       dest_ips = result1.dest_ips.buckets
