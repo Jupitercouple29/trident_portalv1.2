@@ -7,6 +7,13 @@ import { showSIGAlert } from '../functions/showSIGAlert'
 import { showFILEAlert } from '../functions/showFILEAlert'
 import { showSSHAlert } from '../functions/showSSHAlert'
 
+/**
+ * AlertPanelItem displays each alert inside of the panel. 
+ * props {
+ * 		alert: a single alert,
+ * 		alertKey: key used to differentiate each alert
+ * }
+ */
 export default class AlertPanelItem extends Component {
 	constructor(props){
 		super(props)

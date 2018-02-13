@@ -86,6 +86,7 @@ router.get('/alerts',
   function(req, res, next) {
   if (req.query.trident) {
     let trident = "Trident" + req.query.trident
+    //elasticsearch query params
     let queryString = searchTridentAlerts(trident)
     return client.search({index, body: queryString})
     .then(function(resp) {
@@ -112,6 +113,13 @@ router.get('/alerts',
   }
 })
 
+/**
+ * Gets alerts based on event_type in the elasticsearch query 
+ * ex. dns 
+ * @param  {number} req.query.trident  trident number
+ * @param  {string} req.params.type    event_type
+ * @return {object} returns an object with an array of alerts 
+ */
 router.get('/alerts/:type',
   validateMiddleware,
   jwtRest({secret: process.env.JWT_SECRET}),
@@ -122,8 +130,10 @@ router.get('/alerts/:type',
       let type = req.params.type
       let trident = "Trident" + req.query.trident
       if (req.params.type == "signatures") {
+          //elasticsearch query params
           queryString = searchSignatureObject(trident)
         } else {
+          //elasticsearch query params
           queryString = searchEventObject(trident, type)
         }
       return client.search({index, body: queryString})
@@ -145,6 +155,12 @@ router.get('/alerts/:type',
     }
 })
 
+/**
+ * Gets the total number of alerts for the specified trident
+ * @param  {number} req.query.trident   trident number
+ * @return {[array]}  returns an array with the trident as the key and
+ *    the total number of events as the value for each trident.
+ */
 router.get('/count', 
 	validateMiddleware,
 	jwtRest({secret: process.env.JWT_SECRET}),
@@ -154,7 +170,7 @@ router.get('/count',
       req.query.trident.map((param, i) => {
         let trident = "Trident" + param
         let queryString = {}
-        let type = req.query.type
+        //elasticsearch query params
         queryString = mSearchNumOfAlerts(trident)
         queryArray.push({}, queryString)
         return queryArray
@@ -179,13 +195,22 @@ router.get('/count',
     }
 	})
 
+/**
+ * Gets info from elasticsearch based on the title and info passed in 
+ * example title is source_ip and info 10.10.202.222
+ * @param  {number} req.query.trident   trident
+ * @param  {string} req.query.title   title of the searchable source
+ * @param  {string} req.query.info   the value of the title to be searched
+ * @return {array}  returns an array of alerts matching the requested information
+ */
 router.get('/item', 
-  // validateMiddleware,
-  // jwtRest({secret: process.env.JWT_SECRET}),
+  validateMiddleware,
+  jwtRest({secret: process.env.JWT_SECRET}),
   function(req, res, next){
     let trident = "Trident" + req.query.trident
     let title = req.query.title
     let info = req.query.info
+    //elasticsearch query params
     let queryString = searchItemClicked(trident,title,info)
     return client.search({index, body: queryString})
     .then(result => {
@@ -198,9 +223,17 @@ router.get('/item',
     })
   })
 
+/**
+ * Gets the map coordinates and alerts for a client based on source ip and destination ip
+ * @param  {number}   req.query.info.trident    trident
+ * @param  {number}   req.query.info.lat   latitude
+ * @param  {number}   req.query.info.long    longitude
+ * @param  {array}   req.query.info.ipArray   array of ip addresses to search
+ * @return {array}   returns an array of alerts
+ */
 router.get('/client/mapAlert',
-  // validateMiddleware,
-  // jwtRest({secret:process.env.JWT_SECRET}),
+  validateMiddleware,
+  jwtRest({secret:process.env.JWT_SECRET}),
   function(req, res, next){
     let info = req.query.info
     let trident = "Trident" + info.trident
@@ -208,12 +241,13 @@ router.get('/client/mapAlert',
     let long = info.long
     let ipArray = info.ipArray
     let queryArray = [], alerts = [], alertsArray = []
+    //elasticsearch query params
     let queryStringSource = clientMapAlert(trident, "source_ip", lat , long, ipArray)
+    //elasticsearch query params
     let queryStringDest = clientMapAlert(trident, "destination_ip", lat, long, ipArray)
     queryArray.push({}, queryStringSource, {}, queryStringDest)
     client.msearch({index, body: queryArray})
     .then(result => {
-      // console.log(result.responses)
       alertsArray.push(result.responses[0].hits.hits, result.responses[1].hits.hits)
       alerts = uniqDescOrderedList(alertsArray[0].concat(alertsArray[1]))    
       log.info(requestLog(req, 200, alerts))
@@ -225,13 +259,22 @@ router.get('/client/mapAlert',
     })
   })
 
+/**
+ * Gets all alerts based on ip's that are passed in
+ * @param  {number} req.query.trident   trident
+ * @param  {array} req.query.ipArray   array of ip addresses
+ * @return {object}  returns an object with the resulting alerts array, 
+ *    coordsArray, source_ips, dest_ips, and signatures
+ */
 router.get('/client',
-  // validateMiddleware,
-  // jwtRest({secret:process.env.JWT_SECRET}),
+  validateMiddleware,
+  jwtRest({secret:process.env.JWT_SECRET}),
   function(req, res, next){
     let trident = "Trident" + req.query.trident
     let ipArray = req.query.ipArray
+    //elasticsearch query params
     let queryStringSource = searchByIPs(trident, "source_ip", ipArray)
+    //elasticsearch query params
     let queryStringDest = searchByIPs(trident, "destination_ip", ipArray)
     let queryArray = []
     queryArray.push({}, queryStringSource, {}, queryStringDest)
@@ -245,18 +288,21 @@ router.get('/client',
           dest_ips = [], signatures = []
       if (result1 && result1.lat.buckets.length) {
         result1.lat.buckets.map(lat => {
+          //gathers all possible lat and long values
           latAndLongArray.push(compileLatAndLongArray(lat.key,lat.long.buckets))
         })
         coordsArray = coordsArray.concat(...latAndLongArray)
       }
       if (result2 && result2.lat.buckets.length) {
         result2.lat.buckets.map(lat => {
+          //gathers all possible lat and long values
           latAndLongArray.push(compileLatAndLongArray(lat.key,lat.long.buckets))
         })
         coordsArray = coordsArray.concat(...latAndLongArray)
       }
       if (resp.responses[0].hits.hits && resp.responses[1].hits.hits){
         alertsArray.push(resp.responses[0].hits.hits, resp.responses[1].hits.hits) 
+        //concatenates the two results and sorts them in descending order
         alerts = uniqDescOrderedList(alertsArray[0].concat(alertsArray[1]))
       }
       source_ips = result1.source_ips.buckets

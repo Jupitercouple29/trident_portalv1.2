@@ -1,14 +1,23 @@
 import React, { Component } from 'react' 
 import Columns from './dashboard-columns'
 
+/**
+ * TridentPanel is used to display each trident and the number of alerts 
+ * for each trident. 
+ * props {
+ * 		alerts: array of key value pairs {trident:number of alerts},
+ * 		tridents: array of user tridents
+ * }
+ */
 export default class TridentPanel extends Component {
-	
 	render(){
 		let tridentArray = []
 		let alertsArray = []
 		let keys = this.props.tridents
 		if(this.props.alerts !== undefined){
-		let alertKeys = Object.keys(this.props.alerts)
+			console.log(this.props.alerts)
+			console.log(this.props.tridents)
+			let alertKeys = Object.keys(this.props.alerts)
 			Object.keys(keys).map((key) => {
 	      this.props.tridents[key].map((trident) => {
 	        tridentArray.push(key + " " + trident)

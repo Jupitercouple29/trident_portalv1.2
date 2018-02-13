@@ -3,6 +3,17 @@ import { withRouter } from 'react-router-dom'
 import * as actionCreators from '../actions'
 import { connect } from 'react-redux'
 
+/**
+ * SidePanelItem is used to display each item in the side panel
+ * props {
+ * 		display: show or hide item,
+ * 		icon: fontawesome icon,
+ * 		title: the title,
+ * 		open: show or hide panel,
+ * 		client: true or false displays client option,
+ * 		
+ * }
+ */
 export class SidePanelItem extends Component {
 	constructor(props){
 		super(props)
@@ -63,9 +74,9 @@ export class SidePanelItem extends Component {
 			return this.getTridents(items)
 		}
 	}
-	displayClients(items){
-		return Object.keys(items)
-	}
+	// displayClients(items){
+	// 	return Object.keys(items)
+	// }
 	getTridents(tridents){
 		let tridentArray = []
 		let keys = Object.keys(tridents)

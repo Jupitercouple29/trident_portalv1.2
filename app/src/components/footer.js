@@ -3,6 +3,9 @@ import linkedin from '../media/linkedin.png'
 import facebook from '../media/facebook.png'
 import twitter from '../media/twitter.png'
 
+/**
+ * Footer is use to display the footer at the bottom of every page
+ */
 export default class Footer extends Component {
   render(){
     return (

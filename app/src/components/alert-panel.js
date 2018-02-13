@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
 import AlertPanelItem from './alert-panel-item'
 
+/**
+ * AlertPanel is the panel to display alerts inside of.
+ * props {
+ *    alerts: an array of alerts,
+ *    message: message to display if no alerts or loading,
+ *    title: the title of the alert panel,
+ *    size: the size of the alert panel {small, medium, large}
+ * }
+ */
 export default class AlertPanel extends Component {
 	constructor(props){
 		super(props)

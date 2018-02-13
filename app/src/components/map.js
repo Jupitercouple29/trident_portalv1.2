@@ -7,6 +7,15 @@ import { getMapCoords } from '../functions/getMapCoords'
 import { getMapAlert } from '../functions/getMapAlert'
 import { getClientMapAlert } from '../functions/getClientMapAlert'
 
+/**
+ * PortalMap is used to display a map with all of the alerts significant 
+ * to the info passed in.
+ * props {
+ *  trident: trident,
+ *  tridents: array of tridents,
+ *  coords: array of coordinates,
+ * }
+ */
 export class PortalMap extends Component {
   constructor(props){
     super(props)
@@ -18,10 +27,8 @@ export class PortalMap extends Component {
     this.handleAlertClick = this.handleAlertClick.bind(this)
     this.handleZoom = this.handleZoom.bind(this)
   }
-
   componentWillMount(){
     if(this.props.history.location.pathname === '/trident' && this.props.trident){
-
       getMapCoords([this.props.trident])
       .then(res => {
         this.setState({coords: res})
@@ -35,7 +42,6 @@ export class PortalMap extends Component {
       })
     }
   }
-
   componentWillReceiveProps(nextProps){
     if(this.props.trident !== nextProps.trident){
       getMapCoords([nextProps.trident])
@@ -46,13 +52,9 @@ export class PortalMap extends Component {
     if(this.props.coords && this.props.coords !== nextProps.coords){
       this.setState({coords:nextProps.coords})
     }
-    // let leafletMap = this.leafletMap.leafletElement
-    // let tileLayer = this.tileLayer
-    // leafletMap.on('mouseover', () => {
-      // <Marker position={[39.109818, -76.840439]} />
-    // })
   }
-
+  //allows user to click on marker and then a call to the backend is made to 
+  //gather data on that specific alert
   handleAlertClick(lat,long){
     let info = {}
     info.lat = lat
@@ -79,11 +81,9 @@ export class PortalMap extends Component {
         // console.log(res)
         // this.props.history.push('/alerts')
       })
-    }
-    // console.log(info)
-   
+    }   
   }
-
+  //creates a marker on the map for each coordinate 
   showMapAlerts(){
     let key = 0
     let that = this
@@ -117,7 +117,7 @@ export class PortalMap extends Component {
       })
     return Circles
   }
-
+  //resizes markers based on zoom level
   handleZoom(e){
     let zoom = e.target._zoom
     let circleRadius = 200000/zoom
@@ -126,7 +126,6 @@ export class PortalMap extends Component {
     else if(zoom > 17) circleRadius = 5000/Math.pow((zoom - 2),2)
     this.setState({circleRadius})
   }
-
 	render(){
     let coords = this.state.coords
     let mapAlerts = coords && coords.length ? this.showMapAlerts() : null
