@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
 
+/**
+ * Rows is used to display rows of data.
+ * props {
+ * 		titles: the title of each row,
+ * 		info: the values for each row
+ * }
+ */
 export default class Rows extends Component {
 	renderRow(props){
 		let row = props.titles.map((title,i)=>{

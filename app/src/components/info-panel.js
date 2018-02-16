@@ -1,5 +1,13 @@
 import React, { Component } from 'react' 
 
+/**
+ * InfoPanel is used to display information panels at the top of the dashboard page
+ * props {
+ * 		icon: fontawesome icon to display,
+ * 		title: the panel's title,
+ * 		results: the results to display
+ * }
+ */
 export default class InfoPanel extends Component {
 	render(){
 		let icon = this.props.icon

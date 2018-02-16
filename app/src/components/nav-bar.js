@@ -4,6 +4,14 @@ import DCILogo from '../media/DCI_logo.jpg'
 import AISLogo from '../media/AIS_logo.jpg'
 import { withRouter } from 'react-router-dom'
 
+/**
+ * NavBar is used to display a friendly navigation bar at the top of the page
+ * props {
+ * 		sidePanelClick: function to handle opening the side panel,
+ * 		displaySidePanel: opens and closes sidepanel (true or false),
+ * 		user: the users data
+ * }
+ */
 export class NavBar extends Component {
 	constructor(props){
 		super(props)
@@ -14,6 +22,7 @@ export class NavBar extends Component {
 		this.signOut = this.signOut.bind(this)
 	}
 	componentWillMount(){
+		// console.log(this.props.user)
 		if(this.props.user.seller === "DCI_logo"){
 			this.setState({logo:DCILogo})
 		}else if (this.props.user.seller === "AIS_logo"){

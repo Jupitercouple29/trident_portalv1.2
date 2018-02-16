@@ -1,6 +1,19 @@
 import React, { Component } from 'react'
 import AlertPanel from './alert-panel'
 
+/**
+ * AlertType is used to display the AlertPanel but takes in an alertFunc function
+ * that is used to call the backend to gather the alerts for that particular type 
+ * of AlertPanel. 
+ * props {
+ * 		alertFunc: function passed down to call the backend to gather alerts,
+ * 		trident: the trident,
+ * 		type: the event_type,
+ * 		title: the title of the AlertPanel,
+ * 		loading: true or false,
+ * 		message: the message to display if loading or no alerts
+ * }
+ */
 export default class AlertType extends Component {
 	constructor(props){
 		super(props)
@@ -23,7 +36,7 @@ export default class AlertType extends Component {
 		}
 	}
 	render(){
-		let alert = this.state.alertList
+		let alert = this.props.loading ? [] : this.state.alertList
 		let message = this.props.message
 		return(
 			<div className="alert-panel-container">

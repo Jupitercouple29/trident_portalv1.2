@@ -14,6 +14,7 @@ var users = require('./routes/users');
 var trident = require('./routes/trident')
 var map = require('./routes/map')
 var reports = require('./routes/reports')
+var soc = require('./routes/soc')
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use('/users', users);
 app.use('/trident', trident);
 app.use('/map', map);
 app.use('/reports', reports);
+app.use('/soc', soc)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

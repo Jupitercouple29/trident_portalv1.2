@@ -45,7 +45,7 @@ export class TridentPanel extends Component {
 								onClick={this.handleOnclick.bind(this,"alert.signature.keyword",a.key)}>
 								{a.key}
 							</p>
-							<p className="trident-panel-alert-total small">{a.doc_count}</p>
+							<p className="trident-panel-alert-total small">{a.doc_count.toLocaleString()}</p>
 						</div>
 		})
 		return alerts

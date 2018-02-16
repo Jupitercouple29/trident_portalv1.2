@@ -1,5 +1,15 @@
 import React, { Component } from 'react'
 
+/**
+ * Columns is used to display columns of data.
+ * props {
+ * 		message: the message to display if loading or no data,
+ * 		clicked: function to handle onclick,
+ * 		name: added to the className of the column,
+ * 		title: the column title,
+ * 		size: the size of the column {small, medium, large}
+ * }
+ */
 export default class Columns extends Component {
 	constructor(props){
 		super(props)
@@ -18,7 +28,7 @@ export default class Columns extends Component {
 			return <p 
 							onClick={this.props.clicked ? this.props.clicked.bind(this,this.props.name,i) : null} 
 							key={index}>
-								{i}
+								{i.toLocaleString()}
 							</p>
 		})
 		return component

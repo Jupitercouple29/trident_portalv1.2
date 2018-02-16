@@ -1,0 +1,11 @@
+.soc-page-container form {
+	display: flex;
+}
+
+.soc-page-container label {
+	padding-right: 5px;
+}
+
+.soc-page-container input {
+	margin-right: 10px;
+}
