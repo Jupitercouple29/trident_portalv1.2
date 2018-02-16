@@ -74,9 +74,6 @@ export class SidePanelItem extends Component {
 			return this.getTridents(items)
 		}
 	}
-	// displayClients(items){
-	// 	return Object.keys(items)
-	// }
 	getTridents(tridents){
 		let tridentArray = []
 		let keys = Object.keys(tridents)

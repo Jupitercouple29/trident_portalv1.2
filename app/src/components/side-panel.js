@@ -91,6 +91,16 @@ export class SidePanel extends Component {
 					open={displaySidePanel} 
 					icon={"fa fa-file-pdf-o fa-lg"} 
 					title={"Reports"}/>
+				{this.props.user.creds === 'Admin' ?
+					<SidePanelItem 
+					display={display}
+					route={this.routeClicked}
+					selected={this.state.route}
+					open={displaySidePanel} 
+					icon={"fa fa-binoculars fa-lg"} 
+					title={"SOC"}/>
+					:
+					null}
 				{this.props.user.client ? 
 					<SidePanelItem 
 						display={display}

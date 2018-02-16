@@ -28,7 +28,7 @@ export default class Columns extends Component {
 			return <p 
 							onClick={this.props.clicked ? this.props.clicked.bind(this,this.props.name,i) : null} 
 							key={index}>
-								{i}
+								{i.toLocaleString()}
 							</p>
 		})
 		return component

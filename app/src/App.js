@@ -10,12 +10,16 @@ import { connect } from 'react-redux';
 import Login from './containers/login/login';
 import Portal from './containers/portal/portal';
 import AuthRoute from './functions/authRoute';
+import SOC from './containers/soc/soc-page'
+import NavBar from './components/nav-bar'
 
 export class App extends Component {
   render(){
+    console.log(this.props.validUser)
     return(
         <Router>
           <div className="router-div">
+          
             <Switch>
               <Route exact path="/" render={() => (
                 this.props.validUser ? (
@@ -34,6 +38,7 @@ export class App extends Component {
               <AuthRoute path="/info" component={Portal}/>
               <AuthRoute path="/reports" component={Portal}/>
               <AuthRoute path="/clients" component={Portal}/>
+              <AuthRoute path="/soc" component={Portal}/>
             </Switch>
           </div>
         </Router>

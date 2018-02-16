@@ -280,7 +280,7 @@ router.get('/client',
     queryArray.push({}, queryStringSource, {}, queryStringDest)
     client.msearch({index, body: queryArray})
     .then(resp => {
-      console.log(resp)
+      // console.log(resp)
       let result1 = resp.responses[0].aggregations
       let result2 = resp.responses[1].aggregations 
       let alertsArray = [], latAndLongArray = [], 
@@ -302,11 +302,30 @@ router.get('/client',
       }
       if (resp.responses[0].hits.hits && resp.responses[1].hits.hits){
         alertsArray.push(resp.responses[0].hits.hits, resp.responses[1].hits.hits) 
+
         //concatenates the two results and sorts them in descending order
         alerts = uniqDescOrderedList(alertsArray[0].concat(alertsArray[1]))
+        let count = 0
+        let count2 = 0 
+        let twoWayArray = []
+        alerts.map(alert =>{
+          console.log(count++)
+          // console.log(alert._source.source_ip)
+          let source = alert._source.source_ip
+          let dest = alert._source.destination_ip
+          alerts.map(a => {
+            if(source === a._source.destination_ip && dest === a._source.source_ip){
+              // console.log('some two way traffic ' + count2++)
+              twoWayArray.push(a, alert)
+              // console.log(alert)
+              // console.log(a)
+            }
+          })
+        })
+        console.log(twoWayArray)
       }
-      source_ips = result1.source_ips.buckets
-      dest_ips = result1.dest_ips.buckets
+      source_ips = uniqDescOrderedList(result1.source_ips.buckets.concat(result2.source_ips.buckets))
+      dest_ips = uniqDescOrderedList(result1.dest_ips.buckets.concat(result2.dest_ips.buckets))
       signatures = result1.signatures.buckets.concat(result2.signatures.buckets)
       let body = {
         alerts,

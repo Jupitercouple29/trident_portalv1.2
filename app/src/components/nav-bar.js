@@ -22,6 +22,7 @@ export class NavBar extends Component {
 		this.signOut = this.signOut.bind(this)
 	}
 	componentWillMount(){
+		// console.log(this.props.user)
 		if(this.props.user.seller === "DCI_logo"){
 			this.setState({logo:DCILogo})
 		}else if (this.props.user.seller === "AIS_logo"){

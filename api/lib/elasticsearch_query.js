@@ -1,4 +1,38 @@
 /**
+ * Elasticsearch query to get result of a trident search
+ * @param  {string} trident  the trident
+ * @param  {number} from  start search from this location
+ * @return {array}  returns alerts for trident given
+ */
+exports.searchTrident = (trident, from, type, ip) => {
+  let term = {}
+  term[type] = ip
+  let queryString = {
+    "sort": [
+      {
+        "timestamp": {
+          "order": "desc"
+        }
+      }
+    ], 
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "match": {
+              "filename": trident
+            }
+          }
+        ]
+      }
+    },
+    "from":from,
+    "size": 1000
+  }
+  return queryString
+}
+
+/**
  * Elasticsearch query for getting the coordinates of all the 
  * alerts pertaining to the trident/s passed in
  * @param  {tridents}  trident or tridents (ex. Trident 2411 Trident 2402)

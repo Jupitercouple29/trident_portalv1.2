@@ -24,7 +24,7 @@ export class TridentPage extends Component {
 		this.setState({trident})
     getTridentAlerts(trident)
     .then((res)=>{
-	    if(res.alerts.length < 1){
+	    if(res.alerts && res.alerts.length < 1){
 	    	this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
 	    }
       this.props.tridentAlerts(res.alerts)
@@ -37,7 +37,7 @@ export class TridentPage extends Component {
 	componentWillReceiveProps(nextProps){
 		if(nextProps.selectedTrident !== null && nextProps.selectedTrident !== this.state.trident){
 			let trident = nextProps.selectedTrident
-			this.setState({trident})
+			this.setState({trident, loading:true})
 	    getTridentAlerts(trident)
 	    .then((res)=>{
 	    	if(res.alerts.length < 1){
@@ -47,14 +47,15 @@ export class TridentPage extends Component {
 	      this.props.tridentSourceIPs(res.ips)
 	      this.props.tridentSignatureAlerts(res.signatureAlerts)
 	      this.props.tridentDestIPs(res.dest_ips)
+	      this.setState({loading:false})
 	    })
 		}
 	}
 	render(){
-		let trident = this.state.trident 
-		let sourceIPs = this.props.sourceIPs
-		let destIPs = this.props.destIPs
-		let alerts = this.props.signature
+		let { trident, loading } = this.state 
+		let sourceIPs = loading ? [] : this.props.sourceIPs
+		let destIPs = loading ? [] : this.props.destIPs
+		let alerts = loading ? [] : this.props.signature
 		let message = this.state.alertMessage
 		let mapMessage = <h2>Please select an alert from the map</h2>
 		return(
@@ -66,12 +67,48 @@ export class TridentPage extends Component {
 				<PortalMap trident={trident}/>
 				<TridentPanel sourceIPs={sourceIPs} destIPs={destIPs} alerts={alerts} message={message} />
 				<AlertPanel alerts={this.props.alerts} title={"Map Events"} message={mapMessage}/>
-				<AlertType alertFunc={getAlerts} trident={trident} type={"alert"} title={"Signature Events"} message={message}/>
-				<AlertType alertFunc={getAlerts} trident={trident} type={"dns"} title={"DNS Events"} message={message} />
-				<AlertType alertFunc={getAlerts} trident={trident} type={"http"} title={"HTTP Events"} message={message} />
-				<AlertType alertFunc={getAlerts} trident={trident} type={"tls"} title={"TLS Events"} message={message} />
-				<AlertType alertFunc={getAlerts} trident={trident} type={"fileinfo"} title={"File Events"} message={message} />
-				<AlertType alertFunc={getAlerts} trident={trident} type={"ssh"} title={"SSH Events"} message={message} />
+				<AlertType 
+					alertFunc={getAlerts} 
+					trident={trident} 
+					type={"alert"} 
+					loading={loading}
+					title={"Signature Events"} 
+					message={message}/>
+				<AlertType
+					alertFunc={getAlerts} 
+					trident={trident} 
+					type={"dns"} 
+					loading={loading}
+					title={"DNS Events"} 
+					message={message} />
+				<AlertType 
+					alertFunc={getAlerts} 
+					trident={trident} 
+					type={"http"} 
+					loading={loading}
+					title={"HTTP Events"} 
+					message={message} />
+				<AlertType 
+					alertFunc={getAlerts} 
+					trident={trident} 
+					type={"tls"} 
+					loading={loading}
+					title={"TLS Events"} 
+					message={message} />
+				<AlertType 
+					alertFunc={getAlerts} 
+					trident={trident} 
+					type={"fileinfo"}
+					loading={loading} 
+					title={"File Events"} 
+					message={message} />
+				<AlertType 
+					alertFunc={getAlerts} 
+					trident={trident} 
+					type={"ssh"}
+					loading={loading} 
+					title={"SSH Events"} 
+					message={message} />
 			</div>
 		)
 	}
