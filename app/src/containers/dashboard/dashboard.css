@@ -137,6 +137,7 @@
 
 .trident-panel {
 	display: flex;
+	flex: 1;
 	overflow-y: overlay;
 	overflow-y: scroll;
 	padding: 0 15px;
@@ -205,7 +206,7 @@
 .alert-panel {
 	margin: 20px 15px 10px 0px;
 	background: rgba(0,0,0,.3);
-	height: 405px;
+	height: 380px;
 	border-radius: 5px;
 	-webkit-animation-name: zoomIn; /* Safari 4.0 - 8.0 */
 	-webkit-animation-duration: 0.5s; /* Safari 4.0 - 8.0 */
@@ -214,12 +215,28 @@
 	animation-fill-mode: both;
 }
 
+.alert-panel-bottom {
+	width: 100%;
+	background: rgba(0,0,0,0.5);
+	display: flex;
+	justify-content: center;
+}
+
+.alert-panel-pagination,
+.alert-panel-pagination-previous,
+.alert-panel-pagination-next {
+	margin: 5px;
+	width: 90px;
+}
+
 .alert-panel.large {
 	height: 600px;
 }
+
 .alert-panel-header {
 	padding: 5px 15px 0 15px;
 }
+
 .alert-panel-label-container{
 	display: flex;
 	padding: 0 35px 0 15px;
@@ -260,6 +277,7 @@
 .leaflet-tooltip {
   border: 1px solid rgb(105, 103, 103);
 }
+
 .alert-tooltip-coords {
   font-size: 1em;
 }
