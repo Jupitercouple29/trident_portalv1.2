@@ -7,6 +7,9 @@ import AlertPanel from '../../components/alert-panel'
 import TridentPanel from '../../components/trident-panel'
 import { getClientAlerts } from '../../functions/getClientAlerts'
 
+/**
+ * Client Page is used to search alerts by client IP's
+ */
 export class ClientPage extends Component {
 	constructor(props){
 		super(props)
@@ -22,6 +25,7 @@ export class ClientPage extends Component {
 		this.getClientInfo = this.getClientInfo.bind(this)
 	}
 	componentWillMount(){
+		//get the client name ex. VADAF
 		let client = localStorage.getItem('selectedClient')
 		this.getClientInfo(client)
 	}
@@ -29,6 +33,7 @@ export class ClientPage extends Component {
 		let client = localStorage.getItem('selectedClient')
 		if(this.state.client !== client){
 			this.getClientInfo(client)
+			//reset the data to [] to allow panel to load new data
 			this.setState({
 				client:client,
 				coords:[],
@@ -42,18 +47,27 @@ export class ClientPage extends Component {
 		}
 		return true
 	}
+	//call to back end to fetch data for the provided client
 	getClientInfo(client){
 		let ipArray
+		//the list of client names ex. ['VADOF','VADVS','VITA AD']
 		let keys = Object.keys(this.props.user.ips)
 		keys.map(key => {
+			//if client name equals one of the keys
 			if(client === key){
+				//get the client trident that matches the name supplied
 				let trident = this.props.user.client ? this.props.user.client[key] : 2426
+				//set the selected trident
 				localStorage.setItem('selectedTrident', trident)
+				//a list of ips that belongs to this client
 				ipArray = this.props.user.ips[key]
+				//store the list of ips to application state
 				this.props.ips(ipArray)
+				//call to backend to get the alerts for the given trident and list of ips
 				getClientAlerts(trident	,ipArray)
 				.then(res => {
 					let message
+					//if no results display message of no events
 					if(!res.source_ips.length || !res.dest_ips.length || !res.signatures.length){
 						message = <div className="unavailable-message">No Events</div>
 					}
@@ -74,8 +88,17 @@ export class ClientPage extends Component {
 		})	
 	}
 	render(){
+		console.log(this.props)
 		let { coords, message, alerts, source_ips, dest_ips, signatures	} = this.state
 		let mapMessage = <h2>Please select an alert from the map</h2>
+		/**
+		 * PortalMap displays the alerts for the provided client
+		 * Trident panel displays the Source IP's, Signature Alerts, and Destination IP's
+		 * First Alert Panel displays the most current alerts from the query
+		 * Second Alert Panel is for map alerts, when a user clicks on an alert from the map
+		 * - this.props.alerts comes from the reducer locationAlerts and action mapAlerts that is 
+		 *   triggered in the map component.
+		 */
 		return (
 			<div>
 				<PortalMap coords={coords}/>
@@ -93,7 +116,8 @@ export class ClientPage extends Component {
 
 const mapStateToProps = (state) => ({
 	user: state.validUser,
-	alerts: state.locationAlerts
+	alerts: state.locationAlerts,
+	queryDate: state.queryDate
 })
 
 export default withRouter(connect(mapStateToProps, actionCreators)(ClientPage))

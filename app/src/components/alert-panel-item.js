@@ -96,7 +96,6 @@ export default class AlertPanelItem extends Component {
 		}else if(event === 'ssh'){
 			showEvent = showSSHAlert(source)
 		}
-		console.log(window.location.pathname)
 		return(
 			<div 
 				className="alert-panel-expanded-container"

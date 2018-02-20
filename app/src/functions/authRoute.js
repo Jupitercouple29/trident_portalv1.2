@@ -29,6 +29,7 @@ export const AuthRoute = ({component, ...props}) => {
             })
             props.tridentArray(tridents)
             props.login(decoded.user)
+            props.qDate(new Date())
           }
           isAuthenticated = true
         }

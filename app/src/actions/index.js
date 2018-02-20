@@ -11,6 +11,8 @@ export const SIGNATURE_ALERTS = 'SIGNATURE_ALERTS'
 export const MAP_ALERTS = 'MAP_ALERTS'
 export const INFO_ALERTS = 'INFO_ALERTS'
 export const IP_ARRAY = 'IP_ARRAY'
+export const QUERY_DATE = 'QUERY_DATE'
+export const NEW_SEARCH = 'NEW_SEARCH'
 
 //the array of users tridents
 export const tridentArray = (tridents) => ({
@@ -76,4 +78,14 @@ export const infoAlerts = (all) => ({
 export const ips = (all) => ({
   type:IP_ARRAY,
   all
+})
+
+export const qDate = (date) => ({
+  type:QUERY_DATE,
+  date
+})
+
+export const isSearch = (search) => ({
+  type:NEW_SEARCH,
+  search
 })

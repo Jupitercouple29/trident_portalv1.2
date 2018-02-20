@@ -50,7 +50,7 @@ export default class AlertPanel extends Component {
   //AlertPanelItem component for display in the panel
 	showAlerts(){
     let listAlerts = []
-		if(this.state.alerts.length){
+		if(this.state.alerts && this.state.alerts.length){
 			listAlerts = this.state.alerts.map((a, i)=>{
 			 let source = a._source
 			 return <AlertPanelItem alert={source} key={i} alertKey={i}/>
@@ -68,10 +68,9 @@ export default class AlertPanel extends Component {
     let alerts = this.showAlerts()
     if(alerts.length){
       let pagination = alerts.slice((pageLoc - 50), pageLoc)
-      console.log(pagination)
       this.setState({alertList:pagination,page,pageLoc},()=>{
-        console.log(this.state.alertList)
-        console.log('here is the alertList')
+        // console.log(this.state.alertList)
+        // console.log('here is the alertList')
       })
     }
   }
@@ -83,13 +82,12 @@ export default class AlertPanel extends Component {
     }
   }
   render(){
-    console.log('called render in alert-panel')
-    console.log(this.state.alerts)
     let alertList = this.state.alertList
     let size = this.props.size
     let message = this.props.message
     let showAlerts = this.state.alerts && this.state.alerts.length < 1 ? message : alertList
-    let startFrom = this.state.alerts.length % 1000 === 0 ? this.state.alerts.length : null
+    let startFrom = this.state.alerts && this.state.alerts.length % 1000 === 0 ? this.state.alerts.length : null
+    let totalAlerts = this.props.totalAlerts ? <span> Alerts {this.props.totalAlerts.toLocaleString()} </span> : null
     /**
     * - alert-panel-bottom is only displayed if there are more than 50 alerts to display
     * - Previous button is only displayed when page is greater than 1
@@ -114,7 +112,7 @@ export default class AlertPanel extends Component {
         <div className="alert-panel-alerts-container">
 					{showAlerts}
         </div>
-        {this.props.alerts.length > 50 ?
+        {this.props.alerts && this.props.alerts.length > 50 ?
           <div className="alert-panel-bottom">
             {this.state.page - 1 > 0 ? 
               <button
@@ -145,6 +143,7 @@ export default class AlertPanel extends Component {
                 : 
                 null
             }
+            <span>{totalAlerts}</span>
           </div>
           :
           null

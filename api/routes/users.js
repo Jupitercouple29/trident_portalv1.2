@@ -213,6 +213,7 @@ router.post('/new_user', function(req, res, next){
   //    "VADOF": [10.10.202.222, 10.10.202.234]
   // }
   let ips = req.body.ips || ''
+  let client = req.body.client || ''
   if(!name) res.status(400).send('Please enter your name')
   if(!pswd) res.status(400).send('Please enter a password')
   if(!validateEmail(email)) res.status(400).send('Please enter a valid email')
@@ -232,7 +233,8 @@ router.post('/new_user', function(req, res, next){
         company:company,
         tridents:tridents,
         seller:seller,
-        ips:ips
+        ips:ips,
+        client:client
       })
       .then(snap =>{
         log.info(requestLog(req, 201, name + 'has been added successfully'))

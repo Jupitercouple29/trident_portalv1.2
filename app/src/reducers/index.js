@@ -11,6 +11,8 @@ import { validUser,
          info,
          locationAlerts,
          dashboardProps,
+         queryDate,
+         newSearch,
          ipArray } from './reducers';
 
 const rootReducer = combineReducers({
@@ -26,6 +28,8 @@ const rootReducer = combineReducers({
   info,
   signatureAlerts,
   locationAlerts,
+  queryDate,
+  newSearch,
   ipArray
 });
 

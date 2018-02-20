@@ -206,7 +206,7 @@
 }
 
 .alert-panel {
-	margin: 20px 15px 20px 0px;
+	margin: 20px 15px 45px 0px;
 	background: rgba(0,0,0,.3);
 	height: 380px;
 	border-radius: 5px;
@@ -225,6 +225,9 @@
 	justify-content: center;
 }
 
+.alert-panel-bottom span {
+	padding: 7px 0 0 10px;
+}
 .alert-panel-pagination,
 .alert-panel-pagination-previous,
 .alert-panel-pagination-next,

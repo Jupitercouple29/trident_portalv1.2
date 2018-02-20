@@ -181,7 +181,7 @@ i.fa-user-circle {
   justify-content: center;
   padding-top: 20px;
 }
-
+/*------------------------------- Footer ----------------------*/
 .portal-footer {
 	display: flex;
 }
@@ -217,4 +217,8 @@ i.fa-user-circle {
 
 .twitter-icon:hover {
 	cursor: pointer;
+}
+
+.react-datepicker-wrapper input {
+	width: 100px
 }

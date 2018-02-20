@@ -80,7 +80,7 @@ exports.coordinatesSearch = (tridents) => {
  * @param  {type}  ex. dns
  * @return {queryString}  returns queryString
  */
-exports.searchEventObject = (trident, type, startFrom) => {
+exports.searchEventObject = (trident, type) => {
   let queryString = {
     "sort": [
       {
@@ -105,7 +105,6 @@ exports.searchEventObject = (trident, type, startFrom) => {
         }
       }
     },
-    "from": startFrom,
     "size": 1000
   }
   return queryString
@@ -117,7 +116,7 @@ exports.searchEventObject = (trident, type, startFrom) => {
  * @param  {trident}  trident (ex. Trident 2411)
  * @return {queryString}
  */
-exports.searchSignatureObject = (trident, startFrom) => {
+exports.searchSignatureObject = (trident) => {
   let queryString = {
     "sort": [
       {
@@ -144,7 +143,6 @@ exports.searchSignatureObject = (trident, startFrom) => {
         ]
       }
     },
-    from: startFrom,
     "size": 1000
   }
   return queryString
@@ -158,7 +156,7 @@ exports.searchSignatureObject = (trident, startFrom) => {
  * @param  {minusHour} date minus 1 hour
  * @return {queryString} returns the querystring
  */
-exports.searchObject = (obj, date, minusHour) => {
+exports.searchObject = (obj, date, minusHour, startFrom) => {
   let queryString = {
     "sort": [
       {
@@ -182,16 +180,26 @@ exports.searchObject = (obj, date, minusHour) => {
       "alerts_last_hour":{
         "date_range":{
           "field":"timestamp",
-          "format":"yyyy-MM-dd, hh:mm:ss",
+          "format":"yyyy-MM-dd hh:mm:ss",
           "ranges":[
             {
-              "from":now - 1h,
-              "to":now
+              "from":minusHour,
+              "to":date
             }
           ]
         }
+      },
+      "source_ips": {
+        "terms": {
+          "field": "source_ip.keyword",
+          "size": 10000,
+          "order": {
+            "_count": "desc"
+          }
+        }
       }
     },
+    from: startFrom,
     "size": 1000
   }
   return queryString
@@ -399,7 +407,7 @@ exports.searchRangeByIPs = (trident, type, ipFrom, ipTo) => {
         
       }
     },
-    "size": 10000
+    "size": 1000
   }
   return queryString
 }
@@ -420,7 +428,7 @@ exports.searchByIPs = (trident, type, ipArray) => {
         "must":[
           {
             "match":{
-              "filename": "Trident2426"
+              "filename": trident
             }
           }
         ],

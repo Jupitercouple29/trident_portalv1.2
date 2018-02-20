@@ -89,7 +89,9 @@ export default class SOC extends Component {
 					<label>Date</label>
 					<DatePicker 
 						selected={this.state.date} 
-						onChange={this.onInputChange.bind(this,'date')} />
+						onChange={this.onInputChange.bind(this,'date')} 
+						minDate={moment().subtract(7,'days')}
+						maxDate={moment()}/>
 					<button>Search</button>
 				</form>
 				<div className="soc-page-traffic-container">

@@ -118,3 +118,21 @@ export const ipArray = (state = [], action) => {
       return state
   }
 }
+
+export const queryDate = (state = null, action) => {
+  switch(action.type){
+    case actions.QUERY_DATE:
+      return action.date 
+    default:
+      return state
+  }
+}
+
+export const newSearch = (state = false, action) => {
+  switch(action.type){
+    case actions.NEW_SEARCH:
+      return action.search 
+    default:
+      return state
+  }
+}

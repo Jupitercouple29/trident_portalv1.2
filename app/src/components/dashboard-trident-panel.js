@@ -15,8 +15,8 @@ export default class TridentPanel extends Component {
 		let alertsArray = []
 		let keys = this.props.tridents
 		if(this.props.alerts !== undefined){
-			console.log(this.props.alerts)
-			console.log(this.props.tridents)
+			// console.log(this.props.alerts)
+			// console.log(this.props.tridents)
 			let alertKeys = Object.keys(this.props.alerts)
 			Object.keys(keys).map((key) => {
 	      this.props.tridents[key].map((trident) => {

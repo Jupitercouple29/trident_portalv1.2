@@ -60,13 +60,17 @@ router.get('/',
         queryString += trident
       })
       //elasticsearch query params
-      let date = req.query.date
-      let minusHour = req.query.minusHour
-      let query = searchObject(queryString, date, minusHour)
-      console.log(date)
-      console.log(minusHour)
-      console.log('here is the dates ____________________________________________')
-      return client.search({index, body: query})
+      let day = new Date(req.query.queryDate)
+      let dd = ('0' + day.getDate()).slice(-2)
+      let mm = ('0' + (day.getMonth() + 1)).slice(-2) + '.'
+      let yyyy = day.getFullYear() + '.'
+      let queryIndex = "logstash-" + yyyy + mm + dd
+      let timeOffSet= new Date().getTimezoneOffset()
+      let date = new Date(req.query.date) - timeOffSet
+      let minusHour = new Date(req.query.minusHour) - timeOffSet
+      let startFrom = req.query.from || 0
+      let query = searchObject(queryString, date, minusHour, startFrom)
+      return client.search({index:queryIndex, body: query})
       .then(function(resp) {
         log.info(requestLog(req, 200))
         res.status(200).send(resp)
