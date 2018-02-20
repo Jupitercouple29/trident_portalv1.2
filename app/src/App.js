@@ -15,7 +15,7 @@ import NavBar from './components/nav-bar'
 
 export class App extends Component {
   render(){
-    console.log(this.props.validUser)
+    // console.log(this.props.validUser)
     return(
         <Router>
           <div className="router-div">

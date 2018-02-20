@@ -17,7 +17,10 @@ export default class SOC extends Component {
 			ip:'',
 			time:'',
 			date: moment(),
-			message:<h2>Fill in form above</h2>
+			message:<h2>Fill in form above</h2>,
+			eval:[],
+			evalMessage:<h1>No Data </h1>,
+			showContextMenu: false
 		}
 		this.getTwoWay = this.getTwoWay.bind(this)
 		this.onInputChange = this.onInputChange.bind(this)
@@ -50,7 +53,7 @@ export default class SOC extends Component {
 		})
   }
 	render(){
-		let message = this.state.message
+		let { message, evalMessage } = this.state
 		console.log(this.state)
 		return (
 			<div className="soc-page-container">
@@ -91,6 +94,12 @@ export default class SOC extends Component {
 				</form>
 				<div className="soc-page-traffic-container">
 					<AlertPanel alerts={this.state.twoWay} title="Two Way Traffic" message={message}/>
+				</div>
+				<div className="soc-page-eval-container">
+					<AlertPanel 
+						alerts={this.state.eval} 
+						title="Saved Alerts" 
+						message={evalMessage}/>
 				</div>
 			</div>
 		)

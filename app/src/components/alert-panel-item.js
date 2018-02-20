@@ -18,13 +18,63 @@ export default class AlertPanelItem extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			isHidden: true
+			isHidden: true,
+			showContextMenu:false
 		}
 		this.handleClick = this.handleClick.bind(this)
+		this.handleBlur = this.handleBlur.bind(this)
+		this.handleContextMenu = this.handleContextMenu.bind(this)
 	}
 	handleClick(){
 		this.setState({isHidden:!this.state.isHidden})
 	}
+	handleBlur(event){
+		this.setState({showContextMenu:false})
+	}
+	handleContextMenu(event){
+  	console.log('hello onContextMenu')
+  	if(window.location.pathname === '/soc'){
+	  	event.preventDefault()
+	  	event.persist()
+	  	this.setState({showContextMenu: true}, () => {
+	  		const clickX = event.clientX;
+		    const clickY = event.clientY;
+		    const screenW = window.innerWidth;
+		    const screenH = window.innerHeight;
+		    const rootW = this.root.offsetWidth;
+		    const rootH = this.root.offsetHeight;
+		    
+		    const right = (screenW - clickX) > rootW;
+		    const left = !right;
+		    const top = (screenH - clickY) > rootH;
+		    const bottom = !top;
+		    
+		    if (right) {
+		    	console.log('right')
+		    	console.log(clickX)
+		    	console.log(clickY)
+		    	console.log(event.target)
+		        this.root.style.left = `${clickX + 5}px`;
+		    }
+		    
+		    if (left) {
+		    	console.log('left')
+		        this.root.style.left = `${clickX - rootW - 5}px`;
+		    }
+		    
+		    if (top) {
+		    	console.log('top')
+		        this.root.style.top = `${clickY + 5}px`;
+		    }
+		    
+		    if (bottom) {
+		    		console.log('bottom')
+		        this.root.style.top = `${clickY - rootH - 5}px`;
+		    }
+	  	})
+	  }
+  	
+  }
 	render(){
 		let source = this.props.alert
 		let date = formatDate(source.timestamp)
@@ -46,8 +96,13 @@ export default class AlertPanelItem extends Component {
 		}else if(event === 'ssh'){
 			showEvent = showSSHAlert(source)
 		}
+		console.log(window.location.pathname)
 		return(
-			<div className="alert-panel-expanded-container">
+			<div 
+				className="alert-panel-expanded-container"
+				onContextMenu={this.handleContextMenu}
+				tabIndex={0}
+				onBlur={this.handleBlur}>
 				<div key={this.props.alertKey} className="alert-panel-item-container" onClick={this.handleClick}>
 					<a className="alert-panel-link">
 						<div className="alert-panel-item date">
@@ -70,6 +125,18 @@ export default class AlertPanelItem extends Component {
 				<div className="alert-panel-expanded-item-container">
 					{this.state.isHidden ? null : showEvent }
 				</div>
+				{this.state.showContextMenu ? 
+				<div ref={ref => {this.root = ref}} className="contextMenu">
+          <div className="contextMenu--option">Delete Alert</div>
+          <div className="contextMenu--option">Save Alert</div>
+          <div className="contextMenu--option">Highlight Alert</div>
+          <div className="contextMenu--option contextMenu--option__disabled">View full version</div>
+          <div className="contextMenu--option">Settings</div>
+          <div className="contextMenu--separator" />
+          <div className="contextMenu--option">About this app</div>
+        </div>
+        :
+        null}
 			</div>
 		)
 	}

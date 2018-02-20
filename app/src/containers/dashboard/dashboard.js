@@ -35,6 +35,7 @@ export class Dashboard extends Component {
 		let lastEventTime = dashboard.lastEventTime ? formatDate(dashboard.lastEventTime) : formatDate(new Date())
 		let numTridents = this.props.tridents.length ? this.props.tridents.length : 0
 		let message = this.state.alertMessage
+		console.log(dashboard)
 		return (
 			<div className="dashboard-container">
 				<div className="dashboard-header">

@@ -60,7 +60,12 @@ router.get('/',
         queryString += trident
       })
       //elasticsearch query params
-      let query = searchObject(queryString)
+      let date = req.query.date
+      let minusHour = req.query.minusHour
+      let query = searchObject(queryString, date, minusHour)
+      console.log(date)
+      console.log(minusHour)
+      console.log('here is the dates ____________________________________________')
       return client.search({index, body: query})
       .then(function(resp) {
         log.info(requestLog(req, 200))
@@ -118,6 +123,7 @@ router.get('/alerts',
  * ex. dns 
  * @param  {number} req.query.trident  trident number
  * @param  {string} req.params.type    event_type
+ * @param  {number} req.query.from    elasticsearch start search from
  * @return {object} returns an object with an array of alerts 
  */
 router.get('/alerts/:type',
@@ -129,12 +135,13 @@ router.get('/alerts/:type',
       let tridentString = ''
       let type = req.params.type
       let trident = "Trident" + req.query.trident
+      let startFrom = req.query.from || 0
       if (req.params.type == "signatures") {
           //elasticsearch query params
-          queryString = searchSignatureObject(trident)
+          queryString = searchSignatureObject(trident, startFrom)
         } else {
           //elasticsearch query params
-          queryString = searchEventObject(trident, type)
+          queryString = searchEventObject(trident, type, startFrom)
         }
       return client.search({index, body: queryString})
       .then(function(resp) {

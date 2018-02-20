@@ -15,6 +15,7 @@ export default class AlertPanel extends Component {
 		super(props)
     this.state = {
       alertList: [],
+      alerts:[],
       message: this.props.message,
       page: 1,
       pageLoc: 50
@@ -22,44 +23,82 @@ export default class AlertPanel extends Component {
 		this.showAlerts = this.showAlerts.bind(this)
     this.pagination = this.pagination.bind(this)
 	}
-  componentWillMount(){
-    this.pagination(1)
+  //setState on alerts if alerts are available and call pagination to 
+  // display the alerts in the panel
+  componentDidMount(){
+    this.setState({alerts:this.props.alerts}, () => {
+      this.pagination(this.state.page)
+    })
   }
+  //listen for change in messag and alerts from props
 	componentWillReceiveProps(nextProps){
+    //the message to appear in the panel when no alerts are available
+    //or when loading page
     if(this.props.message !== nextProps.message){
       this.setState({message:nextProps.message})
     }
+    //check for new alert props from parent 
+    if(this.props.alerts !== nextProps.alerts){
+      //store alerts in state to allow re-render of new props
+      this.setState({alerts:nextProps.alerts},() => {
+        //after setting state call pagination to update alerts
+        this.pagination(this.state.page)
+      })
+    }
   }
-  // shouldComponentUpdate(nextProps, nextState){
-  //   if(this.props.alerts !== nextProps.alerts){
-  //     return true
-  //   }elseelse{
-  //     return false
-  //   }
-  // }
+  //loops through the alerts and attaches each alert to an 
+  //AlertPanelItem component for display in the panel
 	showAlerts(){
-		if(this.props.alerts){
-			let listAlerts = this.props.alerts.map((a, i)=>{
+    let listAlerts = []
+		if(this.state.alerts.length){
+			listAlerts = this.state.alerts.map((a, i)=>{
 			 let source = a._source
 			 return <AlertPanelItem alert={source} key={i} alertKey={i}/>
 		  })
 		return listAlerts
+    }else{
+      return listAlerts
     }
 	}
+  //displays the alerts through pagination allowing 50 alerts to be 
+  //shown at a time
   pagination(page){
-    console.log('clicked the page')
+    // console.log('clicked the page')
     let pageLoc = page * 50;
     let alerts = this.showAlerts()
-    let pagination = alerts.slice((pageLoc - 50), pageLoc)
-    console.log(pagination)
-    this.setState({alertList:pagination,page,pageLoc},()=>{console.log(this.state.page)})
+    if(alerts.length){
+      let pagination = alerts.slice((pageLoc - 50), pageLoc)
+      console.log(pagination)
+      this.setState({alertList:pagination,page,pageLoc},()=>{
+        console.log(this.state.alertList)
+        console.log('here is the alertList')
+      })
+    }
+  }
+  //since we are only retrieving 1000 alerts at a time, this function calls 
+  //the back end to retrieve the next bunch of alerts 1000 at a time.
+  getMoreAlerts(startFrom){
+    if(startFrom){
+      this.props.fetchAlerts(startFrom)
+    }
   }
   render(){
     console.log('called render in alert-panel')
+    console.log(this.state.alerts)
     let alertList = this.state.alertList
     let size = this.props.size
     let message = this.props.message
-    let showAlerts = this.props.alerts && this.props.alerts.length < 1 ? message : alertList
+    let showAlerts = this.state.alerts && this.state.alerts.length < 1 ? message : alertList
+    let startFrom = this.state.alerts.length % 1000 === 0 ? this.state.alerts.length : null
+    /**
+    * - alert-panel-bottom is only displayed if there are more than 50 alerts to display
+    * - Previous button is only displayed when page is greater than 1
+    * - Next button is displayed if page * 50 is less than this.state.alerts.length
+    * - Next group button is only displayed if there are more alerts to retrieve from the 
+    *   backend and will be replaced with the next button after more alerts are retrieved.
+    *   This is done by taking the modulus of 1000.
+    * - pageLoc is the current list of alerts that is being displayed (ex. 51 - 100)
+    */
     return(
      	<div className={`alert-panel ${size}`}>
         <div className="alert-panel-header">
@@ -77,20 +116,35 @@ export default class AlertPanel extends Component {
         </div>
         {this.props.alerts.length > 50 ?
           <div className="alert-panel-bottom">
-            <button
-              className="alert-panel-pagination-previous"
-              onClick={this.pagination.bind(this,this.state.page - 1)}>
-              {"Previous"}
-            </button>
+            {this.state.page - 1 > 0 ? 
+              <button
+                className="alert-panel-pagination-previous"
+                onClick={this.pagination.bind(this,this.state.page - 1)}>
+                {"Previous"}
+              </button>
+            :
+            null
+            }
             <button 
               className="alert-panel-pagination">
               {this.state.pageLoc - 49 + " to " + this.state.pageLoc} 
             </button>
-            <button 
-              className="alert-panel-pagination-next"
-              onClick={this.pagination.bind(this,this.state.page + 1)}>
-              {"Next"}
-            </button>
+            {this.state.page * 50 < this.state.alerts.length ? 
+              <button 
+                className="alert-panel-pagination-next"
+                onClick={this.pagination.bind(this,this.state.page + 1)}>
+                {"Next"}
+              </button>
+            :
+              startFrom !== null ?
+                <button 
+                  className="alert-panel-pagination-more"
+                  onClick={this.getMoreAlerts.bind(this, startFrom)}>
+                  {"Next Group"}
+                </button>
+                : 
+                null
+            }
           </div>
           :
           null

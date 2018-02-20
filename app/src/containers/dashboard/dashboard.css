@@ -206,7 +206,7 @@
 }
 
 .alert-panel {
-	margin: 20px 15px 10px 0px;
+	margin: 20px 15px 20px 0px;
 	background: rgba(0,0,0,.3);
 	height: 380px;
 	border-radius: 5px;
@@ -227,9 +227,10 @@
 
 .alert-panel-pagination,
 .alert-panel-pagination-previous,
-.alert-panel-pagination-next {
+.alert-panel-pagination-next,
+.alert-panel-pagination-more {
 	margin: 5px;
-	width: 90px;
+	width: 100px;
 }
 
 .alert-panel.large {

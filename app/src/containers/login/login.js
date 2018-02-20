@@ -58,7 +58,8 @@ export class Login extends Component {
       let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
       loginAttempts = decoded.loginAttempts + 1
     }else loginAttempts = loginAttempts + 1
-    auth(email, pswd, loginAttempts).then((res)=>{
+    auth(email, pswd, loginAttempts)
+    .then((res)=>{
       let _error = res.data
       if(res.isValid){
         login.props.history.push('/dashboard')

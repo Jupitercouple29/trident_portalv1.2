@@ -19,6 +19,8 @@ router.get('/two-way',
 	function(req, res, next){
 		let trident = "Trident" + req.query.trident
 		let startFrom = req.query.index || 0
+		let ip = req.query.ip
+		let time = req.query.time
 		let date = new Date(req.query.date)
 		let dd = ('0' + date.getDate()).slice(-2)
 		let mm = ('0' + (date.getMonth() + 1)).slice(-2) + '.'
@@ -50,7 +52,12 @@ router.get('/two-way',
 					}
 				})					
 			})
-			// console.log(info)
+			let array = _.uniqBy(twoWayArray, function(a){
+				console.log(a)
+				return a._source.timestamp
+			})
+			console.log(array)
+			console.log(twoWayArray)
 			res.status(200).send(twoWayArray)
 		})
 	})

@@ -80,7 +80,7 @@ exports.coordinatesSearch = (tridents) => {
  * @param  {type}  ex. dns
  * @return {queryString}  returns queryString
  */
-exports.searchEventObject = (trident, type) => {
+exports.searchEventObject = (trident, type, startFrom) => {
   let queryString = {
     "sort": [
       {
@@ -105,6 +105,7 @@ exports.searchEventObject = (trident, type) => {
         }
       }
     },
+    "from": startFrom,
     "size": 1000
   }
   return queryString
@@ -116,7 +117,7 @@ exports.searchEventObject = (trident, type) => {
  * @param  {trident}  trident (ex. Trident 2411)
  * @return {queryString}
  */
-exports.searchSignatureObject = (trident) => {
+exports.searchSignatureObject = (trident, startFrom) => {
   let queryString = {
     "sort": [
       {
@@ -143,6 +144,7 @@ exports.searchSignatureObject = (trident) => {
         ]
       }
     },
+    from: startFrom,
     "size": 1000
   }
   return queryString
@@ -180,11 +182,11 @@ exports.searchObject = (obj, date, minusHour) => {
       "alerts_last_hour":{
         "date_range":{
           "field":"timestamp",
-          "format":"yyyy-MM-dd hh:mm:ss",
+          "format":"yyyy-MM-dd, hh:mm:ss",
           "ranges":[
             {
-              "from":"now-1h",
-              "to":"now"
+              "from":now - 1h,
+              "to":now
             }
           ]
         }

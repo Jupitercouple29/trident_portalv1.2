@@ -40,7 +40,18 @@ export class Portal extends Component {
   }
   componentWillMount(){
     let tridents = this.props.tridents
-    getTridents(tridents)
+    let date1 = new Date().toLocaleString(), date2 = new Date()
+    let minusHour = date2.setHours(date2.getHours() - 1)
+    let newDate = new Date(minusHour).toLocaleString()
+    let timezoneOffset = new Date().getTimezoneOffset()
+    let timeNow = date1 - timezoneOffset
+    let timeMinusHour = newDate - timezoneOffset
+    let info = {
+      tridents,
+      date:date1,
+      minusHour: newDate
+    }
+    getTridents(info)
     .then(result=>{
       this.props.dashboardInfo(result)
       this.setState({isLoading:false})

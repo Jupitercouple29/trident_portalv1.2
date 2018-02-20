@@ -20,27 +20,57 @@ export default class AlertType extends Component {
 		this.state = {
 			alertList:[]
 		}
+		this.fetchAlerts = this.fetchAlerts.bind(this)
 	}
 	componentWillMount(){
-		this.props.alertFunc(this.props.trident,this.props.type)
+		let info = {
+			trident:this.props.trident,
+			type: this.props.type,
+			from: this.props.from || 0
+		}
+		this.props.alertFunc(info)
 		.then(res=>{
 			this.setState({alertList:res.alerts})
 		})
 	}
 	componentWillReceiveProps(nextProps){
 		if(this.props.trident !== nextProps.trident){
-			this.props.alertFunc(nextProps.trident,this.props.type)
+			let info = {
+				trident:nextProps.trident,
+				type: this.props.type,
+				from:nextProps.from || 0
+			}
+			this.props.alertFunc(info)
 			.then(res=>{
 				this.setState({alertList:res.alerts})
 			})
 		}
+	}
+	fetchAlerts(startFrom){
+		let info = {
+			trident:this.props.trident,
+			type:this.props.type,
+			from:startFrom
+		}
+		this.props.alertFunc(info)
+			.then(res=>{
+				let alertList = this.state.alertList
+				let newAlertList = alertList.concat(res.alerts)
+				console.log(newAlertList)
+				console.log(res.alerts)
+				this.setState({alertList:newAlertList})
+			})
 	}
 	render(){
 		let alert = this.props.loading ? [] : this.state.alertList
 		let message = this.props.message
 		return(
 			<div className="alert-panel-container">
-				<AlertPanel alerts={alert} title={this.props.title} message={message} />
+				<AlertPanel 
+					alerts={alert} 
+					title={this.props.title} 
+					message={message} 
+					fetchAlerts={this.fetchAlerts}/>
 			</div>
 		)
 	}
