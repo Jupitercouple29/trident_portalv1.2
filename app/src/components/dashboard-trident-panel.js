@@ -29,7 +29,6 @@ export default class TridentPanel extends Component {
 	      })
 	    })
 		}
-    // console.log(tridentArray)
 		return(
 			<div className="dashboard-panel">
 				<div className="trident-panel zoomIn">

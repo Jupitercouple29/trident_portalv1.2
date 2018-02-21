@@ -26,32 +26,76 @@ export class PortalMap extends Component {
     this.showMapAlerts = this.showMapAlerts.bind(this)
     this.handleAlertClick = this.handleAlertClick.bind(this)
     this.handleZoom = this.handleZoom.bind(this)
+    this.fetchMapAlerts = this.fetchMapAlerts.bind(this)
   }
   componentWillMount(){
     if(this.props.history.location.pathname === '/trident' && this.props.trident){
-      getMapCoords([this.props.trident])
-      .then(res => {
-        this.setState({coords: res})
-      })
+      let info = {
+        tridents: [this.props.trident],
+        queryDate: this.props.queryDate
+      }
+      this.fetchMapAlerts(info)
+      // getMapCoords(info)
+      // .then(res => {
+      //   this.setState({coords: res})
+      // })
     }else if(this.props.coords){
         this.setState({coords:this.props.coords})
     }else if(this.props.tridents){
-      getMapCoords(this.props.tridents)
-      .then(res => {
-        this.setState({coords: res})
-      })
+      let info = {
+        tridents: this.props.tridents,
+        queryDate: this.props.queryDate
+      }
+      this.fetchMapAlerts(info)
+      // getMapCoords(info)
+      // .then(res => {
+      //   this.setState({coords: res})
+      // })
     }
   }
   componentWillReceiveProps(nextProps){
+    let path = this.props.history.location.pathname
     if(this.props.trident !== nextProps.trident){
-      getMapCoords([nextProps.trident])
-      .then(res => {
-        this.setState({coords: res})
-      })
+      let info = {
+        tridents: [nextProps.trident],
+        queryDate: this.props.queryDate
+      }
+      this.fetchMapAlerts(info)
+      // getMapCoords(info)
+      // .then(res => {
+      //   this.setState({coords: res})
+      // })
     }
     if(this.props.coords && this.props.coords !== nextProps.coords){
       this.setState({coords:nextProps.coords})
     }
+    // get new coordinates when a new date is searched on the dashboard page
+    if(nextProps.newSearch && path === '/dashboard'){
+      console.log('newSearch in the map _________________________')
+      let info = {
+        tridents: this.props.tridents,
+        queryDate: this.props.queryDate
+      }
+      this.fetchMapAlerts(info)
+    }else if(nextProps.newSearch && path === '/trident'){
+      console.log('newSearch in the map for trident page ')
+      let info = {
+        tridents: [this.props.trident],
+        queryDate: this.props.queryDate
+      }
+      console.log(info)
+      this.fetchMapAlerts(info)
+    }
+  }
+  //call to backend to get coordinates for the map
+  fetchMapAlerts(info){
+    getMapCoords(info)
+    .then(res => {
+      this.setState({coords: res})
+    })
+    .catch(err => {
+      console.log('there has been an error in the backend')
+    })
   }
   //allows user to click on marker and then a call to the backend is made to 
   //gather data on that specific alert
@@ -62,6 +106,7 @@ export class PortalMap extends Component {
     if(this.props.history.location.pathname === '/clients'){
       info.trident = [localStorage.getItem('selectedTrident')]
       info.ipArray = this.props.ipArray
+      info.queryDate = this.props.queryDate
       getClientMapAlert(info)
       .then(res => {
         this.props.mapAlerts(res)
@@ -71,15 +116,12 @@ export class PortalMap extends Component {
       getMapAlert(info)
       .then((res)=>{
         this.props.mapAlerts(res)
-        // this.props.history.push('/alerts')
       })
     }else{
       info.trident = this.props.tridents
       getMapAlert(info)
       .then((res)=>{
         this.props.mapAlerts(res)
-        // console.log(res)
-        // this.props.history.push('/alerts')
       })
     }   
   }
@@ -155,7 +197,9 @@ export class PortalMap extends Component {
 const mapStateToProps = (state) => ({
   tridents: state.tridentArray,
   ipArray: state.ipArray,
-  info:state.info
+  info: state.info,
+  queryDate: state.queryDate,
+  newSearch: state.newSearch
 })
 
 export default withRouter(connect(mapStateToProps, actionCreaters)(PortalMap))

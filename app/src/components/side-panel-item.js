@@ -27,6 +27,7 @@ export class SidePanelItem extends Component {
 		this.handleExpandedItemsClick = this.handleExpandedItemsClick.bind(this)
 		this.configureItemsToDisplay = this.configureItemsToDisplay.bind(this)
 	}
+	//handles the item clicked in the side panel and looks to see if the panel is open
 	handleItemClick(route){
 		let lcRoute = route.toLowerCase()
 		this.props.route(lcRoute)
@@ -40,6 +41,7 @@ export class SidePanelItem extends Component {
 			this.props.history.push(`/${lcRoute}`)
 		}
 	}
+	//handles the list of options for each item 
 	handleExpandedItemsClick(route, name){
 		if(this.props.client){
 			let lcRoute = route.toLowerCase()
@@ -64,6 +66,7 @@ export class SidePanelItem extends Component {
 		})
 		return itemsToDisplay
 	}
+	//configures the options to display for each item in the side panel
 	configureItemsToDisplay(items){
 		if(this.props.client){
 			return Object.keys(items)
@@ -74,6 +77,7 @@ export class SidePanelItem extends Component {
 			return this.getTridents(items)
 		}
 	}
+	//gets an array of tridents to display 
 	getTridents(tridents){
 		let tridentArray = []
 		let keys = Object.keys(tridents)

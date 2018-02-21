@@ -36,9 +36,14 @@ function(req, res, next) {
     })
     //elasticsearch query param
     let queryString = coordinatesSearch(tridents)
+    let day = new Date(req.query.queryDate)
+    let dd = ('0' + day.getDate()).slice(-2)
+    let mm = ('0' + (day.getMonth() + 1)).slice(-2) + '.'
+    let yyyy = day.getFullYear() + '.'
+    let queryIndex = "logstash-" + yyyy + mm + dd
     //elasticsearch search query that returns two buckets. One for the latitude and
     // one for the longitude.
-    return client.search({index, body: queryString}).then(function(resp) {
+    return client.search({index:queryIndex, body: queryString}).then(function(resp) {
       let coordsArray = []
       let latAndLongArray = []
       if (resp.aggregations && resp.aggregations.lat.buckets.length) {

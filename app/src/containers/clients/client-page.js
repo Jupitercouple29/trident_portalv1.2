@@ -29,8 +29,24 @@ export class ClientPage extends Component {
 		let client = localStorage.getItem('selectedClient')
 		this.getClientInfo(client)
 	}
+	componentWillReceiveProps(nextProps){
+		if(nextProps.newSearch){
+			let client = localStorage.getItem('selectedClient')
+			console.log('componentWillReceiveProps in the client page')
+			this.getClientInfo(client)
+			this.setState({
+				coords:[],
+				alerts:[],
+				source_ips:[],
+				dest_ips:[],
+				signatures:[],
+				message:<div className="loading-message">Loading...</div>
+			})
+		}
+	}
 	shouldComponentUpdate(nextProps, nextState){
 		let client = localStorage.getItem('selectedClient')
+		//if user selects another client than update the panel
 		if(this.state.client !== client){
 			this.getClientInfo(client)
 			//reset the data to [] to allow panel to load new data
@@ -63,8 +79,13 @@ export class ClientPage extends Component {
 				ipArray = this.props.user.ips[key]
 				//store the list of ips to application state
 				this.props.ips(ipArray)
+				let info = {
+					trident: trident,
+					ipArray: ipArray,
+					queryDate: this.props.queryDate
+				}
 				//call to backend to get the alerts for the given trident and list of ips
-				getClientAlerts(trident	,ipArray)
+				getClientAlerts(info)
 				.then(res => {
 					let message
 					//if no results display message of no events
@@ -79,6 +100,7 @@ export class ClientPage extends Component {
 						signatures:res.signatures,
 						message
 					})
+					this.props.isNewSearch(false)
 				})
 				.catch(err => {
 					console.log(err)
@@ -117,7 +139,8 @@ export class ClientPage extends Component {
 const mapStateToProps = (state) => ({
 	user: state.validUser,
 	alerts: state.locationAlerts,
-	queryDate: state.queryDate
+	queryDate: state.queryDate,
+	newSearch: state.newSearch
 })
 
 export default withRouter(connect(mapStateToProps, actionCreators)(ClientPage))

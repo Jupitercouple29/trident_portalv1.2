@@ -22,43 +22,54 @@ export class TridentPage extends Component {
 		this.state = {
 			trident: null,
 			loading: true,
+			isNewSearch: false,
 			alertMessage:<div className="loading-message"> Loading... </div>
 		}
 	}
 	componentWillMount(){
 		let trident = localStorage.getItem('selectedTrident')
 		this.setState({trident})
+		this.fetchAlerts(trident)
+	}
+	componentWillReceiveProps(nextProps){
+		
+		if(nextProps.selectedTrident !== null && nextProps.selectedTrident !== this.state.trident ){
+			this.setState({trident, loading:true})
+			let trident = nextProps.selectedTrident
+			this.fetchAlerts(trident)
+		}
+		if(nextProps.newSearch){
+			console.log('request for a new search _______________________________')
+			this.setState({loading:true})
+			let trident = localStorage.getItem('selectedTrident')
+			this.fetchAlerts(trident)
+		}
+	}
+	fetchAlerts(trident){
+		let info = {
+			trident:trident,
+			queryDate:this.props.queryDate
+		}
 		//call to backend to get alerts for the selected trident
-    getTridentAlerts(trident)
+    getTridentAlerts(info)
     .then((res)=>{
     	//if no alerts display a message in the panel
 	    if(res.alerts && res.alerts.length < 1){
+	    	console.log('no alerts are sent back ')
 	    	this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
 	    }
 	    //these props are from the redux store
+			this.props.isNewSearch(false)
       this.props.tridentAlerts(res.alerts)
       this.props.tridentSourceIPs(res.ips)
       this.props.tridentSignatureAlerts(res.signatureAlerts)
       this.props.tridentDestIPs(res.dest_ips)
       this.setState({loading:false})
     })
-	}
-	componentWillReceiveProps(nextProps){
-		if(nextProps.selectedTrident !== null && nextProps.selectedTrident !== this.state.trident){
-			let trident = nextProps.selectedTrident
-			this.setState({trident, loading:true})
-	    getTridentAlerts(trident)
-	    .then((res)=>{
-	    	if(res.alerts.length < 1){
-	    		this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
-	    	}
-	      this.props.tridentAlerts(res.alerts)
-	      this.props.tridentSourceIPs(res.ips)
-	      this.props.tridentSignatureAlerts(res.signatureAlerts)
-	      this.props.tridentDestIPs(res.dest_ips)
-	      this.setState({loading:false})
-	    })
-		}
+    .catch(err => {
+    	console.log('The is an error in the backend')
+    	this.setState({alertMessage:<div className="no-tridents">Trident is unavailable </div>})
+    })
 	}
 	render(){
 		let { trident, loading } = this.state 
@@ -89,7 +100,7 @@ export class TridentPage extends Component {
 					<h2 className="dashboard-title">DASHBOARD</h2>
 					<h3 className="dashboard-path">Home / Trident</h3>
 				</div>	
-				<PortalMap trident={trident}/>
+				<PortalMap trident={trident} />
 				<TridentPanel sourceIPs={sourceIPs} destIPs={destIPs} alerts={alerts} message={message} />
 				<AlertPanel alerts={this.props.alerts} title={"Map Events"} message={mapMessage}/>
 				<AlertType 
@@ -97,6 +108,7 @@ export class TridentPage extends Component {
 					trident={trident} 
 					type={"alert"} 
 					loading={loading}
+					queryDate={this.props.queryDate}
 					title={"Signature Events"} 
 					message={message}/>
 				<AlertType
@@ -104,6 +116,7 @@ export class TridentPage extends Component {
 					trident={trident} 
 					type={"dns"} 
 					loading={loading}
+					queryDate={this.props.queryDate}
 					title={"DNS Events"} 
 					message={message} />
 				<AlertType 
@@ -111,6 +124,7 @@ export class TridentPage extends Component {
 					trident={trident} 
 					type={"http"} 
 					loading={loading}
+					queryDate={this.props.queryDate}
 					title={"HTTP Events"} 
 					message={message} />
 				<AlertType 
@@ -118,13 +132,15 @@ export class TridentPage extends Component {
 					trident={trident} 
 					type={"tls"} 
 					loading={loading}
+					queryDate={this.props.queryDate}
 					title={"TLS Events"} 
 					message={message} />
 				<AlertType 
 					alertFunc={getAlerts} 
 					trident={trident} 
 					type={"fileinfo"}
-					loading={loading} 
+					loading={loading}
+					queryDate={this.props.queryDate}
 					title={"File Events"} 
 					message={message} />
 				<AlertType 
@@ -132,6 +148,7 @@ export class TridentPage extends Component {
 					trident={trident} 
 					type={"ssh"}
 					loading={loading} 
+					queryDate={this.props.queryDate}
 					title={"SSH Events"} 
 					message={message} />
 			</div>
@@ -144,7 +161,9 @@ const mapStateToProps = (state) => ({
 	destIPs: state.destIPs,
 	signature : state.signatureAlerts,
 	selectedTrident: state.selectedTrident,
-	alerts: state.locationAlerts
+	alerts: state.locationAlerts,
+	queryDate: state.queryDate,
+	newSearch: state.newSearch
 })
 
 export default connect(mapStateToProps, actionCreators)(TridentPage)

@@ -1,19 +1,30 @@
-import request from 'superagent'
+import axios from 'axios'
 
+/**
+ * getClientMapAlert gets the alert that is selected from the map
+ * @param  {object} info   cantains the lat, long, trident, ipArray, and queryDate
+ * @return {object}      returns the results from the query 
+ */
 export const getClientMapAlert = (info) => {
-	let lat = info.lat
-	let long = info.long
-	let trident = info.trident
-	let ipArray = info.ipArray
+	console.log(info)
 	let token = localStorage.getItem('jwt')
-	return request.get(process.env.REACT_APP_API_URL + '/trident/client/mapAlert')
-		.set({Authorization:`Bearer ${token}`})
-		.query({info})
-		.then(res => {
-			return res.body
-		})
-		.catch(err => {
-			console.log(err)
-			throw new Error(err)
-		})
+	return axios.get(process.env.REACT_APP_API_URL + '/trident/client/mapAlert', {
+		headers:{
+			Authorization: `Bearer ${token}`
+		},
+		params:{
+			lat: info.lat,
+			long: info.long,
+			trident: info.trident,
+			ipArray: info.ipArray,
+			queryDate: info.queryDate
+		}
+	})
+	.then(res => {
+		return res.data
+	})
+	.catch(err => {
+		console.log(err)
+		throw new Error(err)
+	})
 }

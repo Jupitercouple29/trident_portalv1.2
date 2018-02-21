@@ -59,7 +59,6 @@ export class Portal extends Component {
     portal.removeEventListener('mousemove', this.noActivityLogout)
   }
   componentWillReceiveProps(nextProps){
-    console.log(nextProps)
     if(nextProps.location.pathname !== this.state.page){
       let pageLocation = ''
       let page = this.props.history.location.pathname;
@@ -107,7 +106,8 @@ export class Portal extends Component {
   //This function is also passed down to the dashboard and then to the AlertPanel
   //Allows the alerts to be concatenated, which allows users to query more alerts
   fetchAlerts(startFrom){
-    if(this.props.history.location.pathname === '/dashboard'){
+    let path = this.props.history.location.pathname
+    if(path === '/dashboard'){
       let tridents = this.props.tridents
       let date = new Date(), date2 = new Date()
       let minusHour = date2.setHours(date2.getHours() - 1)
@@ -119,8 +119,6 @@ export class Portal extends Component {
         from:startFrom || 0,
         queryDate: this.props.queryDate
       }
-      console.log('inside of fetchAlerts___________________________________________')
-      console.log(info)
       getTridents(info)
       .then(result=>{
         console.log(result)
@@ -134,6 +132,8 @@ export class Portal extends Component {
           </h1>
         })
       })
+    }else{
+      this.setState({isLoading:false})
     }
   }
   //logs a user out if there is now mouse activity after 1 hour

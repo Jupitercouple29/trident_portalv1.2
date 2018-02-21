@@ -57,7 +57,7 @@ export class NavBar extends Component {
 	//allows the page to search data from the chosen date offered in 
 	//the DatePicker
 	handleSearchButton(){
-		this.props.isSearch(true)
+		this.props.isNewSearch(true)
 		this.props.fetchAlerts()
 	}
 	render(){

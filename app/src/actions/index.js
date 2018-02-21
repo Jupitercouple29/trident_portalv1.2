@@ -85,7 +85,7 @@ export const qDate = (date) => ({
   date
 })
 
-export const isSearch = (search) => ({
+export const isNewSearch = (search) => ({
   type:NEW_SEARCH,
   search
 })

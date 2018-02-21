@@ -1,17 +1,17 @@
 import axios from 'axios'
 
-export const getItemClicked = (trident, title, info) => {
+export const getItemClicked = (info) => {
  	let token = localStorage.getItem('jwt')
-  let t = trident 
   return axios.get(process.env.REACT_APP_API_URL + '/trident/item', {
   	headers: {
   		Authorization: `Bearer ${token}`
   	},
   	params: {
-  		trident: t,
-  		title: title,
-  		info: info
-  	}
+  		trident: info.trident,
+  		title: info.title,
+  		data: info.data,
+      queryDate: info.queryDate
+    }
   })
   .then(res => {
   	return res.data

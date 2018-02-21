@@ -48,17 +48,45 @@ router.get('/two-way',
 					// console.log(source) 
 					if(source === a._source.destination_ip && dest === a._source.source_ip){
 						// console.log('two way traffic')
-						twoWayArray.push(a,alert)
+						twoWayArray.push(a)
 					}
 				})					
 			})
+			let dedupArray = []
+			let sameArray = []
+			// twoWayArray.map((a,i) => {
+			// 	if(twoWayArray[i + 1]){
+			// 		let b = twoWayArray[i]
+			// 		let c = twoWayArray[i + 1]
+			// 		dedupArray.push(b,c)
+			// 		twoWayArray.map((d,j) => {
+			// 			if(twoWayArray[j + 1]){
+			// 				let e = twoWayArray[j]
+			// 				let f = twoWayArray[j + 1]
+			// 				if(e._source.source_ip === b._source.source_ip && f._source.source_ip === c._source.source_ip || 
+			// 					f._source.source_ip === b._source.source_ip && e._source.source_ip === c._source.source_ip){
+			// 					console.log('the same two way traffic')
+			// 					sameArray.push(e,f)
+			// 				}else{
+			// 					dedupArray.push(e,f)
+			// 				}
+			// 			}
+			// 		})
+			// 	}
+			// })
 			let array = _.uniqBy(twoWayArray, function(a){
-				console.log(a)
-				return a._source.timestamp
+				// console.log(a)
+				return a._source.source_ip && a._source.destination_ip
 			})
-			console.log(array)
-			console.log(twoWayArray)
+			console.log(array.length)
+			console.log(dedupArray.length)
+			console.log(sameArray.length)
+			console.log(twoWayArray.length)
 			res.status(200).send(twoWayArray)
+		})
+		.catch(err => {
+			console.log(err)
+			res.status(400).send('error with backend')
 		})
 	})
 

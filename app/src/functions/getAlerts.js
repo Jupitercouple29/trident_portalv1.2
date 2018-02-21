@@ -16,15 +16,14 @@ export const getAlerts = (info) => {
   let token = localStorage.getItem('jwt')
   let decoded = jwt.verify(token, process.env.REACT_APP_JWT_SECRET)
   let trident = info.trident || decoded.user.tridents
-  let type = info.type
-  let startFrom = info.from 
-  return axios.get(process.env.REACT_APP_API_URL + `/trident/alerts/${type}`,{
+  return axios.get(process.env.REACT_APP_API_URL + `/trident/alerts/${info.type}`,{
     headers: {
 			Authorization: `Bearer ${token}`,
 		},
     params: {
       trident: trident,
-      from: startFrom
+      from: info.from,
+      queryDate: info.queryDate
     }
   })
   .then((response) => {

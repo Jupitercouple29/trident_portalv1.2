@@ -43,7 +43,7 @@ export class Dashboard extends Component {
 			console.log('inside of componentWillReceiveProps')
 			console.log(nextProps.dashboard.alerts)
 			this.setState({alertList:nextProps.dashboard.alerts})
-			this.props.isSearch(false)
+			this.props.isNewSearch(false)
 		}
 	}
 	fetchAlerts(startFrom){

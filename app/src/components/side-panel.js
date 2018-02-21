@@ -4,7 +4,12 @@ import { connect } from 'react-redux'
 import * as actionCreators from '../actions'
 import { withRouter } from 'react-router-dom'
 
-
+/**
+ * SidePanel is used to display a side panel on the portal
+ * props 
+ *  - sidePanelClick = function passed from portal.js to open and close the side panel
+ *  - displaySidePanel = bool passed from portal.js 
+ */
 export class SidePanel extends Component {
 	constructor(props){
 		super(props)
@@ -21,6 +26,7 @@ export class SidePanel extends Component {
 		let route = name.slice(1,name.length)
 		this.setState({route})
 	}
+	//opens and closes the side panel
 	handlePanelClick(event){
 		if(event === 'close'){
 			this.props.sidePanelClick(false)
@@ -28,6 +34,7 @@ export class SidePanel extends Component {
 			this.props.sidePanelClick(true)
 		}
 	}
+	//handles route cliced. This function is passed down to each item in the side panel
 	routeClicked(route){
 		this.setState({route:route})
 	}

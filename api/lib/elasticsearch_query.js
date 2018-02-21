@@ -27,7 +27,7 @@ exports.searchTrident = (trident, from, type, ip) => {
       }
     },
     "from":from,
-    "size": 1000
+    "size": 50
   }
   return queryString
 }
@@ -289,6 +289,15 @@ exports.locationAlerts = (lat,long,trident) => {
   return queryString
 }
 
+/**
+ * Elasticsearch query that retrieves the alerts pertaining to the given params
+ * @param  {string} trident the trident
+ * @param  {string} source  either source_ip or destination_ip
+ * @param  {float} lat     the latitude
+ * @param  {float} long    the longitude
+ * @param  {array} ipArray an array o ips
+ * @return {object}         returns an querystring object 
+ */
 exports.clientMapAlert = (trident, source, lat, long, ipArray) => {
   let terms = {}
   terms[source] = ipArray
@@ -380,6 +389,14 @@ exports.searchItemClicked = (trident, title, info) => {
   return queryString
 }
 
+/**
+ * Elasticsearch string object that searches alerts by range
+ * @param  {string} trident the trident
+ * @param  {string} type    either source_ip or destination_ip
+ * @param  {string} ipFrom  the starting ip range
+ * @param  {string} ipTo    the ending ip range
+ * @return {object}         returns a string object for elasticsearch query
+ */
 exports.searchRangeByIPs = (trident, type, ipFrom, ipTo) => {
   let range = {}
   range[type] = {
@@ -412,6 +429,13 @@ exports.searchRangeByIPs = (trident, type, ipFrom, ipTo) => {
   return queryString
 }
 
+/**
+ * Elasticsearch string object to search for alerts by terms of IP's
+ * @param  {string} trident the trident
+ * @param  {string} type    either source_ip or destination_ip
+ * @param  {array} ipArray the list of ips to search
+ * @return {object}         returns a string object for elasticsearch
+ */
 exports.searchByIPs = (trident, type, ipArray) => {
   let terms ={}
   terms[type] = ipArray

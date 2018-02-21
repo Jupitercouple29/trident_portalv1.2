@@ -97,7 +97,12 @@ router.get('/alerts',
     let trident = "Trident" + req.query.trident
     //elasticsearch query params
     let queryString = searchTridentAlerts(trident)
-    return client.search({index, body: queryString})
+    let day = new Date(req.query.queryDate)
+    let dd = ('0' + day.getDate()).slice(-2)
+    let mm = ('0' + (day.getMonth() + 1)).slice(-2) + '.'
+    let yyyy = day.getFullYear() + '.'
+    let queryIndex = "logstash-" + yyyy + mm + dd
+    return client.search({index:queryIndex, body: queryString})
     .then(function(resp) {
       let alerts = resp.hits.hits
       let signatureAlerts = resp.aggregations.signatures.buckets
@@ -147,7 +152,12 @@ router.get('/alerts/:type',
           //elasticsearch query params
           queryString = searchEventObject(trident, type, startFrom)
         }
-      return client.search({index, body: queryString})
+      let day = new Date(req.query.queryDate)
+      let dd = ('0' + day.getDate()).slice(-2)
+      let mm = ('0' + (day.getMonth() + 1)).slice(-2) + '.'
+      let yyyy = day.getFullYear() + '.'
+      let queryIndex = "logstash-" + yyyy + mm + dd
+      return client.search({index: queryIndex, body: queryString})
       .then(function(resp) {
         let alerts = resp.hits.hits
         let body = {
@@ -220,16 +230,21 @@ router.get('/item',
   function(req, res, next){
     let trident = "Trident" + req.query.trident
     let title = req.query.title
-    let info = req.query.info
+    let data = req.query.data
     //elasticsearch query params
-    let queryString = searchItemClicked(trident,title,info)
-    return client.search({index, body: queryString})
+    let queryString = searchItemClicked(trident,title,data)
+    let day = new Date(req.query.queryDate)
+    let dd = ('0' + day.getDate()).slice(-2)
+    let mm = ('0' + (day.getMonth() + 1)).slice(-2) + '.'
+    let yyyy = day.getFullYear() + '.'
+    let queryIndex = "logstash-" + yyyy + mm + dd
+    return client.search({index: queryIndex, body: queryString})
     .then(result => {
       log.info(requestLog(req, 200, result))
       res.status(200).send(result.hits.hits)
     })
     .catch(err => {
-      log.error(requrestLog(req, 401, err))
+      log.error(requestLog(req, 401, err))
       res.status(401).send(err.responses)
     })
   })
@@ -246,18 +261,24 @@ router.get('/client/mapAlert',
   validateMiddleware,
   jwtRest({secret:process.env.JWT_SECRET}),
   function(req, res, next){
-    let info = req.query.info
-    let trident = "Trident" + info.trident
-    let lat = info.lat
-    let long = info.long
-    let ipArray = info.ipArray
+    let trident = "Trident" + req.query.trident
+    let lat = req.query.lat
+    let long = req.query.long
+    let ipArray = req.query.ipArray
     let queryArray = [], alerts = [], alertsArray = []
     //elasticsearch query params
     let queryStringSource = clientMapAlert(trident, "source_ip", lat , long, ipArray)
     //elasticsearch query params
     let queryStringDest = clientMapAlert(trident, "destination_ip", lat, long, ipArray)
     queryArray.push({}, queryStringSource, {}, queryStringDest)
-    client.msearch({index, body: queryArray})
+    let day = new Date(req.query.queryDate)
+    let dd = ('0' + day.getDate()).slice(-2)
+    let mm = ('0' + (day.getMonth() + 1)).slice(-2) + '.'
+    let yyyy = day.getFullYear() + '.'
+    let queryIndex = "logstash-" + yyyy + mm + dd
+    console.log(queryIndex)
+    console.log('here is the queryIndex for mapAlert')
+    client.msearch({index: queryIndex, body: queryArray})
     .then(result => {
       alertsArray.push(result.responses[0].hits.hits, result.responses[1].hits.hits)
       alerts = uniqDescOrderedList(alertsArray[0].concat(alertsArray[1]))    
@@ -289,9 +310,16 @@ router.get('/client',
     let queryStringDest = searchByIPs(trident, "destination_ip", ipArray)
     let queryArray = []
     queryArray.push({}, queryStringSource, {}, queryStringDest)
-    client.msearch({index, body: queryArray})
+    let day = new Date(req.query.queryDate)
+    let dd = ('0' + day.getDate()).slice(-2)
+    let mm = ('0' + (day.getMonth() + 1)).slice(-2) + '.'
+    let yyyy = day.getFullYear() + '.'
+    let queryIndex = "logstash-" + yyyy + mm + dd
+    console.log(queryIndex)
+    console.log('here is the queryIndex _____________________________________________')
+    client.msearch({index: queryIndex, body: queryArray})
     .then(resp => {
-      // console.log(resp)
+      console.log(resp)
       let result1 = resp.responses[0].aggregations
       let result2 = resp.responses[1].aggregations 
       let alertsArray = [], latAndLongArray = [], 
@@ -316,24 +344,6 @@ router.get('/client',
 
         //concatenates the two results and sorts them in descending order
         alerts = uniqDescOrderedList(alertsArray[0].concat(alertsArray[1]))
-        let count = 0
-        let count2 = 0 
-        let twoWayArray = []
-        alerts.map(alert =>{
-          console.log(count++)
-          // console.log(alert._source.source_ip)
-          let source = alert._source.source_ip
-          let dest = alert._source.destination_ip
-          alerts.map(a => {
-            if(source === a._source.destination_ip && dest === a._source.source_ip){
-              // console.log('some two way traffic ' + count2++)
-              twoWayArray.push(a, alert)
-              // console.log(alert)
-              // console.log(a)
-            }
-          })
-        })
-        console.log(twoWayArray)
       }
       source_ips = uniqDescOrderedList(result1.source_ips.buckets.concat(result2.source_ips.buckets))
       dest_ips = uniqDescOrderedList(result1.dest_ips.buckets.concat(result2.dest_ips.buckets))

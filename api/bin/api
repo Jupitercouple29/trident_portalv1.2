@@ -41,7 +41,7 @@ global.client = new es.Client({
   host: process.env.ELASTIC_URL,
   // httpAuth: 'elastic:changeme',
   log: logger,
-  requestTimeout: '60000'
+  requestTimeout: '80000'
 })
 /**
  * Get port from environment and store in Express.

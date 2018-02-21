@@ -27,6 +27,7 @@ export const getTwoWay = (info) => {
 	})
 	.catch(err => {
 		console.log(err)
-		throw new Error(err.response)
+		return err.response
+		// throw new Error(err.response)
 	})
 }

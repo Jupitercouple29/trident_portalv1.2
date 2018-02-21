@@ -23,6 +23,7 @@ export default class Columns extends Component {
 			this.setState({message:nextProps.message})
 		}
 	}
+	// renders the info into the column
 	renderInfo(info){
 		let component = info.map((i, index) => {
 			return <p 

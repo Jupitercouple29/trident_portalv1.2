@@ -25,12 +25,15 @@ export default class AlertPanelItem extends Component {
 		this.handleBlur = this.handleBlur.bind(this)
 		this.handleContextMenu = this.handleContextMenu.bind(this)
 	}
+	//opens and closes the row of data
 	handleClick(){
 		this.setState({isHidden:!this.state.isHidden})
 	}
+	//close the context menu
 	handleBlur(event){
 		this.setState({showContextMenu:false})
 	}
+	//displays a custom context menu
 	handleContextMenu(event){
   	console.log('hello onContextMenu')
   	if(window.location.pathname === '/soc'){

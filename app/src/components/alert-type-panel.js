@@ -21,32 +21,45 @@ export default class AlertType extends Component {
 			alertList:[]
 		}
 		this.fetchAlerts = this.fetchAlerts.bind(this)
+		this.fetchMoreAlerts = this.fetchMoreAlerts.bind(this)
 	}
 	componentWillMount(){
 		let info = {
 			trident:this.props.trident,
 			type: this.props.type,
-			from: this.props.from || 0
+			from: this.props.from || 0,
+			queryDate: this.props.queryDate
 		}
-		this.props.alertFunc(info)
-		.then(res=>{
-			this.setState({alertList:res.alerts})
-		})
+		this.fetchAlerts(info)
 	}
 	componentWillReceiveProps(nextProps){
 		if(this.props.trident !== nextProps.trident){
 			let info = {
 				trident:nextProps.trident,
 				type: this.props.type,
-				from:nextProps.from || 0
+				from:nextProps.from || 0,
+				queryDate: nextProps.queryDate || this.props.queryDate
 			}
-			this.props.alertFunc(info)
-			.then(res=>{
-				this.setState({alertList:res.alerts})
-			})
+			this.fetchAlerts(info)
+		}else if(this.props.loading !== nextProps.loading){
+			let info = {
+				trident: this.props.trident,
+				type: this.props.type,
+				from: this.props.from || 0,
+				queryDate: nextProps.queryDate || this.props.queryDate
+			}
+			this.fetchAlerts(info)
 		}
 	}
-	fetchAlerts(startFrom){
+	//call to backend to get alerts only retrieves 1000 alerts at a time 
+	fetchAlerts(info){
+		this.props.alertFunc(info)
+		.then(res => {
+			this.setState({alertList: res.alerts})
+		})
+	}
+	//call to backend to fetch more alerts after first 1000 alerts
+	fetchMoreAlerts(startFrom){
 		let info = {
 			trident:this.props.trident,
 			type:this.props.type,
@@ -70,7 +83,7 @@ export default class AlertType extends Component {
 					alerts={alert} 
 					title={this.props.title} 
 					message={message} 
-					fetchAlerts={this.fetchAlerts}/>
+					fetchAlerts={this.fetchMoreAlerts}/>
 			</div>
 		)
 	}

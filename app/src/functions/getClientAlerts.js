@@ -1,15 +1,23 @@
-import request from 'superagent'
+import axios from 'axios'
 
-export const getClientAlerts = (trident, ipArray) => {
+export const getClientAlerts = (info) => {
 	let token = localStorage.getItem('jwt')
-	return request.get(process.env.REACT_APP_API_URL + '/trident/client')
-		.set({Authorization:`Bearer ${token}`})
-		.query({trident, ipArray})
-		.then(res => {
-			return res.body
-		})
-		.catch(err => {
-			console.log(err)
-			throw new Error(err)
-		})
+	console.log(info.queryDate)
+	return axios.get(process.env.REACT_APP_API_URL + '/trident/client', {
+		 headers: {
+			Authorization: `Bearer ${token}`,
+		},
+    params: {
+      queryDate: info.queryDate,
+			trident: info.trident, 
+			ipArray: info.ipArray
+    }
+	})
+	.then(res => {
+		return res.data
+	})
+	.catch(err => {
+		console.log(err)
+		throw new Error(err)
+	})
 }
