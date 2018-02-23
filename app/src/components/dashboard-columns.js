@@ -28,6 +28,7 @@ export default class Columns extends Component {
 		let component = info.map((i, index) => {
 			return <p 
 							onClick={this.props.clicked ? this.props.clicked.bind(this,this.props.name,i) : null} 
+							className="dashboard-columns-item"
 							key={index}>
 								{i.toLocaleString()}
 							</p>
