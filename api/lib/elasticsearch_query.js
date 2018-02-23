@@ -27,7 +27,7 @@ exports.searchTrident = (trident, from, type, ip) => {
       }
     },
     "from":from,
-    "size": 50
+    "size": 1000
   }
   return queryString
 }
@@ -505,6 +505,52 @@ exports.searchByIPs = (trident, type, ipArray) => {
       }
     },
     "size": 5000
+  }
+  return queryString
+}
+
+exports.searchBySourceIP = (trident, startFrom, sourceIP) => {
+  let queryString = {
+    "sort": [
+      {
+        "timestamp": {
+          "order": "desc"
+        }
+      } 
+    ],
+    "query":{
+      "bool":{
+        "must":[
+          {"match":{"filename":trident}},
+          {"match":{"source_ip":sourceIP}}
+        ]
+      }
+    },
+    "from": startFrom,
+    "size": 1000
+  }
+  return queryString
+}
+
+exports.searchByDestIP = (trident, startFrom, destIP) => {
+  let queryString = {
+    "sort": [
+      {
+        "timestamp": {
+          "order": "desc"
+        }
+      } 
+    ],
+    "query": {
+      "bool": {
+        must: [
+          {"match": {"filename": trident}},
+          {"match": {"destination_ip": destIP}}
+        ]
+      }
+    },
+    "from": startFrom,
+    "size": 1000
   }
   return queryString
 }

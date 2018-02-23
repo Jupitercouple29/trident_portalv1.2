@@ -4,6 +4,9 @@ const jwtRest = require('express-jwt')
 const { requestLog } = require('../lib/common')
 const { validateMiddleware } = require('../lib/common')
 const { searchTrident } = require('../lib/elasticsearch_query')
+const { searchBySourceIP } = require('../lib/elasticsearch_query')
+const { searchByDestIP } = require('../lib/elasticsearch_query')
+const { searchBySourceAndDestIP } = require('../lib/elasticsearch_query')
 
 const router = express.Router()
 
@@ -28,65 +31,61 @@ router.get('/two-way',
 		let index = 'logstash-' + yyyy + mm + dd
 		console.log(index)
 		let queryString = searchTrident(trident,startFrom)
-		// let querySource = searchTrident(trident,startFrom, "source_ip", "199.58.212.214")
-		// let queryDest = searchTrident(trident,startFrom, "destination_ip", "199.58.212.214")
-		// let queryArray = []
-		// queryArray.push({}, querySource, {}, queryDest)
-		return client.search({index, body:queryString})
+		let clientSearch = client.search({index, body:queryString})
+		if(ip){
+			let querySource = searchBySourceIP(trident,startFrom, ip)
+			let queryDest = searchByDestIP(trident,startFrom, ip)
+			let queryArray = []
+			queryArray.push({}, querySource, {}, queryDest)
+			clientSearch = client.msearch({index, body: queryArray})
+		} 
+		return clientSearch
 		.then(result => {
-			// console.log(result.responses[0].hits)
-			// let alert1 = result.responses[0].hits.hits
-			// let alert2 = result.responses[1].hits.hits
-			// let alerts = alert1.concat(alert2)
-			let alerts = result.hits.hits
+			let alerts
+			if(result.responses){
+				response1 = result.responses[0].hits.hits
+				response2 = result.responses[1].hits.hits
+				alerts = response1.concat(response2)
+			}else{
+			  alerts = result.hits.hits
+			}
 			let twoWayArray = []
-			alerts.map(alert => {
-				let source = alert._source.source_ip
-				let dest = alert._source.destination_ip
-				alerts.map(a => {
-					// console.log(a._source.destination_ip)
-					// console.log(source) 
-					if(source === a._source.destination_ip && dest === a._source.source_ip){
-						// console.log('two way traffic')
-						twoWayArray.push(a)
-					}
-				})					
-			})
 			let dedupArray = []
 			let sameArray = []
-			// twoWayArray.map((a,i) => {
-			// 	if(twoWayArray[i + 1]){
-			// 		let b = twoWayArray[i]
-			// 		let c = twoWayArray[i + 1]
-			// 		dedupArray.push(b,c)
-			// 		twoWayArray.map((d,j) => {
-			// 			if(twoWayArray[j + 1]){
-			// 				let e = twoWayArray[j]
-			// 				let f = twoWayArray[j + 1]
-			// 				if(e._source.source_ip === b._source.source_ip && f._source.source_ip === c._source.source_ip || 
-			// 					f._source.source_ip === b._source.source_ip && e._source.source_ip === c._source.source_ip){
-			// 					console.log('the same two way traffic')
-			// 					sameArray.push(e,f)
-			// 				}else{
-			// 					dedupArray.push(e,f)
-			// 				}
-			// 			}
-			// 		})
-			// 	}
-			// })
-			let array = _.uniqBy(twoWayArray, function(a){
-				// console.log(a)
-				return a._source.source_ip && a._source.destination_ip
+			let count = 0
+			alerts.map((alert, i) => {
+				let source = alert._source.source_ip
+				let dest = alert._source.destination_ip
+				let al
+				let isTwoWay = false
+				alerts.map((a, j) => {
+					if(source === a._source.destination_ip && dest === a._source.source_ip){
+						twoWayArray.push(alert, a)
+					}
+				})
+				if(isTwoWay){
+					twoWayArray.push(alert,al)	
+				}
 			})
+	
+			let uniqSource = _.uniqBy(twoWayArray, function(a){
+				// console.log(a)
+				return a._source.source_ip
+			})
+			let uniqDest = _.uniqBy(twoWayArray, function(a){
+				return a._source.destination_ip
+			})
+			let array = uniqSource.concat(uniqDest)
 			console.log(array.length)
 			console.log(dedupArray.length)
 			console.log(sameArray.length)
 			console.log(twoWayArray.length)
-			res.status(200).send(twoWayArray)
+			res.status(200).send(array)
 		})
 		.catch(err => {
 			console.log(err)
-			res.status(400).send('error with backend')
+			console.log(err.message)
+			res.status(400).send(err.message)
 		})
 	})
 

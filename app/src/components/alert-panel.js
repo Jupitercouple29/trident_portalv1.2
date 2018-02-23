@@ -18,7 +18,8 @@ export default class AlertPanel extends Component {
       alerts:[],
       message: this.props.message,
       page: 1,
-      pageLoc: 50
+      pageLocBegin: 0,
+      pageLocEnd: 50
     }
 		this.showAlerts = this.showAlerts.bind(this)
     this.pagination = this.pagination.bind(this)
@@ -39,8 +40,12 @@ export default class AlertPanel extends Component {
     }
     //check for new alert props from parent 
     if(this.props.alerts !== nextProps.alerts){
+      let page
+      if(nextProps.alerts && nextProps.alerts.length % 1000 === 0){
+        page = this.state.page
+      }else page = 1
       //store alerts in state to allow re-render of new props
-      this.setState({alerts:nextProps.alerts},() => {
+      this.setState({alerts:nextProps.alerts,page},() => {
         //after setting state call pagination to update alerts
         this.pagination(this.state.page)
       })
@@ -53,7 +58,11 @@ export default class AlertPanel extends Component {
 		if(this.state.alerts && this.state.alerts.length){
 			listAlerts = this.state.alerts.map((a, i)=>{
 			 let source = a._source
-			 return <AlertPanelItem alert={source} key={i} alertKey={i}/>
+			 return <AlertPanelItem 
+                alert={source} 
+                key={i} 
+                alertKey={i}
+                saveAlert={this.props.saveAlert}/>
 		  })
 		return listAlerts
     }else{
@@ -64,11 +73,13 @@ export default class AlertPanel extends Component {
   //shown at a time
   pagination(page){
     // console.log('clicked the page')
-    let pageLoc = page * 50;
+    let pageLocEnd = page * 50;
+    let pageLocBegin = page * 50
     let alerts = this.showAlerts()
     if(alerts.length){
-      let pagination = alerts.slice((pageLoc - 50), pageLoc)
-      this.setState({alertList:pagination,page,pageLoc},()=>{
+      if(pageLocEnd > alerts.length) pageLocEnd = alerts.length
+      let pagination = alerts.slice((pageLocBegin - 50), pageLocEnd)
+      this.setState({alertList:pagination,page,pageLocBegin, pageLocEnd},()=>{
         // console.log(this.state.alertList)
         // console.log('here is the alertList')
       })
@@ -125,7 +136,7 @@ export default class AlertPanel extends Component {
             }
             <button 
               className="alert-panel-pagination">
-              {this.state.pageLoc - 49 + " to " + this.state.pageLoc} 
+              {this.state.pageLocBegin - 49 + " to " + this.state.pageLocEnd} 
             </button>
             {this.state.page * 50 < this.state.alerts.length ? 
               <button 

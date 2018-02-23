@@ -53,25 +53,18 @@ export default class AlertPanelItem extends Component {
 		    const bottom = !top;
 		    
 		    if (right) {
-		    	console.log('right')
-		    	console.log(clickX)
-		    	console.log(clickY)
-		    	console.log(event.target)
 		        this.root.style.left = `${clickX + 5}px`;
 		    }
 		    
 		    if (left) {
-		    	console.log('left')
 		        this.root.style.left = `${clickX - rootW - 5}px`;
 		    }
 		    
 		    if (top) {
-		    	console.log('top')
 		        this.root.style.top = `${clickY + 5}px`;
 		    }
 		    
 		    if (bottom) {
-		    		console.log('bottom')
 		        this.root.style.top = `${clickY - rootH - 5}px`;
 		    }
 	  	})

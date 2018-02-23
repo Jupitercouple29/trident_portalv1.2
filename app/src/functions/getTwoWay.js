@@ -7,7 +7,6 @@ export const getTwoWay = (info) => {
 	let index = info.index
 	let date = info.date._d
 	let ip = info.ip
-	let time = info.time
 	console.log(date)
 	return axios.get(process.env.REACT_APP_API_URL + '/soc/two-way',{
 		headers: {
@@ -17,8 +16,7 @@ export const getTwoWay = (info) => {
 			trident,
 			index,
 			date,
-			ip,
-			time
+			ip
 		}
 	})
 	.then(response => {
@@ -27,7 +25,15 @@ export const getTwoWay = (info) => {
 	})
 	.catch(err => {
 		console.log(err)
-		return err.response
-		// throw new Error(err.response)
+		console.log(err.message)
+		console.log(err.response)
+		let error
+		if(err.response){
+			error = err.response.data
+		}else{
+			error = err.message
+		}
+		// return err.response
+		throw new Error(error)
 	})
 }
