@@ -32,9 +32,10 @@ export const getTridents = (info) => {
     }
   })
   .then((response) => {
+    let alerts = response.data.hits.hits[0]
     let data = {
       alertsLastHour: response.data.aggregations.alerts_last_hour.buckets[0].doc_count,
-      lastEventTime: response.data.hits.hits[0]._source.timestamp,
+      lastEventTime: alerts ? response.data.hits.hits[0]._source.timestamp : new Date(),
       signatureAlerts: response.data.aggregations.signature_alerts.buckets,
       numOfIPs:response.data.aggregations.source_ips.buckets.length,
       totalAlerts:response.data.hits.total,
@@ -43,6 +44,7 @@ export const getTridents = (info) => {
     return data
   })
   .catch((error)=>{
+    console.log(error.message)
     throw new Error(error.response)
     // return error.response
   })

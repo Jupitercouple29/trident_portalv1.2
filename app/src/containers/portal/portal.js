@@ -122,10 +122,20 @@ export class Portal extends Component {
       getTridents(info)
       .then(result=>{
         console.log(result)
-        this.props.dashboardInfo(result)
-        this.setState({isLoading:false})
+        if(!result.alerts.length){
+          console.log('there are now results')
+          this.setState({loadingMessage:
+            <h1 className="loading-error"> The Trident is not reporting with any data. <br/><br/>
+              Please check your device. 
+            </h1>})
+        }else{
+          this.props.dashboardInfo(result)
+          this.setState({isLoading:false})
+        }
+       
       })
       .catch((err)=>{
+        console.log(err)
         this.setState({loadingMessage:
           <h1 className="loading-error">There has been a connection error.<br/><br/>
            Please try back again .
