@@ -90,7 +90,7 @@ export class SidePanelItem extends Component {
 	}
 	render(){
 		let display = this.props.display
-		let showItems = this.state.isHidden ? 'hidden' : 'show'
+		let showItems = this.state.isHidden || this.props.display === 'hidden' ? 'hidden' : 'show'
 		let itemArray = this.props.items ? this.configureItemsToDisplay(this.props.items) : null 
 		let icon = this.props.icon
 		let title= this.props.title
@@ -98,8 +98,9 @@ export class SidePanelItem extends Component {
 		let chevron = this.state.expanded ? <i className={"fa fa-chevron-up"}></i> : <i className={"fa fa-chevron-down"}></i>
 		let showChevron = this.props.items ?  chevron : null
 		let displayItems = itemArray && Array.isArray(itemArray) ? this.displayItems(itemArray, title, display) : null
+		console.log(selected)
 		return(
-			<div className={`side-panel-item-container ${selected}`}>
+			<div className={`side-panel-item-container ${selected} ${title.toLowerCase()}`}>
 				<div className="side-panel-item" onClick={this.handleItemClick.bind(this,title)}>
 					<i className={icon}></i>
 					<p className={`side-panel-item-title ${display}`}>{title}{showChevron}</p>

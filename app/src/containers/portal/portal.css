@@ -101,11 +101,17 @@
 .side-panel-item-container {
  border-right: 4px transparent;
  color: white;
+ overflow-y: hidden;
 }
 
-.side-panel-item-container.selected:hover{
-	/*border-right: 4px solid rgba(96,250,132,.2);
-	color: white;*/
+.side-panel-item-container.clients .side-panel-item-expanded.show {
+	height: 250px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.side-panel-item-container.clients .side-panel-item-expanded.show p {
+	padding: 10px 0px;
 }
 
 .side-panel-item-container.selected {

@@ -41,7 +41,7 @@ export default class Columns extends Component {
 		let size = this.props.size || "small"
 		let name = this.props.name || ""
 		let message = this.props.message
-		let showInfo = info && info.length > 1 ? info : message
+		let showInfo = info && info.length >= 1 ? info : message
 		return(
 			<div className={`dashboard-panel-column ${name} ${size}`}>
 				<h3>{title}</h3>
