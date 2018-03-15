@@ -43,9 +43,13 @@ export const getTridents = (info) => {
     }
     return data
   })
-  .catch((error)=>{
-    console.log(error.message)
-    throw new Error(error.response)
-    // return error.response
+  .catch((err)=>{
+    let error
+    if(err.response){
+      error = err.response.data
+    }else{
+      error = err.message
+    }
+    throw new Error(error)
   })
 }

@@ -24,7 +24,12 @@ export const getClientMapAlert = (info) => {
 		return res.data
 	})
 	.catch(err => {
-		console.log(err)
-		throw new Error(err)
+		let error
+    if(err.response){
+      error = err.response.data
+    }else{
+      error = err.message
+    }
+    throw new Error(error)
 	})
 }

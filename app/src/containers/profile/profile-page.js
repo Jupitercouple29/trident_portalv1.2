@@ -34,6 +34,9 @@ export class ProfilePage extends Component {
 				logo:res.logo
 			})
 		})
+		.catch(err => {
+			console.log(err)
+		})
 	}
 	handleDrop(e){
 		e.preventDefault()

@@ -32,7 +32,7 @@ export class ClientPage extends Component {
 	componentWillReceiveProps(nextProps){
 		if(nextProps.newSearch){
 			let client = localStorage.getItem('selectedClient')
-			console.log('componentWillReceiveProps in the client page')
+			// console.log('componentWillReceiveProps in the client page')
 			this.getClientInfo(client)
 			this.setState({
 				coords:[],

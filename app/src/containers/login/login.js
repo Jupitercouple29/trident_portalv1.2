@@ -72,6 +72,9 @@ export class Login extends Component {
         })
       }
     })
+    .catch(err => {
+      console.log(err)
+    })
   }
   handleFocus(e){
     let target = e.target.id

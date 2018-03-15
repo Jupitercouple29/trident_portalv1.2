@@ -29,7 +29,13 @@ export const getAlerts = (info) => {
   .then((response) => {
     return response.data
   })
-  .catch((error)=>{
-    return error.response
+  .catch((err)=>{
+    let error
+    if(err.response){
+      error = err.response.data
+    }else{
+      error = err.message
+    }
+    throw new Error(error)
   })
 }

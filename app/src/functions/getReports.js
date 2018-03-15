@@ -14,7 +14,12 @@ export const getReports = (email) => {
 		return response.data
 	})
 	.catch(err => {
-		throw new Error(err.response)
-		// return err.respoonse
+		let error
+    if(err.response){
+      error = err.response.data
+    }else{
+      error = err.message
+    }
+    throw new Error(error)
 	})
 }

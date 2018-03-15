@@ -28,20 +28,24 @@ export class Dashboard extends Component {
 	}
 	componentWillMount(){
 		let tridents = this.props.tridents
+		this.props.fetchAlerts(0)
 		getNumOfAlerts(tridents)
 		.then(result => {
 			this.setState({numAlerts:result,alertList:this.props.dashboard.alerts})
+		})
+		.catch(err => {
+			console.log(err)
 		})
 	}
 	componentWillReceiveProps(nextProps){
 		// console.log(nextProps)
 		if(this.props.dashboard !== nextProps.dashboard && !this.props.newSearch ){
-			let alertList = this.state.alertList
+			let alertList = this.state.alertList || []
 			let newAlertList = alertList.concat(nextProps.dashboard.alerts)
 			this.setState({alertList:newAlertList})
 		}else if(this.props.dashboard !== nextProps.dashboard && this.props.newSearch){
-			console.log('inside of componentWillReceiveProps')
-			console.log(nextProps.dashboard.alerts)
+			// console.log('inside of componentWillReceiveProps')
+			// console.log(nextProps.dashboard.alerts)
 			this.setState({alertList:nextProps.dashboard.alerts})
 			this.props.isNewSearch(false)
 		}
@@ -50,7 +54,6 @@ export class Dashboard extends Component {
 		this.props.fetchAlerts(startFrom)
 	}
 	render(){
-		console.log(this.props)
 		let dashboard = this.props.dashboard
 		let tridents = this.props.user.tridents
 		let numAlerts = this.state.numAlerts

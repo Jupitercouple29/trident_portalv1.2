@@ -32,17 +32,22 @@ export class ChartsPage extends Component {
 			let select = document.getElementById('select-box')
 			let value = select.options[select.selectedIndex].value
 			let trident = value.slice(value.length - 4, value.length)
-			getTridentAlerts(trident)
-	    .then((res)=>{
-		    if(res.alerts.length < 1){
-		    	this.setState({selected:0})
-		    }
-	      this.props.tridentAlerts(res.alerts)
-	      this.props.tridentSourceIPs(res.ips)
-	      this.props.tridentSignatureAlerts(res.signatureAlerts)
-	      this.props.tridentDestIPs(res.dest_ips)
-	      this.setState({loading:false})
-		  })
+			let info = {
+				trident,
+				queryDate:this.props.queryDate
+			}
+			// getTridentAlerts(info)
+	  //   .then((res)=>{
+	  //   	console.log(res)
+		 //    if(res.alerts && res.alerts.length < 1){
+		 //    	this.setState({selected:0})
+		 //    }
+	  //     this.props.tridentAlerts(res.alerts)
+	  //     this.props.tridentSourceIPs(res.ips)
+	  //     this.props.tridentSignatureAlerts(res.signatureAlerts)
+	  //     this.props.tridentDestIPs(res.dest_ips)
+	  //     this.setState({loading:false})
+		 //  })
 	  }
 	}
 	tridentDropDown(){
@@ -109,7 +114,8 @@ const mapStateToProps = (state) => ({
 	destIPs: state.destIPs,
 	signatures: state.signatureAlerts,
 	user: state.validUser,
-	tridents: state.tridentArray
+	tridents: state.tridentArray,
+	queryDate: state.queryDate
 })
 
 export default connect(mapStateToProps, actionCreators)(ChartsPage)

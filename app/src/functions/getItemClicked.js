@@ -17,6 +17,12 @@ export const getItemClicked = (info) => {
   	return res.data
   })
   .catch(err => {
-  	return err.response
+  	let error
+    if(err.response){
+      error = err.response.data
+    }else{
+      error = err.message
+    }
+    throw new Error(error)
   })
 }
