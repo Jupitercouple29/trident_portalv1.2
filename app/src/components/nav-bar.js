@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import logo from '../media/phalanx_logo.png'
+import logo from '../media/phalanx_logo.jpg'
 import DCILogo from '../media/DCI_logo.jpg'
 import AISLogo from '../media/AIS_logo.jpg'
 import { withRouter } from 'react-router-dom'
