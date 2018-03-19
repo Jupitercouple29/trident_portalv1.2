@@ -12,7 +12,9 @@ Installing
 
 Deployment
 -
-```cd portal/api
+```
+cd portal/api
 yarn start
 cd portal/app
-yarn prod```
+yarn prod
+```
