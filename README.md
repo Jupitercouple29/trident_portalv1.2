@@ -18,3 +18,9 @@ yarn start
 cd portal/app
 yarn prod
 ```
+Built With
+-
+Node.js
+React.js
+Express.js
+Webpack
