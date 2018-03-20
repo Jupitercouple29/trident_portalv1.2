@@ -8,7 +8,11 @@ individually.
 
 Installing
 -
-```git clone https://github.com/mjohnson-phx/trident_portalv1.2.git```
+```
+cd /
+rm -rf /portal
+git clone https://github.com/mjohnson-phx/trident_portalv1.2.git portal
+```
 
 Deployment
 -
