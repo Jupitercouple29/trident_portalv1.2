@@ -13,6 +13,16 @@ cd /
 rm -rf /portal
 git clone https://github.com/mjohnson-phx/trident_portalv1.2.git portal
 ```
+Development 
+-
+After cloning the application you need to change directories to each level and yarn install.
+``` 
+cd portal/api
+yarn install
+cd portal/app
+yarn install
+```
+Then you can start the app level with `yarn start` and you can start the api with `yarn dev`
 
 Deployment
 -
