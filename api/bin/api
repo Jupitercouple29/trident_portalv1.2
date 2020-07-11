@@ -47,28 +47,28 @@ global.client = new es.Client({
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '8000');
 app.set('port', port);
 
 /**
- * SSL certs 
+ * SSL certs
  */
-var sslOptions = {
-  key:fs.readFileSync('config/pvt.crt'),
-  cert:fs.readFileSync('config/cert.crt'),
-  ca:fs.readFileSync('config/ca.crt')
-}
+// var sslOptions = {
+//   key:fs.readFileSync('config/pvt.crt'),
+//   cert:fs.readFileSync('config/cert.crt'),
+//   ca:fs.readFileSync('config/ca.crt')
+// }
 
 /**
  * Create HTTPS server.
  */
-global.server = https.createServer(sslOptions,app);
+// global.server = https.createServer(sslOptions,app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, function(){
+app.listen(port, function(){
   log.info(
     '%s v%s ready to accept connections on port listening on port %s',
     process.env.NAME,
@@ -77,8 +77,8 @@ server.listen(port, function(){
   );
 });
 
-server.on('error', onError);
-server.on('listening', onListening);
+app.on('error', onError);
+app.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.

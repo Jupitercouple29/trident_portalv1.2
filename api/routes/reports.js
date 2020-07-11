@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 const jwtRest = require('express-jwt')
-var firebase = require('firebase');
+const firebase = require('../config/firebase');
 var bcrypt = require('bcryptjs');
 var requestLog = require('../lib/common').requestLog
 var validateEmail = require('../lib/common').validateEmail
@@ -12,7 +12,7 @@ var router = express.Router();
  * Allows admin users to post pdf reports to the corresponding email
  * @param  {string}  req.params.email  the email to post to
  * @param  {string}  req.params.reportName  the name of the report
- * @param  {File}    req.body  the pdf file to post  
+ * @param  {File}    req.body  the pdf file to post
  * @return {string}  returns a string with the given success or failure of the post
  */
 router.post('/:email/:reportName',
@@ -23,7 +23,7 @@ router.post('/:email/:reportName',
 		let email = req.params.email
 		let reportName = req.params.reportName
 		let file = req.body
-		//stringify the file for easier storage 
+		//stringify the file for easier storage
 		let pdf = JSON.stringify(file)
 		//validate email
 		if(!validateEmail(email)) {
